@@ -582,6 +582,26 @@ def main():
         ", ".join(sorted(card_keys - set(summary))) or f"{len(card_keys)} keys all present",
     )
 
+    check(
+        76,
+        "the regulatory asymmetry cites the golf-specific resolution and commits it",
+        "003-0109" in html
+        and (ROOT / "docs" / "sources" / "NWRB_Res_003-0109_golf_2009.pdf").exists()
+        and (ROOT / "docs" / "sources" / "NWRB_Res_001-0904_critical_areas_2004.pdf").exists(),
+    )
+    check(
+        77,
+        "SOURCES no longer says the primary resolution is unobtained",
+        "manual download is the named missing input" not in (ROOT / "docs" / "SOURCES.md").read_text()
+        and 'carries exactly those areas with status "named"'
+        not in (ROOT / "docs" / "SOURCES.md").read_text(),
+    )
+    check(
+        78,
+        "the discredited five-province raw cache is not committed",
+        "data/raw/moratorium_overpass.json" not in tracked,
+    )
+
     print(f"\n{sum(results)}/{len(results)} checks pass")
     sys.exit(0 if all(results) else 1)
 

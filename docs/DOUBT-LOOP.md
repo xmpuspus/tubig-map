@@ -395,6 +395,44 @@ Also fixed: figures were numbered 1, 2, 2, 4; check 68 was bypassable by writing
 "four instrument failures"; the social card's numbers were unguarded; and the
 page claimed terrain matching was unavailable when it takes ninety seconds.
 
+---
+
+## Round 12 (2026-07-20) - the strongest fact was under-claimed
+
+A seventh convergence critic returned NOT CONVERGED, and for the first time the
+refused evidence was on the NON-satellite side, which by this point carries the
+most weight.
+
+**NWRB Resolution 003-0109 (21 Jan 2009), "Policy Recommendation for Golf
+Courses in Critical Areas."** It sits in the same Internet Archive directory
+this project mined for 001-0904 in round 5, and it has a text layer. It was
+never pulled. It is a golf-specific water-permit regime: a per-hectare monthly
+turfgrass water allocation across eleven named critical areas, mandatory
+deep-well metering with quarterly extraction reporting, refusal of new golf
+deep-well permits, and closure of non-complying wells. It names golf and nothing
+else, and there is no data-centre counterpart.
+
+The page had been showing the 13-vs-0 regulatory asymmetry, its strongest claim
+and the one that needs no satellite, as a single 2024 DENR letter asking clubs
+to check for leaks. The real record is a 15-year single-sector regime. The
+project was UNDER-claiming its best fact. Both resolution PDFs are now committed
+in docs/sources/ so a reader can check the transcription, and the asymmetry card
+and SOURCES cite them.
+
+The critic corrected itself twice before finalising, both worth recording: it
+first said 003-0109 makes the volume comparison computable (a water DUTY is a
+regulatory cap in lps/hectare, not measured usage, so uncomputability holds) and
+that it raises the inside-count to ~49 courses (it merged the looser "water
+critical areas" of nine cities with the tighter groundwater set, re-introducing
+the exact scope inflation removed in rounds 1 and 5). Both withdrawn.
+
+Also fixed this round: docs/SOURCES.md still said the 001-0904 PDF "returns 403,
+manual download is the missing input" while the site said it was obtained (the
+provenance file contradicted the map), and still described the old "named"
+layer schema from before round 5. The discredited five-province raw cache
+(data/raw/moratorium_overpass.json) was committed and read by nothing; removed.
+Dead chartMatched() code and its no-op DOM writes removed.
+
 ### Boundaries, with their exact missing input
 
 - **Water volume per facility.** Cannot be derived from any optical index.

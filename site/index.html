@@ -209,11 +209,18 @@ a{color:var(--pos)}
   <div class="cards">
     <div class="card">
       <h3>The regulatory asymmetry: <span data-n="denr_named_golf"></span> versus <span data-n="denr_named_dc"></span></h3>
-      <p>In May 2024, at the peak of El Nino, the DENR ordered 13 named golf courses in Metro
-      Manila and Rizal to conserve water: monitor mains overnight, prefer recycled water, stop
-      irrigating from piped supply. No Philippine regulator has ever issued a water directive
-      naming a data center. Scrutiny of the data center buildout has been about power, not water.</p>
-      <p class="src">DENR directive: GMA News, May 2024. Power coverage: PCIJ, Jan 2026.</p>
+      <p>The single-sector scrutiny goes back further than the 2024 drought. In 2009 the NWRB
+      passed Resolution 003-0109, "Policy Recommendation for Golf Courses in Critical Areas": a
+      per-hectare monthly water allocation for turfgrass, mandatory deep-well metering with
+      quarterly extraction reports, a bar on new golf deep-well permits, and closure of wells that
+      do not comply. It names golf and nothing else. Then in May 2024 the DENR ordered 13 named
+      golf courses to conserve water during the El Nino. Across both, no Philippine regulator has
+      issued a water directive naming a data center; scrutiny of that buildout has been about
+      power. This is the one claim on the page that never needed a satellite, and it is the
+      strongest.</p>
+      <p class="src">NWRB Res. 003-0109 (2009) and 001-0904 (2004), PDFs in
+      <a href="https://github.com/xmpuspus/tubig-map/tree/main/docs/sources">docs/sources</a>.
+      2024 directive: GMA News, May 2024. Power coverage: PCIJ, Jan 2026.</p>
     </div>
     <div class="card">
       <h3>Same restricted ground</h3>
@@ -332,10 +339,10 @@ a{color:var(--pos)}
     </div>
     <div class="card">
       <h3>What is left standing</h3>
-      <p>One satellite result, properly controlled: golf turf is
-      <span data-n="matched_gap"></span> NDVI greener than nearby grassland in normal dry seasons.
-      Managed turf beats unmanaged grass, which is what management looks like and is not a water
-      volume. Then the regulatory asymmetry: <span data-n="denr_named_golf"></span> golf courses named in a
+      <p>One satellite result, and even it is mostly not about water: golf turf is greener than
+      nearby grassland, but that gap is nearly as large in the monsoon as in the dry season, so it
+      is about how a course is managed, not what is poured on it. The load-bearing claim needs no
+      satellite: the regulatory asymmetry. <span data-n="denr_named_golf"></span> golf courses named in a
       Philippine water directive against <span data-n="denr_named_dc"></span> data centers. Public
       record, no satellite involved. And the volume comparison remains uncomputable: the two
       official golf rates differ by two orders of magnitude and
@@ -630,30 +637,6 @@ async function boot() {
     el.innerHTML = svg(W, H, b);
   }
 
-  // Two contrasts side by side: against whatever is nearby, and against grass.
-  function chartMatched(el, sm) {
-    const W = 440, LEFT = 172, RIGHT = 74, BH = 18, ROW = 46;
-    const rows = [
-      {lab: "vs grassland (matched)", v: sm.matched_gap, fill: "#1c5cab"},
-      {lab: "vs the 300 m ring", v: sm.denr_gap_raw ? 0.0622 : 0.0622, fill: "#c9c7c0"},
-    ];
-    const H = rows.length * ROW + 26;
-    const max = Math.max(...rows.map(r => r.v)) * 1.25;
-    const sc = v => (W - LEFT - RIGHT) * (v / max);
-    let b = "";
-    rows.forEach((r, i) => {
-      const y = i * ROW + 6;
-      b += `<g class="row">
-        <text class="lab" x="0" y="${y + 13}">${esc(r.lab)}</text>
-        <rect class="bar" x="${LEFT}" y="${y}" width="${sc(r.v)}" height="${BH}" fill="${r.fill}"></rect>
-        <text class="val" x="${LEFT + sc(r.v) + 7}" y="${y + 13}">+${r.v.toFixed(4)}</text>
-        <title>${esc(r.lab)}: +${r.v.toFixed(4)} NDVI</title>
-      </g>`;
-    });
-    b += `<line class="axis" x1="${LEFT}" y1="0" x2="${LEFT}" y2="${H - 22}"></line>
-      <text class="sub" x="${LEFT}" y="${H - 6}">how much greener the course is, normal dry seasons</text>`;
-    el.innerHTML = svg(W, H, b);
-  }
 
   // Grouped composition bars: course interior against its control ring.
   function chartLandcover(el, rows) {

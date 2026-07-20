@@ -69,20 +69,32 @@ subset is restated here with links.
   "the NWRB had imposed a total ban on deep water drilling in Metro Manila, as
   well as Guiguinto, Bocaue, Marilao, and Meycauayan in Bulacan, and Dasmarinas
   in Cavite to prevent over-extraction of ground water."
-  The layer now carries exactly those areas with status "named". Laguna is
-  dropped: no primary source found names it. Rizal is carried with status
-  "reported" because a later extension to "Metro Manila and Rizal towns" is
-  reported in contemporaneous coverage but the amending resolution was not
-  located. The resolution PDF at nwrb.gov.ph returns 403 to automated fetches;
-  a manual download is the named missing input in docs/DOUBT-LOOP.md.
+  CORRECTED AGAIN 2026-07-20 after obtaining the primary PDF: 001-0904 is titled
+  "Policy Recommendations for Metro Manila Critical Areas" and is not a ban but a
+  permit-processing policy, and it names eight sub-city critical areas, not Metro
+  Manila entire. The layer carries the sixteen designated LGUs with status
+  "designated", plus Metro Manila entire and Rizal with status "reported" as the
+  wider extent later coverage describes. Laguna is dropped: no source names it. nwrb.gov.ph returns 403 to automated fetches, but the Internet
+  Archive holds the full NWRB board-resolution set. The two resolutions this
+  map relies on are committed as PDFs in docs/sources/:
+  Res. 001-0904 (2004, the critical-area designation) and Res. 003-0109 (2009,
+  the golf-specific water-permit regime).
 - NWRB Resolution 05-0925 (Sept 2025): telemetered meters required for
   industrial/municipal permits >= 10 L/s. The dataset that would settle this
   map's question, not yet published.
-- Regulatory asymmetry (the map's headline): DENR has named golf courses in
-  water-conservation directives (13 courses, May 2024; earlier actions 2009-2010,
-  2023). No PH regulator has issued a water directive naming a data center.
-  PH data center scrutiny to date is about power, not water (PCIJ, Jan 2026:
-  https://pcij.org/2026/01/11/data-centers-raise-concerns/).
+- Regulatory asymmetry (the map's strongest claim, and the one that needs no
+  satellite). NWRB Resolution 003-0109 (21 Jan 2009), "Policy Recommendation for
+  Golf Courses in Critical Areas", sets a per-hectare monthly turfgrass water
+  allocation, mandatory deep-well metering with quarterly extraction reporting,
+  refusal of new golf deep-well permits, and closure of non-complying wells,
+  across eleven named critical areas. It names golf and nothing else. The DENR
+  then named 13 golf courses in a May 2024 El Nino conservation order (GMA News,
+  2024-05-07). No PH regulator has issued a water directive naming a data center;
+  scrutiny of that buildout is about power (PCIJ, Jan 2026:
+  https://pcij.org/2026/01/11/data-centers-raise-concerns/). Both resolutions
+  are committed in docs/sources/. Whether 003-0109 remains in force in 2026 is
+  not confirmed; it is cited as the historical record of single-sector scrutiny,
+  which is what the asymmetry claim rests on.
 
 ## Stay-green measurement (this project's own computation)
 
