@@ -1,0 +1,299 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.1137004,
+     14.3146042
+    ]
+   },
+   "properties": {
+    "name": "VITRO Sta. Rosa",
+    "operator": "ePLDT",
+    "city": "Santa Rosa",
+    "province": "Laguna",
+    "status": "operational",
+    "mw": 50,
+    "water_disclosure": null,
+    "precision": "city",
+    "source": "https://www.datacenterdynamics.com/en/news/pldt-launches-sta-rosa-data-center/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.0275,
+     14.463
+    ]
+   },
+   "properties": {
+    "name": "VITRO Paranaque",
+    "operator": "ePLDT",
+    "city": "Paranaque",
+    "province": "Metro Manila",
+    "status": "operational",
+    "mw": null,
+    "water_disclosure": null,
+    "precision": "building (OSM way 553651276)",
+    "source": "https://www.openstreetmap.org/way/553651276"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.0607817,
+     14.7296995
+    ]
+   },
+   "properties": {
+    "name": "STT GDC Fairview",
+    "operator": "STT GDC / Globe / Ayala",
+    "city": "Quezon City",
+    "province": "Metro Manila",
+    "status": "building",
+    "mw": 124,
+    "water_disclosure": "rainwater harvesting, unquantified",
+    "precision": "district",
+    "source": "https://pcij.org/2026/01/11/data-centers-raise-concerns/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.0211226,
+     14.5567949
+    ]
+   },
+   "properties": {
+    "name": "STT GDC Makati",
+    "operator": "STT GDC / Globe / Ayala",
+    "city": "Makati",
+    "province": "Metro Manila",
+    "status": "operational",
+    "mw": 1.2,
+    "water_disclosure": "rainwater harvesting, unquantified",
+    "precision": "city",
+    "source": "https://pcij.org/2026/01/11/data-centers-raise-concerns/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.0521345,
+     14.2760615
+    ]
+   },
+   "properties": {
+    "name": "NARRA1",
+    "operator": "Digital Edge",
+    "city": "Binan",
+    "province": "Laguna",
+    "status": "operational",
+    "mw": 10,
+    "water_disclosure": "WUE 1.355 L/kWh (annualized, operator-published)",
+    "precision": "campus",
+    "source": "https://datacentremagazine.com/company-reports/digital-edge-data-centre-sustainability-front-and-centre"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.1163072,
+     14.5780161
+    ]
+   },
+   "properties": {
+    "name": "DH-MNL1",
+    "operator": "Digital Halo",
+    "city": "Cainta",
+    "province": "Rizal",
+    "status": "operational",
+    "mw": null,
+    "water_disclosure": null,
+    "precision": "city",
+    "source": "https://www.eco-business.com/news/high-costs-higher-risks-can-the-philippines-power-its-data-centre-hub-ambitions/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.0574345,
+     14.3134594
+    ]
+   },
+   "properties": {
+    "name": "Equinix MN1",
+    "operator": "Equinix",
+    "city": "Carmona",
+    "province": "Cavite",
+    "status": "operational",
+    "mw": null,
+    "water_disclosure": null,
+    "precision": "city",
+    "source": "https://www.datacentermap.com/philippines/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     120.9803621,
+     14.5904492
+    ]
+   },
+   "properties": {
+    "name": "Equinix MN3",
+    "operator": "Equinix",
+    "city": "Manila",
+    "province": "Metro Manila",
+    "status": "operational",
+    "mw": null,
+    "water_disclosure": null,
+    "precision": "city",
+    "source": "https://www.datacentermap.com/philippines/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     120.9794956,
+     14.5785921
+    ]
+   },
+   "properties": {
+    "name": "EdgeConneX Manila",
+    "operator": "EdgeConneX",
+    "city": "Manila (Ermita)",
+    "province": "Metro Manila",
+    "status": "operational",
+    "mw": null,
+    "water_disclosure": null,
+    "precision": "district",
+    "source": "https://www.datacentermap.com/philippines/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.1519593,
+     14.0299703
+    ]
+   },
+   "properties": {
+    "name": "YCO Cloud Centers Malvar",
+    "operator": "YCO",
+    "city": "Malvar",
+    "province": "Batangas",
+    "status": "operational",
+    "mw": null,
+    "water_disclosure": null,
+    "precision": "campus",
+    "source": "https://www.datacentermap.com/philippines/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.074179,
+     14.5776185
+    ]
+   },
+   "properties": {
+    "name": "Reliance IT Center",
+    "operator": "Converge ICT",
+    "city": "Pasig",
+    "province": "Metro Manila",
+    "status": "operational",
+    "mw": null,
+    "water_disclosure": null,
+    "precision": "building",
+    "source": "https://www.datacentermap.com/philippines/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     123.9421517,
+     10.3274183
+    ]
+   },
+   "properties": {
+    "name": "DITO edge Mandaue",
+    "operator": "DITO",
+    "city": "Mandaue",
+    "province": "Cebu",
+    "status": "operational",
+    "mw": null,
+    "water_disclosure": null,
+    "precision": "city",
+    "source": "https://www.datacentermap.com/philippines/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     125.5394,
+     8.9365
+    ]
+   },
+   "properties": {
+    "name": "DITO CO64",
+    "operator": "DITO",
+    "city": "Butuan",
+    "province": "Agusan del Norte",
+    "status": "operational",
+    "mw": null,
+    "water_disclosure": null,
+    "precision": "building (OSM way 842083113)",
+    "source": "https://www.openstreetmap.org/way/842083113"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     120.868397,
+     14.2822208
+    ]
+   },
+   "properties": {
+    "name": "VITRO Trece Martires",
+    "operator": "ePLDT",
+    "city": "Trece Martires",
+    "province": "Cavite",
+    "status": "planned",
+    "mw": 100,
+    "water_disclosure": null,
+    "precision": "city",
+    "source": "https://www.mordorintelligence.com/industry-reports/philippines-data-center-market"
+   }
+  }
+ ]
+}

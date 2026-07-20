@@ -1,0 +1,18 @@
+# Pinned dependencies for tubig-map. Mirrors the leaves-ph stack so GEE pulls
+# and geometry handling behave identically across the two projects.
+
+# ----- core -----
+numpy==1.26.4
+
+# ----- geospatial IO -----
+geopandas==1.0.1
+shapely==2.0.6
+pyproj==3.7.0
+osm2geojson==0.3.2
+
+# ----- IO -----
+pillow==11.3.0
+requests==2.32.5
+
+# ----- Google Earth Engine -----
+earthengine-api==1.5.5

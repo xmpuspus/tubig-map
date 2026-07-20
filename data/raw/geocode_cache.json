@@ -1,0 +1,62 @@
+{
+ "Santa Rosa, Laguna, Philippines": {
+  "lat": 14.3146042,
+  "lon": 121.1137004,
+  "display": "Santa Rosa, Laguna, Calabarzon, Philippines"
+ },
+ "Fairview, Quezon City, Philippines": {
+  "lat": 14.7296995,
+  "lon": 121.0607817,
+  "display": "Honda Cars Fairview, Mindanao Avenue, Greater Lagro, 5th District, Quezon City, Eastern Manila District, Metro Manila, 1118, Philippines"
+ },
+ "Makati, Philippines": {
+  "lat": 14.5567949,
+  "lon": 121.0211226,
+  "display": "Makati, Southern Manila District, Metro Manila, Philippines"
+ },
+ "Laguna Technopark, Binan, Laguna, Philippines": {
+  "lat": 14.2760615,
+  "lon": 121.0521345,
+  "display": "Laguna Technopark, Cavite\u2013Laguna Expressway, Malamig, Bi\u00f1an, Laguna, Calabarzon, 4024, Philippines"
+ },
+ "Cainta, Rizal, Philippines": {
+  "lat": 14.5780161,
+  "lon": 121.1163072,
+  "display": "Cainta, Rizal, Calabarzon, 1900, Philippines"
+ },
+ "Carmona, Cavite, Philippines": {
+  "lat": 14.3134594,
+  "lon": 121.0574345,
+  "display": "Carmona, Cavite, Calabarzon, 4116, Philippines"
+ },
+ "Manila, Philippines": {
+  "lat": 14.5904492,
+  "lon": 120.9803621,
+  "display": "Manila, Capital District, Metro Manila, Philippines"
+ },
+ "Ermita, Manila, Philippines": {
+  "lat": 14.5785921,
+  "lon": 120.9794956,
+  "display": "Ermita, Fifth District, Manila, Capital District, Metro Manila, 1000, Philippines"
+ },
+ "Light Industry and Science Park IV, Malvar, Batangas, Philippines": {
+  "lat": 14.0299703,
+  "lon": 121.1519593,
+  "display": "Light Industry and Science Park IV, Luta del Sur, Malvar, Batangas, Calabarzon, 4233, Philippines"
+ },
+ "Reliance IT Center, Pasig, Philippines": {
+  "lat": 14.5776185,
+  "lon": 121.074179,
+  "display": "Reliance Business IT Center, 99, E. Rodriguez Jr. Avenue, Ugong, Pasig First District, Pasig, Eastern Manila District, Metro Manila, 1604, Philippines"
+ },
+ "Mandaue, Cebu, Philippines": {
+  "lat": 10.3274183,
+  "lon": 123.9421517,
+  "display": "National Shrine of Saint Joseph, S.B. Cabahug Street, Centro, Mandaue, Central Visayas, 6014, Philippines"
+ },
+ "Trece Martires, Cavite, Philippines": {
+  "lat": 14.2822208,
+  "lon": 120.868397,
+  "display": "Trece Martires, Cavite, Calabarzon, 4109, Philippines"
+ }
+}

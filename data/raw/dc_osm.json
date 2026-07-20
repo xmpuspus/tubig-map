@@ -1,0 +1,235 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-07-20T13:08:34Z",
+    "timestamp_areas_base": "2026-07-19T22:29:29Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 6528034100,
+  "lat": 12.0703916,
+  "lon": 124.5968356,
+  "tags": {
+    "name": "University Town Center",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "node",
+  "id": 7350460428,
+  "lat": 14.4249567,
+  "lon": 120.9435995,
+  "tags": {
+    "addr:barangay": "Palico IV",
+    "addr:city": "Imus",
+    "addr:housename": "DanaWin Building",
+    "addr:street": "Aguinaldo Highway",
+    "name": "中佳 Zhongjia",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "node",
+  "id": 8049647553,
+  "lat": 11.2471603,
+  "lon": 125.0081159,
+  "tags": {
+    "name": "Office of the System Administrator",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "node",
+  "id": 8874103115,
+  "lat": 14.4441416,
+  "lon": 121.0291534,
+  "tags": {
+    "name": "E79 Systems Inc.",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "node",
+  "id": 9557048323,
+  "lat": 10.5229058,
+  "lon": 124.0230846,
+  "tags": {
+    "addr:city": "Danao",
+    "addr:postcode": "6004",
+    "addr:street": "Banzon Street",
+    "email": "such@anhdoge.com",
+    "name": "ANH DOGE",
+    "opening_hours": "Mo-Fr 08:00-18:00",
+    "opening_hours:covid19": "Mo-Fr 09:00-17:00",
+    "operator": "ANH DOGE CO., LTD.",
+    "phone": "+693311170000",
+    "source": "local knowledge;Bing;survey",
+    "telecom": "data_center",
+    "website": "https://www.anhdoge.com"
+  }
+},
+{
+  "type": "node",
+  "id": 10904504161,
+  "lat": 11.2428956,
+  "lon": 124.9992693,
+  "tags": {
+    "name": "Royalè Satellite Center",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "node",
+  "id": 12189865062,
+  "lat": 16.9172886,
+  "lon": 121.7404783,
+  "tags": {
+    "addr:city": "Cauayan",
+    "addr:province": "Isabela",
+    "alt_name": "QMODZ",
+    "name": "QMODZ Server",
+    "operator": "John Lloyd Quijano",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "node",
+  "id": 12682691190,
+  "lat": 14.5775084,
+  "lon": 121.0740258,
+  "tags": {
+    "name": "Comclark Network And Technology",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "node",
+  "id": 12762802219,
+  "lat": 10.3108642,
+  "lon": 123.9482718,
+  "tags": {
+    "name": "G&D Tech",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "node",
+  "id": 13193090605,
+  "lat": 11.0186112,
+  "lon": 125.7351746,
+  "tags": {
+    "name": "techies",
+    "operator": "techies FiberNet",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "node",
+  "id": 13986130020,
+  "lat": 13.6297382,
+  "lon": 123.1980269,
+  "tags": {
+    "name": "Institute for Micro-Credentials and Language Center",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "way",
+  "id": 553651276,
+  "center": {
+    "lat": 14.4630263,
+    "lon": 121.0275151
+  },
+  "tags": {
+    "addr:city": "Parañaque",
+    "addr:housename": "Elorde Sports Complex",
+    "addr:street": "Dr. A. Santos Avenue",
+    "landuse": "commercial",
+    "name": "VITRO Parañaque",
+    "operator": "ePLDT",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "way",
+  "id": 842083113,
+  "center": {
+    "lat": 8.9364892,
+    "lon": 125.5394280
+  },
+  "tags": {
+    "building": "yes",
+    "name": "DITO CO64",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "way",
+  "id": 1023827348,
+  "center": {
+    "lat": 8.2497548,
+    "lon": 123.8454670
+  },
+  "tags": {
+    "building": "yes",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "way",
+  "id": 1023827350,
+  "center": {
+    "lat": 8.2497756,
+    "lon": 123.8455527
+  },
+  "tags": {
+    "building": "yes",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "way",
+  "id": 1023827351,
+  "center": {
+    "lat": 8.2496629,
+    "lon": 123.8455887
+  },
+  "tags": {
+    "building": "yes",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "way",
+  "id": 1030546688,
+  "center": {
+    "lat": 14.2914780,
+    "lon": 120.9150561
+  },
+  "tags": {
+    "access": "no",
+    "level": "1",
+    "operator": "Lyceum of the Philippines University, Inc.",
+    "telecom": "data_center"
+  }
+},
+{
+  "type": "way",
+  "id": 1442781502,
+  "center": {
+    "lat": 15.1683516,
+    "lon": 120.6056673
+  },
+  "tags": {
+    "building": "data_center",
+    "building:levels": "5",
+    "telecom": "data_center"
+  }
+}
+
+  ]
+}

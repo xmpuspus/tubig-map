@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+.ee-key.json
+tmp/
+data/raw/*.tif
+.DS_Store
+node_modules/

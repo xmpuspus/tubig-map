@@ -1,0 +1,119 @@
+{
+ "golf_features": 138,
+ "golf_hectares": 6705,
+ "golf_measured": 138,
+ "denr_mapped": 12,
+ "denr_named_golf": 13,
+ "denr_named_dc": 0,
+ "dc_sites": 14,
+ "dc_disclosures": 1,
+ "strong_signal": 28,
+ "strong_signal_threshold": 0.03,
+ "top_signals": [
+  {
+   "osm_id": "1347745645",
+   "name": "Tandatangan Golf Course",
+   "hectares": 37.05203435804418,
+   "irrigation_signal": 0.2244,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "1455691384",
+   "name": "",
+   "hectares": 0.1752263211834921,
+   "irrigation_signal": 0.1664,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "703800717",
+   "name": "",
+   "hectares": 1.9365106694455811,
+   "irrigation_signal": 0.1011,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "144672538",
+   "name": "Tagaytay Midlands Golf Club",
+   "hectares": 80.17505548025325,
+   "irrigation_signal": 0.0922,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "703800716",
+   "name": "",
+   "hectares": 2.584089913420003,
+   "irrigation_signal": 0.0899,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "31712056",
+   "name": "Eastridge Golf & Country Club",
+   "hectares": 84.50852078405796,
+   "irrigation_signal": 0.0873,
+   "denr_2024": "eastridge"
+  },
+  {
+   "osm_id": "138947548",
+   "name": "Summit Point Golf & Residential Estates",
+   "hectares": 74.34520639481308,
+   "irrigation_signal": 0.0831,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "987623407",
+   "name": "Sherwood Hills Golf Club",
+   "hectares": 160.37551325418346,
+   "irrigation_signal": 0.0803,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "1259077065",
+   "name": "New Asia Golf & Spa Resort",
+   "hectares": 73.89872543800139,
+   "irrigation_signal": 0.0799,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "99512563",
+   "name": "Royal Northwoods",
+   "hectares": 67.74076937007251,
+   "irrigation_signal": 0.0765,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "246644550",
+   "name": "",
+   "hectares": 8.314626041692343,
+   "irrigation_signal": 0.0753,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "702047132",
+   "name": "",
+   "hectares": 0.7328971138131224,
+   "irrigation_signal": 0.0719,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "16611953",
+   "name": "Manila Southwoods Golf and Country Club",
+   "hectares": 147.2764824108853,
+   "irrigation_signal": 0.0587,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "5172611",
+   "name": "Malarayat Golf Course",
+   "hectares": 101.30135487916465,
+   "irrigation_signal": 0.0516,
+   "denr_2024": null
+  },
+  {
+   "osm_id": "4429331",
+   "name": "Mimosa Golf & Country Club",
+   "hectares": 116.31616489057811,
+   "irrigation_signal": 0.0476,
+   "denr_2024": null
+  }
+ ]
+}
