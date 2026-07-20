@@ -313,6 +313,49 @@ usable grass ring) against +0.222 on the annulus, so roughly 40 percent of it wa
 land cover. n=8 is too small to publish as a group finding and it is not on the
 site.
 
+---
+
+## Rounds 9 and 10 (2026-07-20)
+
+### A second frame, and the magnitude stops being a number
+
+Round 8's surviving result was published as +0.0801, then round 9 published a
+range for it, +0.0585 to +0.0886, by sweeping how much grass the control needs.
+A critic pointed out that this swept one knob of ONE frame while the site named
+a different frame as "the obvious next study" and had not built it.
+
+`pipeline/parcel_control.py` builds it: 841 OSM green-space parcels, 248 that
+WorldCover agrees are mostly grass, 57 courses with parcels within 5 km.
+
+| frame | n | gap | cluster p |
+|---|---|---|---|
+| grass pixels, 1 km ring | 115 | +0.0801 | < 0.0001 |
+| green-space parcels, 5 km | 57 | +0.1219 | < 0.0001 |
+| the same, excluding cemeteries | 46 | +0.0729 | **0.22** |
+
+The parcel frame sits outside the published range, and once cemeteries come out
+it is not significant at all. The two frames correlate +0.27 on the courses both
+cover. So the direction holds across frames and the magnitude does not, and the
+page now says that instead of quoting an interval.
+
+### Three defects that were live on the site
+
+- **The social card said "undefined".** `make_og_card.mjs` read
+  `golf_inside_named` / `dc_in_named`, renamed to `_designated` in round 1. Every
+  social share had been rendering the literal string. Regenerating could not fix
+  it. Keys corrected and the script now throws on a missing key.
+- **The withdrawn leaderboard still shipped**: the fifteen highest 2024 values,
+  all positive, named private clubs, DENR badges, sorted descending, from a
+  measurement that has failed five designs. Removed. Replaced with the
+  distribution and no names; the per-course values stay in the CSV.
+- **The meta description still promised "a population-level result"** after both
+  population findings died. The guard for that phrase only read the README.
+
+`matched_excess` rounded each rate before subtracting, and `matched_pop_shift`
+was hardcoded, the same class as `comparator_series` in round 7. Both computed
+now. Five numbers that drifted green through both suites are recomputed from
+source and verified by tampering.
+
 ### Boundaries, with their exact missing input
 
 - **Water volume per facility.** Cannot be derived from any optical index.
@@ -327,6 +370,11 @@ site.
 - **Rizal coverage.** A 2008 amendment reportedly extended the ban to "Metro
   Manila and Rizal towns" but the specific municipalities are not recoverable
   from available sources. Missing input: the amending resolution number and text.
+- **The magnitude of the turf-versus-grass contrast.** Direction is robust
+  across two independently built control frames; size is not, and one frame
+  loses significance once cemeteries are excluded. Missing input: a control
+  matched on soil, slope, aspect and rainfall rather than proximity, or
+  metre-scale imagery separating fairway from rough. Neither is free.
 - **Per-course irrigation response.** A measured boundary, established three
   ways: NDVI, NDMI and Landsat surface temperature all fail the same matched
   control, on three different physical channels. Not a band-choice problem and
