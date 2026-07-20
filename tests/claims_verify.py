@@ -206,8 +206,10 @@ def main():
     prose = {
         "population cluster p (0.024 in the table)": "0.024",
         "thermal cluster p": "cluster p = 0.022",
+        "DENR contrast shown before and after the ring control": "denr_gap_adjusted",
+        "ring composition published": "lc_ring_built",
         "thermal non-significant baseline move": "cluster p = 0.35",
-        "DENR cluster p": "gives p = 0.005",
+        "DENR cluster p": "cluster p = 0.005",
     }
     for label, needle in prose.items():
         claim(f"prose: {label}", True, needle in flat)

@@ -488,13 +488,19 @@ def main():
         and min(r["gap"] for r in summary["season_series"] if r["enso"] == "La Nina")
         > max(r["gap"] for r in summary["season_series"] if r["enso"] == "El Nino"),
     )
+    # Every non-drought comparator must be negative; 2019 is the other El Nino
+    # and is expected to be ~0. The old form asserted "all <= 0", which a
+    # display rounding of +0.0004 to 0.000 was quietly satisfying.
+    comp = {r["year"]: r for r in summary["comparator_series"]}
     check(
         55,
-        "the comparator chart shows the direction holding and the significance not",
-        len(summary["comparator_series"]) == 6
-        and all(r["shift"] <= 0 for r in summary["comparator_series"])
-        and sum(1 for r in summary["comparator_series"] if r["p"] < 0.05) == 3,
-        f"{sum(1 for r in summary['comparator_series'] if r['p'] < 0.05)} of 6 significant",
+        "comparator shifts are negative against non-drought seasons and ~0 against 2019",
+        len(comp) == 6
+        and all(comp[y]["shift"] < 0 for y in ("2026", "2023", "2020", "2021", "2022"))
+        and abs(comp["2019"]["shift"]) < 0.005
+        and sum(1 for r in comp.values() if r["p"] < 0.05) == 3,
+        f"2019 shift {comp['2019']['shift']}, "
+        f"{sum(1 for r in comp.values() if r['p'] < 0.05)} of 6 significant",
     )
     check(
         56,
@@ -512,6 +518,51 @@ def main():
         and summary["sub_excess"] < 0
         and any(r["name"] == "Within-season" for r in summary["instrument_series"]),
         f"sub-seasonal excess {summary.get('sub_excess')} pts",
+    )
+
+    # ---- the ring confound, round 7 ---------------------------------------
+    check(
+        58,
+        "the control ring's land cover is measured and published",
+        (DATA / "ring_landcover.csv").exists()
+        and summary.get("lc_ring_built") is not None
+        and summary["lc_ring_grass"] < summary["lc_golf_grass"]
+        and "ch-landcover" in html,
+        f"ring {summary.get('lc_ring_built')}% built vs course {summary.get('lc_golf_built')}%",
+    )
+    check(
+        59,
+        "the page leads with the confound rather than a finding differenced against the ring",
+        "The control was never a control" in " ".join(html.split())
+        and "ch-confound" in html
+        and "Browner, not greener" not in html,
+    )
+    check(
+        60,
+        "both differenced findings are shown collapsing on a vegetated ring",
+        len(summary.get("confound_series", [])) == 2
+        and all(r["p_veg"] > 0.05 for r in summary["confound_series"])
+        and all(r["p_all"] < 0.05 for r in summary["confound_series"]),
+    )
+    check(
+        61,
+        "the leaderboard table has one header per cell",
+        html.count("<th>Course</th>") == 1
+        # scope to the signal table, and count <th> cells not the <thead> tag
+        and len(
+            re.findall(
+                r"<th[ >]",
+                re.search(r"<thead><tr><th>Course</th>(.*?)</tr></thead>", html, re.S)
+                .group(0)
+                .replace("<thead>", ""),
+            )
+        )
+        == len(
+            re.findall(
+                r"<td[ >]",
+                re.search(r"tr\.innerHTML = `<td>\$\{row\.name\}</td>(.*?)`;", html, re.S).group(0),
+            )
+        ),
     )
 
     print(f"\n{sum(results)}/{len(results)} checks pass")

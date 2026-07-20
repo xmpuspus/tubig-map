@@ -258,55 +258,80 @@ a{color:var(--pos)}
 
 <section>
   <h2>What the measurement found</h2>
-  <p class="sub">Each finding shown against the control that tested it. Every value read from
+  <p class="sub">Read the first chart before the others. Every value from
   site/data/summary.json.</p>
 
   <div class="figs">
+    <figure class="fig" style="border-color:var(--flag);border-left:4px solid var(--flag)">
+      <figcaption><b>1. The ring is a different landscape, not unwatered turf.</b>
+      Land cover inside the courses against the 300 m control ring.</figcaption>
+      <div id="ch-landcover"></div>
+      <p class="src">Comparing 61% grass against 52% tree and 23% roofs measures land cover, not
+      irrigation. ESA WorldCover v200, free in the same archive, never queried until now.
+      pipeline/ring_landcover.py</p>
+    </figure>
+
     <figure class="fig">
-      <figcaption><b>1. Four instruments, none detects drought irrigation per course.</b>
-      Each fires about as often in a season with no drought as in the drought.</figcaption>
+      <figcaption><b>2. Both differenced findings die when the ring has to be vegetation.</b>
+      Same statistic, all courses against those with a mostly-vegetated ring.</figcaption>
+      <div id="ch-confound"></div>
+      <p class="src">Neither survives. The DENR contrast falls from
+      <span data-n="denr_gap_raw"></span> to <span data-n="denr_gap_adjusted"></span> once ring
+      built-up is controlled for. analysis/ring_confound.py</p>
+    </figure>
+
+    <figure class="fig">
+      <figcaption><b>3. Four instruments, none detects drought irrigation per course.</b>
+      Each fires about as often with no drought as with one.</figcaption>
       <div id="ch-instruments"></div>
       <p class="src">Control season: ENSO-neutral Feb-Apr 2026. Four physical channels; the
       trajectory correlates +0.03 with the seasonal median, so it fails independently.
       analysis/index_shootout.py, analysis/subseasonal_test.py</p>
     </figure>
-
-    <figure class="fig">
-      <figcaption><b>2. The two El Nino seasons match, and the wet seasons sit apart.</b>
-      Course-minus-ring greenness gap, by season.</figcaption>
-      <div id="ch-seasons"></div>
-      <p class="src">Nothing selected 2019; it was inside the baseline all along.
-      pipeline/ndvi_peryear.py</p>
-    </figure>
-
-    <figure class="fig">
-      <figcaption><b>3. Courses browned relative to their surroundings in the drought.</b>
-      Shift against each comparator season, cluster-robust p beside each bar.</figcaption>
-      <div id="ch-comparators"></div>
-      <p class="src">Same direction against every season; clears 0.05 against three of six.
-      analysis/comparator_sensitivity.py</p>
-    </figure>
   </div>
 
   <div class="cards" style="margin-top:18px">
     <div class="card">
-      <h3>Named courses stand out year-round</h3>
-      <span class="big" id="i-visible"></span>
-      <p>Normal-season gap against surroundings, DENR-named versus every other course
-      (cluster p = 0.005). Chronic, not seasonal: it correlates +0.88 between drought and normal
-      seasons. It cannot separate heavier irrigation from being green land in a dense city.</p>
+      <h3>The DENR-named courses, mostly explained</h3>
+      <span class="big" id="i-denr"></span>
+      <p>In normal seasons the named courses stand out against their surroundings by
+      <span data-n="denr_gap_raw"></span> more than every other course (cluster p = 0.005, the
+      largest effect measured here). Enter the ring's built-up fraction and that falls to
+      <span data-n="denr_gap_adjusted"></span>: two thirds of it was the fact that those courses
+      sit in dense Metro Manila and the others do not. What is left is small and this measurement
+      cannot say whether it is irrigation.</p>
     </div>
     <div class="card">
-      <h3>Barer than their surroundings</h3>
-      <span class="big" id="i-inverted"></span>
-      <p>Courses with a negative baseline gap. They produce large positive signals by returning to
-      normal, so they are excluded from the table below.</p>
+      <h3>The thermal result, and why it does not rescue anything</h3>
+      <p>Landsat surface temperature moved <span data-n="lst_shift"></span> K against the same
+      2026 comparator (cluster p = 0.022), courses running hotter relative to their surroundings
+      in the drought. It was published as independent corroboration. It is differenced against
+      the same ring, so it inherits the same confound: roofs heat differently from grass. Measured
+      from the pooled baseline instead, the move is 0.114 K and not significant (cluster p = 0.35).
+      Kept here rather than deleted, because it was on this page and readers saw it.</p>
     </div>
     <div class="card">
-      <h3>Thin sampling behind the drought year</h3>
-      <span class="big" id="i-obs"></span>
-      <p>Median cloud-free observations per pixel, 2024 against the pooled baseline.
-      <span data-n="obs_under_10"></span> courses have fewer than ten.</p>
+      <h3>What is left standing</h3>
+      <p>The regulatory asymmetry: <span data-n="denr_named_golf"></span> golf courses named in a
+      Philippine water directive against <span data-n="denr_named_dc"></span> data centers. Public
+      record, no satellite involved. And the volume comparison remains uncomputable: the two
+      official golf rates differ by two orders of magnitude and
+      <span data-n="dc_disclosures"></span> of <span data-n="dc_sites"></span> data center sites
+      publish a water metric.</p>
+    </div>
+    <div class="card">
+      <h3>What is withdrawn</h3>
+      <p>Any ranking of courses by drought response, withdrawn in round 1 after the detector fired
+      more often with no drought than with one. And now the two population findings that were
+      differenced against the ring, because that difference is largely land cover. This page has
+      published four instrument failures and two withdrawn findings; none of it is hidden.</p>
+    </div>
+    <div class="card">
+      <h3>Where a real measurement would start</h3>
+      <p>A control matched on land cover instead of a fixed annulus: grass parks, cemeteries,
+      playing fields, the same soil and rainfall, no irrigation. That is buildable from the same
+      WorldCover layer plus OSM, and it is the obvious next study rather than a fifth index on the
+      same broken control.</p>
     </div>
   </div>
 </section>
@@ -348,7 +373,7 @@ a{color:var(--pos)}
     <table id="signal-table" aria-label="Golf courses in the drought season and a normal season">
       <thead><tr><th>Course</th><th class="num">Hectares</th><th class="num">2024 signal</th>
         <th class="num">95% interval</th><th class="num">2026 control</th>
-        <th class="num">Obs</th><th>DENR 2024</th></tr></thead>
+        <th class="num">Obs</th><th>Area</th><th>DENR 2024</th></tr></thead>
       <tbody></tbody>
     </table>
     </div>
@@ -475,19 +500,21 @@ async function boot() {
   }
 
   document.getElementById("hero").innerHTML = `
-    <div class="stat lead"><b>Browner, not greener</b>
-      <span>Through the 2024 drought the average Philippine golf course lost more greenness than
-      the land around it: ${Math.abs(summary.course_drop).toFixed(3)} against
-      ${Math.abs(summary.ring_drop).toFixed(3)} NDVI. The viral version of this argument has it
-      the other way round.</span></div>
+    <div class="stat lead"><b>The control was never a control</b>
+      <span>Every satellite finding here compared a course against a 300 m ring around it. That
+      ring is ${summary.lc_ring_tree}% tree cover and ${summary.lc_ring_built}% buildings, against
+      a course interior that is ${summary.lc_golf_grass}% grass. It is a different landscape, not
+      the same land unwatered, so what looked like irrigation was substantially land cover. The
+      findings below are withdrawn or cut down accordingly.</span></div>
     <div class="stat"><b>4 of 4</b>
       <span>instruments failed the no-drought control: greenness, canopy moisture, surface
-      temperature, and within-season shape</span></div>
-    <div class="stat"><b>${summary.ci_positive} of ${summary.golf_measured}</b>
-      <span>courses whose drought signal can be told apart from zero, so none is singled out
-      here</span></div>
+      temperature, within-season shape</span></div>
+    <div class="stat"><b>+0.70</b>
+      <span>correlation between how much greener a course looks and how built-up its
+      surroundings are</span></div>
     <div class="stat"><b>${summary.dc_disclosures} of ${summary.dc_sites}</b>
-      <span>data center sites publish any water metric at all</span></div>`;
+      <span>data center sites publish any water metric, which is the finding that never needed a
+      satellite</span></div>`;
 
   document.querySelectorAll("[data-n]").forEach(el => {
     const v = summary[el.dataset.n];
@@ -506,6 +533,7 @@ async function boot() {
   set("i-pop", `${signed(summary.all_mean_2024)} in drought, ${signed(summary.all_mean_2026)} after`);
   set("i-visible", `${signed(summary.denr_gap_base)} vs ${signed(summary.rest_gap_base)} normal-season gap`);
   set("i-inverted", `${summary.inverted_baseline} of ${summary.golf_measured}`);
+  set("i-denr", `${signed(summary.denr_gap_raw)} falls to ${signed(summary.denr_gap_adjusted)}`);
   set("i-obs", `${summary.obs_elnino_median} vs ${summary.obs_base_median}`);
   set("ramp-lo", "-" + GAP_MAX.toFixed(2) + " or lower");
   set("ramp-hi", "+" + GAP_MAX.toFixed(2) + " or higher");
@@ -592,10 +620,63 @@ async function boot() {
     el.innerHTML = svg(W, H, b);
   }
 
+  // Grouped composition bars: course interior against its control ring.
+  function chartLandcover(el, rows) {
+    const W = 440, LEFT = 74, RIGHT = 52, BH = 13, GAP = 5, ROW = 40;
+    const H = rows.length * ROW + 12;
+    const max = Math.max(...rows.flatMap(r => [r.course, r.ring])) * 1.12;
+    const sc = v => (W - LEFT - RIGHT) * (v / max);
+    let b = "";
+    rows.forEach((r, i) => {
+      const y = i * ROW + 4;
+      b += `<g class="row">
+        <text class="lab" x="0" y="${y + 15}">${esc(r.cls)}</text>
+        <rect class="bar" x="${LEFT}" y="${y}" width="${sc(r.course)}" height="${BH}" fill="#1c5cab"></rect>
+        <text class="val" x="${LEFT + sc(r.course) + 6}" y="${y + 11}">${r.course}%</text>
+        <rect class="bar" x="${LEFT}" y="${y + BH + GAP}" width="${sc(r.ring)}" height="${BH}" fill="#a8451f"></rect>
+        <text class="val" x="${LEFT + sc(r.ring) + 6}" y="${y + BH + GAP + 11}">${r.ring}%</text>
+        <title>${esc(r.cls)}: ${r.course}% of the course interior, ${r.ring}% of the control ring</title>
+      </g>`;
+    });
+    b += `<line class="axis" x1="${LEFT}" y1="0" x2="${LEFT}" y2="${H - 8}"></line>`;
+    el.innerHTML = svg(W, H, b) +
+      `<div class="swatches"><span><i style="background:#1c5cab"></i>inside the course</span>
+       <span><i style="background:#a8451f"></i>the 300 m control ring</span></div>`;
+  }
+
+  // Effect size before and after requiring the ring to be vegetation.
+  function chartConfound(el, rows) {
+    const W = 440, LEFT = 8, RIGHT = 8, ROW = 78, BH = 15;
+    const H = rows.length * ROW + 8;
+    const max = 0.024;
+    const sc = v => (W - LEFT - RIGHT - 150) * (Math.abs(v) / max);
+    let b = "";
+    rows.forEach((r, i) => {
+      const y = i * ROW + 6;
+      [["all 138 courses", r.all_courses, r.p_all], ["ring mostly vegetation", r.veg_ring, r.p_veg]]
+        .forEach(([lab, v, p], k) => {
+          const yy = y + 20 + k * (BH + 6);
+          const sig = p < 0.05;
+          b += `<g class="row">
+            <text class="sub" x="${LEFT}" y="${yy + 11}">${esc(lab)}</text>
+            <rect class="bar" x="${LEFT + 132}" y="${yy}" width="${Math.max(sc(v), 1.5)}" height="${BH}"
+              fill="${v < 0 ? "#a8451f" : "#6b6a64"}" opacity="${sig ? 1 : 0.35}"></rect>
+            <text class="val" x="${LEFT + 132 + Math.max(sc(v), 1.5) + 7}" y="${yy + 11}"
+              style="fill:${sig ? "var(--ink)" : "var(--muted)"}">${v.toFixed(4)} &middot; p ${p.toFixed(3)}${sig ? "" : " n.s."}</text>
+            <title>${esc(r.name)}, ${esc(lab)}: ${v.toFixed(4)}, cluster p ${p}</title>
+          </g>`;
+        });
+      b += `<text class="lab" x="${LEFT}" y="${y + 12}" style="font-weight:600">${esc(r.name)}</text>`;
+    });
+    el.innerHTML = svg(W, H, b);
+  }
+
   const mount = (id, fn, rows) => {
     const el = document.getElementById(id);
     if (el && rows && rows.length) fn(el, rows);
   };
+  mount("ch-landcover", chartLandcover, summary.landcover_series);
+  mount("ch-confound", chartConfound, summary.confound_series);
   mount("ch-instruments", chartInstruments, summary.instrument_series);
   mount("ch-seasons", chartSeasons, summary.season_series);
   mount("ch-comparators", chartComparators, summary.comparator_series);

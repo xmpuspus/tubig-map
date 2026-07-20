@@ -226,6 +226,61 @@ Negative everywhere. And it is not a restatement: the slope signal correlates
 different information and still cannot resolve a course. That is four
 instruments on four channels, each failing on its own evidence.
 
+---
+
+## Round 7 (2026-07-20) - the round that broke the measurement
+
+### The hole all four instruments went through
+
+Four instruments had been run INSIDE the course polygons. Not one measured the
+ring they were all differenced against. ESA WorldCover v200 is 10 m global land
+cover in the same Earth Engine catalog as the Sentinel-2 collection this project
+had been querying since day one. One reduceRegions call.
+
+| class | inside the course | the 300 m "control" ring |
+|---|---|---|
+| grass | 61.1% | 14.2% |
+| tree | 33.7% | 52.3% |
+| built-up | 1.4% | 23.2% |
+| cropland | 3.0% | 6.5% |
+
+The ring is not the same land unwatered. It is roofs and tree canopy. Comparing
+irrigated grass against that measures land cover, and
+`corr(baseline gap, ring built-up fraction) = +0.697`.
+
+### What that does to the findings
+
+Restricting to courses whose ring is actually vegetation, same statistic, same
+cluster correction:
+
+| finding | all 138 | ring >= 50% veg | ring >= 70% veg |
+|---|---|---|---|
+| course browned harder than ring | -0.0148 (p 0.043) | -0.0028 (p 0.73) | **+0.0019 (p 0.84)** |
+| drought below the 2026 control | -0.0194 (p 0.024) | -0.0132 (p 0.15) | -0.0104 (p 0.35) |
+
+The hero flips sign. The population claim that had survived five rounds dies.
+The DENR contrast falls from +0.2216 to +0.0730 once ring built-up enters the
+regression, so two thirds of it was those courses sitting in dense Metro Manila.
+
+Withdrawn: both population findings. What remains from the satellite is a
+documented account of a measurement that did not work, and why, which is the
+honest deliverable.
+
+### Process failures found in the same round
+
+- **`make e2e` was RED and shipped twice.** e2e_checks.py printed 57/57 while
+  claims_verify.py failed four prose guards. The verification command grepped
+  for "checks pass" and never read the exit code. Fixed by reading the exit code.
+- The thermal corroboration was deleted from the site during the chart rewrite
+  with no record. Three of those four failing guards were exactly that alarm,
+  working as designed and ignored.
+- `comparator_series` was hardcoded in build_summary.py and unguarded; a critic
+  doubled a bar and both suites passed. Now computed from the per-year table.
+- The 2019 comparator published as `0.000` when the value is `+0.0004`. The
+  rounding was what satisfied an `all(shift <= 0)` assertion, making the caption
+  "same direction against every season" false. Both fixed.
+- The signal table emitted 8 cells under 7 headers.
+
 ### Boundaries, with their exact missing input
 
 - **Water volume per facility.** Cannot be derived from any optical index.
@@ -233,9 +288,10 @@ instruments on four channels, each failing on its own evidence.
   in `docs/FOI-NWRB.md`, unfiled.
 - **Irrigation source (potable, recycled, effluent, surface).** No satellite
   band separates them. Missing input: operator disclosure or permit records.
-- **NWRB Resolution 001-0904 full text.** nwrb.gov.ph returns 403 to automated
-  fetches. Currently sourced through the Supreme Court's quotation of it in
-  G.R. 208383. Missing input: a manual download of the PDF.
+- **NWRB Resolution 001-0904 full text.** CLOSED in round 5. nwrb.gov.ph returns
+  403 but the Internet Archive has it. Read, and it corrected two published
+  claims. The archive also holds 79 other NWRB board resolutions, which is a
+  channel this project should have found earlier.
 - **Rizal coverage.** A 2008 amendment reportedly extended the ban to "Metro
   Manila and Rizal towns" but the specific municipalities are not recoverable
   from available sources. Missing input: the amending resolution number and text.
@@ -249,6 +305,10 @@ instruments on four channels, each failing on its own evidence.
   from rough and tree from turf, or ground truth on which courses irrigated and
   from what source. Neither is free. The honest statement is that a 300 m ring
   around a heterogeneous 50 ha parcel is the wrong control for a per-course
-  question, whatever is measured inside it.
+  question, whatever is measured inside it. Round 7 sharpened this further: the
+  ring is 52% tree and 23% built-up against a 61%-grass interior, so the control
+  is not merely noisy, it is a different land cover. The buildable next step is a
+  land-cover-matched control (grass parks, cemeteries, playing fields) from the
+  same WorldCover layer plus OSM, not a fifth index against the same annulus.
 - **Whether the DENR directive is still in force.** No rescission or compliance
   report found. Missing input: a DENR statement or the directive's own terms.

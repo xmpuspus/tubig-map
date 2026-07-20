@@ -364,6 +364,101 @@ def main():
             )
             sub["sub_excess"] = round(sub["sub_hit_rate"] - sub["sub_null_rate"], 1)
 
+    # ---- what the control ring is actually made of -------------------------
+    # The deepest finding in this project. Four instruments were run inside the
+    # polygons and none measured the ring they were all differenced against. It
+    # is 52% tree and 23% built-up against a 61%-grass interior, so it is a
+    # different landscape rather than a counterfactual for unwatered turf, and
+    # every differenced quantity inherits that.
+    ring = {}
+    lc_path = DATA / "ring_landcover.csv"
+    if lc_path.exists():
+        lrows = list(csv.DictReader(open(lc_path)))
+
+        def frac(col):
+            v = [num(r, col) for r in lrows if num(r, col) is not None]
+            return round(100 * sum(v) / len(v), 1) if v else None
+
+        ring = {
+            f"lc_{k}_{c}": frac(f"{k}_{c}")
+            for k in ("golf", "ring")
+            for c in ("tree", "grass", "built", "crop")
+        }
+        ring["landcover_series"] = [
+            dict(cls=c.title(), course=frac(f"golf_{c}"), ring=frac(f"ring_{c}"))
+            for c in ("grass", "tree", "built", "crop")
+        ]
+        # How every differenced finding moves once the ring must be vegetation.
+        # Values from analysis/ring_confound.py, recomputed there from source.
+        ring["confound_series"] = [
+            dict(
+                name="Course browned harder than ring",
+                all_courses=-0.0148,
+                veg_ring=0.0019,
+                p_all=0.043,
+                p_veg=0.837,
+            ),
+            dict(
+                name="Drought below the 2026 control",
+                all_courses=-0.0194,
+                veg_ring=-0.0104,
+                p_all=0.024,
+                p_veg=0.353,
+            ),
+        ]
+        ring["denr_gap_raw"] = 0.2216
+        ring["denr_gap_adjusted"] = 0.073
+        ring["ring_built_corr"] = 0.697
+
+    # Shifts recomputed from the per-year table so the chart cannot drift from
+    # source; the p values come from analysis/comparator_sensitivity.py and are
+    # asserted against these shifts in tests/claims_verify.py.
+    COMPARATOR_P = {
+        "2026": 0.024,
+        "2023": 0.087,
+        "2020": 0.107,
+        "2021": 0.014,
+        "2022": 0.0002,
+        "2019": 0.955,
+    }
+    COMPARATOR_ENSO = {
+        "2026": "neutral",
+        "2023": "neutral",
+        "2020": "neutral",
+        "2021": "La Nina",
+        "2022": "La Nina",
+        "2019": "El Nino",
+    }
+    gap24 = [num(r, "gap_elnino") for r in rows]
+    comparator_series = []
+    for y in ("2026", "2023", "2020", "2021", "2022", "2019"):
+        if y == "2026":
+            other = [
+                (num(r, "golf_latest") - num(r, "ring_latest"))
+                if None not in (num(r, "golf_latest"), num(r, "ring_latest"))
+                else None
+                for r in rows
+            ]
+        else:
+            pyrows = {str(r["osm_id"]): r for r in csv.DictReader(open(DATA / "ndvi_peryear.csv"))}
+            other = []
+            for r in rows:
+                q = pyrows.get(str(r["osm_id"]), {})
+                gv, rv = num(q, f"golf_y{y}"), num(q, f"ring_y{y}")
+                other.append(None if None in (gv, rv) else gv - rv)
+        pairs = [(a, b2) for a, b2 in zip(gap24, other, strict=True) if a is not None and b2 is not None]
+        if pairs:
+            comparator_series.append(
+                dict(
+                    year=y,
+                    enso=COMPARATOR_ENSO[y],
+                    # 4dp, so a shift of +0.0004 does not display as 0.000 and
+                    # silently satisfy an "all shifts negative" assertion
+                    shift=round(sum(a - b2 for a, b2 in pairs) / len(pairs), 4),
+                    p=COMPARATOR_P[y],
+                )
+            )
+
     # ---- chart series, so the page draws from computed values only ---------
     seasons = [
         ("2019", "El Nino", peryear.get("gap_2019")),
@@ -463,6 +558,7 @@ def main():
         **peryear,
         **lst,
         **sub,
+        **ring,
         course_drop=course_drop,
         ring_drop=ring_drop,
         season_series=season_series,
@@ -492,14 +588,7 @@ def main():
                 control=sub.get("sub_null_rate"),
             ),
         ],
-        comparator_series=[
-            dict(year="2026", enso="neutral", shift=-0.019, p=0.024),
-            dict(year="2023", enso="neutral", shift=-0.017, p=0.087),
-            dict(year="2020", enso="neutral", shift=-0.014, p=0.107),
-            dict(year="2021", enso="La Nina", shift=-0.027, p=0.014),
-            dict(year="2022", enso="La Nina", shift=-0.028, p=0.0002),
-            dict(year="2019", enso="El Nino", shift=0.000, p=0.955),
-        ],
+        comparator_series=comparator_series,
         null_strong=null_strong,
         null_browned=null_browned,
         null_n=len(sig26_all),
