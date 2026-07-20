@@ -245,16 +245,26 @@ a{color:var(--pos)}
       positive at all. More courses browned faster than their surroundings during the drought than
       stayed green. The stay-green pattern is a minority, which is the opposite of how the viral
       version of this argument runs.</p>
+      <p class="src">Checked against the small-polygon problem: counting only the
+      <span data-n="measured_large"></span> courses of at least
+      <span data-n="min_leaderboard_ha"></span> hectares, it is still
+      <span data-n="browned_more_large"></span> browned against
+      <span data-n="strong_signal_large"></span> that stayed green. The direction holds either way.</p>
     </div>
     <div class="card">
-      <h3>The directive named the most visible courses</h3>
+      <h3>The named courses are the most conspicuously green</h3>
       <span class="big" id="i-visible"></span>
       <p>In normal years the DENR-named courses stand out against their surroundings by an NDVI gap
       of <span data-n="denr_gap_base"></span>, against <span data-n="rest_gap_base"></span> for every
-      other mapped course (permutation p below 0.0001). Within Metro Manila alone they still stand
-      out more than unnamed Metro Manila courses (+0.344 vs +0.231, p = 0.023, n = 11 vs 5). Their
-      drought response, though, was statistically indistinguishable from everyone else's (p = 0.70).
-      The directive tracked visibility, not measured behaviour.</p>
+      other mapped course (permutation p below 0.0001). Much of that is where they sit: Metro Manila
+      courses average +0.308 against +0.051 elsewhere, because the surroundings are built up. Their
+      drought-season change, though, was statistically indistinguishable from every other course
+      (p = 0.70).</p>
+      <p>What that does and does not say: a persistent greenness contrast is equally consistent with
+      heavier year-round irrigation and with simply being green land in a dense city. This
+      measurement cannot separate the two, so it takes no view on whether the 13 were the right 13.
+      It says only that they are the most visible from above, and that their behaviour through the
+      drought did not distinguish them.</p>
     </div>
     <div class="card">
       <h3>When the drought lifted, half went back</h3>
@@ -401,7 +411,7 @@ async function boot() {
   }
   const set = (id, txt) => { const e = document.getElementById(id); if (e) e.textContent = txt; };
   set("i-browned", `${summary.browned_more} browned vs ${summary.strong_signal} stayed green`);
-  set("i-visible", `${signed(summary.denr_gap_base)} vs ${signed(summary.rest_gap_base)}`);
+  set("i-visible", `${signed(summary.denr_gap_base)} vs ${signed(summary.rest_gap_base)} normal-season gap`);
   set("i-revert", `${summary.reverted_2026} of ${summary.measured_2026} went back`);
   const top = summary.provinces[0], bottom = summary.provinces[summary.provinces.length - 1];
   set("i-rizal", `${top.area} ${signed(top.mean_signal)} / ${bottom.area} ${signed(bottom.mean_signal)}`);

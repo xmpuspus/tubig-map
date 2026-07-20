@@ -129,6 +129,13 @@ def main():
     # ---- how many browned MORE than their surroundings --------------------
     browned = [r for r in scored if r["irrigation_signal"] <= -STRONG_SIGNAL]
 
+    # Same counts restricted to courses big enough for the leaderboard. Ranking
+    # by extreme value is very sensitive to sliver noise, a population count much
+    # less so, but the check has to be published either way.
+    big = [r for r in scored if ha_by_id.get(r["osm_id"], 0) >= MIN_LEADERBOARD_HA]
+    browned_big = [r for r in big if r["irrigation_signal"] <= -STRONG_SIGNAL]
+    strong_big = [r for r in big if r["irrigation_signal"] >= STRONG_SIGNAL]
+
     # ---- the visibility finding: DENR-named baseline gap vs everyone else --
     gap_base_denr = mean([num(r, "gap_base") for r in rows if denr_by_id.get(r["osm_id"])])
     gap_base_rest = mean([num(r, "gap_base") for r in rows if not denr_by_id.get(r["osm_id"])])
@@ -188,6 +195,9 @@ def main():
         strong_signal=len(strong24),
         strong_signal_threshold=STRONG_SIGNAL,
         browned_more=len(browned),
+        measured_large=len(big),
+        browned_more_large=len(browned_big),
+        strong_signal_large=len(strong_big),
         pct_positive=round(100 * sum(1 for r in scored if r["irrigation_signal"] > 0) / len(scored), 1),
         median_signal=round(sorted(r["irrigation_signal"] for r in scored)[len(scored) // 2], 4),
         reverted_2026=len(reverted),

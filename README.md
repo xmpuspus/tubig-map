@@ -32,14 +32,19 @@ The full set with sources is in [docs/FINDINGS.md](docs/FINDINGS.md). The short 
   inside the five provinces where the NWRB restricts new deep wells.
 - **Most courses did not stay green.** 46 browned faster than their
   surroundings during the 2024 drought against 28 that stayed green, and the
-  median course signal is negative. The stay-green pattern is a minority, which
-  is the opposite of how the viral version of this argument runs.
-- **The DENR named the most visible courses, not the measurably thirstiest.**
-  In normal years the named courses stand out against their surroundings by an
-  NDVI gap of +0.280 versus +0.058 for every other course (permutation
-  p < 0.0001), and that holds even against other Metro Manila courses. Their
-  drought response was statistically indistinguishable from everyone else's
-  (p = 0.70).
+  median course signal is negative. Restricting to the 85 courses of at least
+  20 hectares it is 28 against 19, so the direction holds either way. The
+  stay-green pattern is a minority, which is the opposite of how the viral
+  version of this argument runs.
+- **The named courses are the most conspicuously green, and their drought
+  behaviour did not differ.** In normal years they stand out against their
+  surroundings by an NDVI gap of +0.280 versus +0.058 for every other course
+  (permutation p < 0.0001), though much of that is location: Metro Manila
+  courses average +0.308 against +0.051 elsewhere. Their drought-season change
+  was statistically indistinguishable from every other course (p = 0.70). This
+  does not say they use less water than anyone else; a persistent greenness
+  contrast fits heavier irrigation just as well as it fits being green land in
+  a dense city, and the measurement cannot separate the two.
 - **Half went back when the drought lifted.** Of the 28 courses with a clear
   2024 signal, 13 fell below the threshold in the normal Feb-Apr 2026 season
   and 15 stayed elevated (paired permutation p = 0.004). The control rings did
@@ -87,7 +92,7 @@ python3.12 -m venv .venv && .venv/bin/pip install -r requirements.txt
 make data      # OSM golf + curated data centers + moratorium boundaries
 make ndvi      # Earth Engine measurement (needs an EE account or SA key)
 make summary   # site/data/summary.json + layer copies
-make e2e       # 18 offline checks against committed data
+make e2e       # 31 offline checks against committed data
 make serve     # local map at http://localhost:8737
 ```
 

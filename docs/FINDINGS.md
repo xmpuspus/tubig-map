@@ -76,16 +76,31 @@ rather than assumed. Scripts: `analysis/ndvi_cuts.py`, `analysis/verify_confound
     40.6 percent positive. 46 courses browned at least 0.03 more than their
     surroundings against 28 that stayed green by that margin. The stay-green
     pattern is a minority behaviour, which is the opposite of the direction the
-    viral version of this argument runs.
+    viral version of this argument runs. Robustness: restricting to the 85
+    courses of at least 20 hectares, the same polygons the leaderboard trusts,
+    it is 28 browned against 19 stayed green. The direction holds either way.
 
-12. The directive tracked visibility, not measured behaviour. In normal years
-    the DENR-named courses stand out against their surroundings by an NDVI gap
-    of +0.2797, against +0.0581 for every other mapped course (permutation
-    p < 0.0001). That is not only because they sit in Metro Manila: within
-    Metro Manila alone the named courses still stand out more than the unnamed
-    ones (+0.3436 vs +0.2306, p = 0.023, n = 11 vs 5). Their drought response
-    was statistically indistinguishable from everyone else's (p = 0.70). The 13
-    named courses are the most conspicuous green, not the measurably thirstiest.
+12. The named courses are the most conspicuously green, and their drought
+    behaviour did not differ. In normal years the DENR-named courses stand out
+    against their surroundings by an NDVI gap of +0.2797, against +0.0581 for
+    every other mapped course (permutation p < 0.0001). Much of that is
+    location: Metro Manila courses average +0.3083 against +0.0507 elsewhere,
+    because the surroundings are built up. Their drought-season change was
+    statistically indistinguishable from every other course (p = 0.70).
+
+    What this does not support: any claim that the named courses use less water
+    than unnamed ones, or that the selection was unjustified. A persistent
+    greenness contrast is equally consistent with heavier year-round irrigation
+    and with simply being green land in a dense city, and gap_base cannot
+    separate those two. Per DECISIONS.md the volume comparison stays
+    uncomputable, so this finding is stated as measured contrast and a null on
+    drought response, and nothing further.
+
+    An earlier draft of this finding controlled for location by comparing named
+    against unnamed Metro Manila courses (+0.3436 vs +0.2306, p = 0.023). That
+    comparison was withdrawn: the five unnamed Metro Manila polygons are 0, 1,
+    2, 4 and 27 hectares, so four of the five are driving ranges or slivers and
+    the group is not a usable control. See analysis/check_sliver_sensitivity.py.
 
 13. When the drought lifted, roughly half went back. Of the 28 courses with a
     clear 2024 stay-green signal, 13 fell below the threshold in the normal
@@ -137,6 +152,7 @@ the site says so. What makes the measurement worth reading this month:
     gallons per day, orders of magnitude beyond either. Any golf-vs-data-center
     argument is a fight over rounding errors in the water budget, which is
     itself the finding: the debate is about visibility and consent, not volume.
-    Finding 12 is the sharpest evidence for that reading: the regulator acted
-    on what was most visible from the road, and the satellite cannot find a
-    behavioural difference to justify the selection.
+    Finding 12 sits with that reading without proving it: the named courses
+    are the most visible from above, and their drought behaviour did not set
+    them apart. Whether they were the right courses to name is a question about
+    volume, and volume is exactly what nobody can currently compute.

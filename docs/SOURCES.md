@@ -122,6 +122,24 @@ between the 2019-2023 base and 2026, the 2026 signal would rise with no change
 in irrigation. Rings moved -0.0007 (p = 0.85) and courses +0.0039 (p = 0.47),
 so neither shifted materially.
 
+## Comparisons withdrawn after checking
+
+- Named versus unnamed Metro Manila courses on `gap_base` (+0.3436 vs +0.2306,
+  p = 0.023) was drafted as a location control for finding 12 and then pulled.
+  The five unnamed Metro Manila polygons measure 0, 1, 2, 4 and 27 hectares, so
+  four of the five are driving ranges or slivers whose NDVI is mostly edge
+  pixels. There is no usable within-Metro-Manila control group at n = 8 vs 1
+  once the size filter is applied. Check: `analysis/check_sliver_sensitivity.py`.
+- What `gap_base` cannot do: separate "conspicuously green because heavily
+  irrigated" from "conspicuously green because the surroundings are concrete".
+  Both produce a large persistent gap. Any statement that the DENR-named
+  courses are or are not heavier water users would be a volume claim, and per
+  docs/DECISIONS.md the volume comparison stays uncomputable.
+- Headline counts were re-run against the size filter. 46 browned versus 28
+  stayed green across all 138; 28 versus 19 across the 85 courses of at least
+  20 hectares. Published because the same polygons the leaderboard excludes as
+  too noisy to rank should not silently carry a headline count.
+
 ## Data center pin precision, and what it forbids
 
 13 of the 14 tracked sites are geocoded to city, district or campus level;

@@ -255,6 +255,23 @@ def main():
         "page states the satellite windows are not the current crisis",
         "not a picture of that crisis" in " ".join(html.split()),
     )
+    # Greenness is never read as volume (docs/DECISIONS.md). These phrasings all
+    # assert water use from an NDVI contrast, which the measurement cannot do.
+    flat = " ".join(html.split()).lower()
+    banned = [
+        "measurably thirstiest",
+        "not the thirstiest",
+        "use less water",
+        "wasted water",
+        "justify the selection",
+    ]
+    hits = [b for b in banned if b in flat]
+    check(
+        31,
+        "page makes no volume claim from the greenness signal",
+        not hits,
+        ", ".join(hits) if hits else "clean",
+    )
 
     print(f"\n{sum(results)}/{len(results)} checks pass")
     sys.exit(0 if all(results) else 1)
