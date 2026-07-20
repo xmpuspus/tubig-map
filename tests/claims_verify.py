@@ -267,6 +267,28 @@ def main():
             s["matched_hit_rate"] < s["matched_null_rate"],
         )
 
+    print("\n--- the robustness sweep behind the surviving claim ---")
+    if mcp.exists():
+        for row in s.get("matched_sweep", []):
+            sub = [
+                r
+                for r in csv.DictReader(open(mcp))
+                if f(r["matched_gap_base"]) is not None and (f(r["ring_grass_frac"]) or 0) >= row["thr"] / 100
+            ]
+            claim(f"sweep n at {row['thr']}% grass", row["n"], len(sub))
+            gg = [f(r["matched_gap_base"]) for r in sub]
+            claim(
+                f"sweep gap at {row['thr']}% grass",
+                row["gap"],
+                round(sum(gg) / len(gg), 4),
+                tol=1e-4,
+            )
+        claim(
+            "sweep shrinks as the control gets grassier",
+            True,
+            s["matched_sweep"][0]["gap"] > s["matched_sweep"][-1]["gap"],
+        )
+
     print("\n--- numbers written in prose, not read from summary.json ---")
     # These three were wrong on the live site for hours while every check passed,
     # because nothing verified a number that a human had typed into a sentence.

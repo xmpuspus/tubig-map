@@ -502,6 +502,21 @@ def main():
                 matched_pop_p=0.952,
             )
             matched["matched_excess"] = round(matched["matched_hit_rate"] - matched["matched_null_rate"], 1)
+            # The gap shrinks as the control is required to be grassier, so the sweep
+            # is published rather than the single 2 percent figure. Values recomputed
+            # in analysis/matched_robustness.py and asserted in claims_verify.
+            matched["matched_sweep"] = [
+                dict(thr=0, n=133, gap=0.0886),
+                dict(thr=1, n=118, gap=0.0811),
+                dict(thr=2, n=115, gap=0.0801),
+                dict(thr=5, n=100, gap=0.0704),
+                dict(thr=10, n=67, gap=0.0645),
+                dict(thr=20, n=28, gap=0.0585),
+            ]
+            matched["matched_gap_lo"] = 0.0585
+            matched["matched_gap_hi"] = 0.0886
+            matched["matched_dropped_built"] = 47.8
+            matched["matched_kept_built"] = 18.8
 
     # ---- chart series, so the page draws from computed values only ---------
     seasons = [

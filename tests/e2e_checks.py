@@ -599,6 +599,38 @@ def main():
         and "cannot say how much water" in " ".join(html.split()),
     )
 
+    check(
+        66,
+        "the surviving claim is published as a range with its selection stated",
+        summary.get("matched_gap_lo") is not None
+        and summary["matched_gap_lo"] < summary["matched_gap"] < summary["matched_gap_hi"]
+        and len(summary.get("matched_sweep", [])) >= 5
+        # significant everywhere, but it must be shown shrinking
+        and summary["matched_sweep"][0]["gap"] > summary["matched_sweep"][-1]["gap"]
+        and "less-urban" in " ".join(html.split()),
+        f"{summary['matched_gap_lo']} to {summary['matched_gap_hi']} across the sweep",
+    )
+    check(
+        67,
+        "the surviving claim names the explanations it cannot rule out",
+        all(
+            w in " ".join(html.split())
+            for w in ("mowing", "fertiliser", "species choice", "cannot say how much water")
+        ),
+    )
+
+    check(
+        68,
+        "no prose still states a lower instrument count than the series carries",
+        f"{len(summary['instrument_series'])} of {len(summary['instrument_series'])}"
+        in " ".join(html.split())
+        and not any(
+            w in " ".join(html.split())
+            for w in ("three instruments", "Four instruments", "four instruments", "3 of 3", "4 of 4")
+        ),
+        f"{len(summary['instrument_series'])} instruments in the series",
+    )
+
     print(f"\n{sum(results)}/{len(results)} checks pass")
     sys.exit(0 if all(results) else 1)
 

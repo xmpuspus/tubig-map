@@ -156,7 +156,7 @@ a{color:var(--pos)}
   <h1>Who competes for Metro Manila's groundwater</h1>
   <p class="lede">Philippine golf courses and data centers, mapped over the groundwater
   NWRB designated critical in 2004. The satellite measurement meant to rank courses by irrigation
-  failed its control season, three instruments over. What survived is below, with the failure.</p>
+  failed its control season, five designs over. What survived is below, with the failure.</p>
   <div class="hero-stat" id="hero"></div>
 </header>
 
@@ -266,10 +266,15 @@ a{color:var(--pos)}
       <figcaption><b>1. Compared against grassland, golf courses are greener.</b>
       The only positive result here with a control that holds land cover fixed.</figcaption>
       <div id="ch-matched"></div>
-      <p class="src">Course NDVI minus the NDVI of grassland pixels within 1 km, normal dry
-      seasons, <span data-n="matched_n"></span> courses with enough grass nearby. Cluster
-      p below 0.001. It says managed turf is greener than unmanaged grass; it cannot say how much
-      water that took. pipeline/matched_control.py</p>
+      <p class="src">Course NDVI minus grassland NDVI within 1 km, normal dry seasons.
+      Significant at every grass threshold swept, but it shrinks from
+      <span data-n="matched_gap_hi"></span> to <span data-n="matched_gap_lo"></span> as the control
+      is required to be grassier, so read the range. The courses excluded for having no grass
+      nearby are smaller and far more urban (<span data-n="matched_dropped_built"></span> percent
+      built rings against <span data-n="matched_kept_built"></span>), so this describes the
+      less-urban <span data-n="matched_n"></span>. It says managed turf is greener than unmanaged
+      grass; it cannot say how much water that took, and mowing, fertiliser and species choice
+      would all produce it too. pipeline/matched_control.py, analysis/matched_robustness.py</p>
     </figure>
 
     <figure class="fig" style="border-color:var(--flag);border-left:4px solid var(--flag)">
@@ -518,7 +523,7 @@ async function boot() {
   }
 
   document.getElementById("hero").innerHTML = `
-    <div class="stat lead"><b>Greener than the grass next door, by ${signed(summary.matched_gap, 3)} NDVI</b>
+    <div class="stat lead"><b>Greener than the grass next door, by ${signed(summary.matched_gap_lo, 3)} to ${signed(summary.matched_gap_hi, 3)} NDVI</b>
       <span>Every earlier finding here compared golf courses against a 300 m ring that turns out
       to be ${summary.lc_ring_tree}% tree cover and ${summary.lc_ring_built}% buildings. Comparing
       turf against grassland instead, holding land cover fixed, golf courses are measurably greener

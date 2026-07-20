@@ -91,6 +91,42 @@
  "matched_pop_shift": -0.0005,
  "matched_pop_p": 0.952,
  "matched_excess": -5.3,
+ "matched_sweep": [
+  {
+   "thr": 0,
+   "n": 133,
+   "gap": 0.0886
+  },
+  {
+   "thr": 1,
+   "n": 118,
+   "gap": 0.0811
+  },
+  {
+   "thr": 2,
+   "n": 115,
+   "gap": 0.0801
+  },
+  {
+   "thr": 5,
+   "n": 100,
+   "gap": 0.0704
+  },
+  {
+   "thr": 10,
+   "n": 67,
+   "gap": 0.0645
+  },
+  {
+   "thr": 20,
+   "n": 28,
+   "gap": 0.0585
+  }
+ ],
+ "matched_gap_lo": 0.0585,
+ "matched_gap_hi": 0.0886,
+ "matched_dropped_built": 47.8,
+ "matched_kept_built": 18.8,
  "course_drop": -0.036,
  "ring_drop": -0.0212,
  "season_series": [
