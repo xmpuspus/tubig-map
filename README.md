@@ -2,8 +2,8 @@
 
 Who competes for Metro Manila's groundwater. Philippine golf courses and data
 centers mapped over the areas NWRB designated critical for groundwater, with a
-Sentinel-2 measurement that did not survive its control season and is reported
-that way.
+Sentinel-2 measurement that did not hold up when tested against a normal season,
+and is reported that way.
 
 ![tubig-map flythrough](docs/hero.gif)
 
@@ -12,9 +12,9 @@ The live map is at https://tubig-map.vercel.app
 ## Why this exists
 
 "Data centers use a lot of water, but golf courses use way more" went viral in
-2025-2026. Checked properly it holds at the US and global scale, but the real
-multiplier is closer to 4-6x when you measure the water the same way on both sides than the 25-30x the
-posts imply, and the gap is closing fast with the AI buildout.
+2025-2026. Checked properly it holds at the US and global scale, but the real gap is about
+4-6x once you count the water the same way on both sides, well below the 25-30x
+in the posts, and it is closing fast with the AI buildout.
 
 In the Philippines the conversation runs backwards. Regulators have named golf
 courses in water-conservation directives 13 at a time. They have never named a
@@ -31,35 +31,39 @@ The full set with sources is in [docs/FINDINGS.md](docs/FINDINGS.md). The
 adversarial review that produced most of them is in
 [docs/DOUBT-LOOP.md](docs/DOUBT-LOOP.md). The short version.
 
-- **The per-course satellite measurement did not work, and the map says so up
-  front.** Feb-Apr 2026 was ENSO-neutral, a normal season with no drought, so the same
-  measurement over it should find nothing. It flags 29.0 percent of courses as staying green,
-  against 20.3 percent in the 2024 drought. Something that flags more courses when
-  there is no drought is not detecting drought, so no course is ranked by water
-  use here.
-- **That finding is withdrawn, along with everything else measured against the
-  300 m ring.** ESA WorldCover shows the ring is 52% tree cover and 23%
-  buildings, while the course inside is 61% grass. Comparing turf to rooftops
-  reads the land cover rather than the water. Compare each course only against nearby
-  grassland and the drought difference drops to -0.0005, which a cluster-robust test
-  cannot tell apart from zero (p = 0.95).
-- **Against actual grassland, one result holds.** Golf turf is about +0.080 NDVI
-  greener than the grass around it in normal dry seasons (115 courses,
-  cluster-robust p < 0.001). Mowed and fertilised turf beats unmanaged grass, which is what
-  upkeep looks like. It says nothing about how much water that takes.
-- **The DENR-named courses stand out mostly because of where they sit.** Their
-  normal-season difference is +0.280 against +0.058 for other courses, but their
-  rings are 58% built-up against 19% for the rest, and once you account for that
-  the difference falls to +0.073.
-- **The restricted geography was wrong and is corrected, three times.** NWRB
-  Resolution 001-0904 designates eight critical areas across sixteen LGUs. That
-  is not five whole provinces, and not Metro Manila entire, which is what earlier
-  versions of this map drew. 14 courses and 4 of 14 data center sites sit inside
-  the real areas, against 45 and 11 when the map drew provinces.
-- 1 of 14 tracked data center sites publishes any water metric. The DENR has
-  named golf courses in water directives. It has named zero data centers. That
-  gap is a matter of public record rather than a satellite measurement, and it is the one headline
-  claim here that does not lean on the imagery.
+- **The satellite idea did not work, and the map says so up front.** The plan
+  was to spot which golf courses stayed green through the 2024 drought, on the
+  theory that a course staying green while the land around it went brown was
+  watering hard. To test the method, we ran it on early 2026, a normal stretch
+  with no El Nino, no La Nina, and no drought. It called 29.0 percent of courses
+  "still green" then, more than the 20.3 percent it found during the actual 2024
+  drought. A test that goes off more in a normal year than a drought year is not
+  spotting drought watering, so this map ranks no course by water use.
+- **It failed because it compared golf courses to the wrong thing.** Each course
+  was measured against the band of land 30 to 300 meters out from it. But that
+  band is mostly tree cover (52%) and buildings (23%), while the course itself is
+  61% grass. So the method was not comparing watered turf to dry turf, it was comparing the
+  golf course to the city around it. Compare each course only against real grass nearby and the
+  drought effect disappears (it drops to -0.0005, which the stats cannot tell
+  apart from zero).
+- **Compared against real grass, one thing holds up.** Golf turf is a little
+  greener than the wild grass near it even in a normal dry season, by about
+  +0.080 on the satellite greenness scale, across 115 courses. But that is just
+  what mowing and fertiliser do. It is the same in the rainy season, so it is not
+  about watering.
+- **The DENR-named courses look greener mostly because of where they sit.** They
+  stand out against their surroundings more than other courses (+0.280 against
+  +0.058), but their surroundings are 58% built-up against 19% for the rest.
+  Account for the concrete and the gap shrinks to +0.073.
+- **The map's water-restriction areas were wrong, and are now right after three
+  tries.** NWRB Resolution 001-0904 covers eight critical areas in sixteen towns
+  and cities. That is far smaller than the five whole provinces, or all of Metro
+  Manila, that earlier versions drew. Inside the real areas sit 14 golf courses and 4 of the
+  14 data centers, against 45 and 11 when the map drew whole provinces.
+- **1 of 14 tracked data centers publishes any water figure at all.** The DENR
+  has named golf courses in water directives. It has named zero data centers.
+  That gap is not read off any satellite, it is on the public record, and it is
+  the one headline here that does not depend on the imagery.
 
 Why it matters this month. Angat Dam, which supplies about 90 percent of Metro
 Manila's raw water, is at its lowest recorded level (152.85 m, 7.15 m below the
