@@ -84,7 +84,24 @@ per-course numbers can carry, which is close to none.
    response against a 300 m ring, whatever bands are used. Pipeline:
    pipeline/ndmi_anomaly.py, comparison: analysis/index_shootout.py.
 
-10. What survives is the population, not the course. Across all 138 courses the
+10. Nor is it the wrong physics. Reflectance indices read colour; irrigation's
+    actual signature is evaporative cooling, and Landsat Collection 2 surface
+    temperature has been free in Earth Engine throughout. Run through the same
+    geometries, windows and control, it fails as well: 29.9 percent of courses
+    show extra cooling in the drought season against 32.1 percent in the control,
+    an excess of -2.2 points. Three instruments, three physical channels
+    (greenness, canopy moisture, temperature), none able to resolve a single
+    course. Pipeline: pipeline/lst_anomaly.py.
+
+11. The thermal channel independently confirms the population result. Courses
+    sat 0.046 K cooler than their surroundings in normal dry seasons and 0.068 K
+    warmer during the 2024 drought, a shift of +0.343 K (naive permutation
+    p = 0.0039): browner AND hotter than their neighbourhoods when water got
+    scarce. The per-course thermal and NDVI signals correlate at -0.610, the sign
+    the physics requires if both track moisture. Two unrelated sensors, one
+    conclusion at the population level, neither working per course.
+
+12. What survives is the population, not the course. Across all 138 courses the
    mean signal was -0.0148 in the drought season against +0.0046 in the control
    season, a paired shift of -0.0194. Sign-flipping individual courses gives
    p = 0.0018, but that assumes 138 independent units; flipping whole 10 km
@@ -96,20 +113,20 @@ per-course numbers can carry, which is close to none.
    and returned to parity afterwards. Averaging 138 courses is precisely what
    beats the per-course noise, which is why this holds where finding 8 fails.
 
-11. Nothing individual is distinguishable. Using observation counts and NDVI
+13. Nothing individual is distinguishable. Using observation counts and NDVI
     spread from data/ndvi_quality.csv, only 29 of 138 signals have a 95 percent
     interval excluding zero: 9 positive and 20 negative. Of the 28 courses that
     cleared the old threshold, 9 do. The median interval is 0.166 wide against a
     median signal of -0.008. Script: analysis/uncertainty.py.
 
-12. The drought median rests on thin sampling. Median 15.9 cloud-free
+14. The drought median rests on thin sampling. Median 15.9 cloud-free
     observations per pixel for Feb-Apr 2024 against 54.2 for the pooled
     2019-2023 baseline, with 32 courses under ten. One season against five
     pooled seasons is the structural reason the single-season contrast is noisy
     and the pooled baseline contrast is not.
     Pipeline: pipeline/ndvi_quality.py.
 
-13. Forty-four of 138 courses have a negative baseline gap: less green than
+15. Forty-four of 138 courses have a negative baseline gap: less green than
     their surroundings in normal dry seasons. A working irrigated course is not
     usually barer than its neighbourhood, so these are likely construction,
     sand-heavy layouts, closed courses, or polygons that do not match the
@@ -135,7 +152,7 @@ rather than assumed. Three corrections applied after the 2026-07-20 doubt round:
 - **Resolution floor.** 20,000 permutations cannot resolve below about 5 in
   100,000, so anything smaller is reported as a bound rather than a value. Scripts: `analysis/ndvi_cuts.py`, `analysis/verify_confounders.py`.
 
-14. Most Philippine golf courses did not stay green. Across all 138 measured
+16. Most Philippine golf courses did not stay green. Across all 138 measured
     courses the mean 2024 signal is -0.0148 and the median -0.0079, with only
     40.6 percent positive. 46 courses browned at least 0.03 more than their
     surroundings against 28 that stayed green by that margin. The stay-green
@@ -148,7 +165,7 @@ rather than assumed. Three corrections applied after the 2026-07-20 doubt round:
     subset against 0.031 for all 138. The full-population version is the one to
     quote.
 
-15. The named courses are the most conspicuously green, and their drought
+17. The named courses are the most conspicuously green, and their drought
     behaviour did not differ. In normal years the DENR-named courses stand out
     against their surroundings by an NDVI gap of +0.2797, against +0.0581 for
     every other mapped course (permutation p < 0.0001). Much of that is
@@ -170,7 +187,7 @@ rather than assumed. Three corrections applied after the 2026-07-20 doubt round:
     2, 4 and 27 hectares, so four of the five are driving ranges or slivers and
     the group is not a usable control. See analysis/check_sliver_sensitivity.py.
 
-16. WITHDRAWN by finding 8. When the drought lifted, roughly half went back. Of the 28 courses with a
+18. WITHDRAWN by finding 8. When the drought lifted, roughly half went back. Of the 28 courses with a
     clear 2024 stay-green signal, 13 fell below the threshold in the normal
     Feb-Apr 2026 season and 15 stayed elevated. The group mean fell from +0.0675
     to +0.0439 (paired permutation p = 0.0044). Control rings did not shift
@@ -181,14 +198,14 @@ rather than assumed. Three corrections applied after the 2026-07-20 doubt round:
     control season shows the underlying statistic is noise-dominated anyway. The
     ring-stability check remains valid and is retained above.
 
-17. WITHDRAWN by findings 8 and 22. The area rollup was computed over five
+19. WITHDRAWN by findings 8 and 22. The area rollup was computed over five
     whole provinces that are not the restricted geography, and it ranked areas
     by a per-course statistic that fails its control, on groups as small as
     n = 2. Nothing in it survives both corrections. The one part that does
     survive is the null it was published with: being inside a restricted area
     does not predict the signal (inside -0.0123 vs outside -0.0160, p = 0.76).
 
-18. WEAKENED to the point of withdrawal. Larger courses show a stronger signal,
+20. WEAKENED to the point of withdrawal. Larger courses show a stronger signal,
     Spearman r = 0.246 between hectares and 2024 signal (permutation p = 0.0030,
     n = 138). That p clears a Bonferroni threshold for a 10-test family but not
     for the full 21-test family this project ran (threshold 0.0024), the
@@ -209,24 +226,24 @@ co-location at the level of the restricted area is stated.
 The satellite windows are 2024 and 2026. Neither shows the present crisis, and
 the site says so. What makes the measurement worth reading this month:
 
-19. Angat Dam, which supplies about 90 percent of Metro Manila's raw water, is
+21. Angat Dam, which supplies about 90 percent of Metro Manila's raw water, is
     at its lowest recorded level: 152.85 m, which is 7.15 m below the 160 m
     critical level and 27.15 m below the 180 m minimum operating level. The
     NWRB cut the MWSS allocation from 48 to 46 cubic meters per second for
     July 16 to 30, 2026.
-20. PAGASA has raised an El Nino Alert, with a 79 percent chance of El Nino
+22. PAGASA has raised an El Nino Alert, with a 79 percent chance of El Nino
     over June to August 2026 persisting into early 2027. La Nina ended on
     9 March 2026 and ENSO-neutral conditions held through the first half of the
     year, which is what makes Feb-Apr 2026 a valid normal-season comparison.
     The Feb-Apr 2027 dry season is the one at risk.
-21. NWRB Resolution 05-0925 required telemetered meters on industrial and
+23. NWRB Resolution 05-0925 required telemetered meters on industrial and
     municipal permits at or above 10 L/s by 2025-12-31. No compliance data,
     audit or dataset has been published as of July 2026. The measurement on
     this map exists because that one does not.
 
 ## Geography corrected (2026-07-20)
 
-22. The restriction layer was wrong. v1 drew Metro Manila, Bulacan, Cavite,
+24. The restriction layer was wrong. v1 drew Metro Manila, Bulacan, Cavite,
     Rizal and Laguna as whole provinces labelled "NWRB deep-well moratorium
     areas", sourced from a law firm article that says restrictions apply
     "especially in Metro Manila and nearby provinces (e.g., Bulacan, Cavite,
@@ -240,14 +257,14 @@ the site says so. What makes the measurement worth reading this month:
     amendment but the amending resolution could not be located, so it is
     carried and labelled separately rather than counted as confirmed.
 
-23. Five OSM polygons lie wholly inside another mapped course, three of them
+25. Five OSM polygons lie wholly inside another mapped course, three of them
     inside Eastridge, and three course names carry multiple polygons (Camp
     Aguinaldo has three, two of them under 2.5 ha). Each was scored, badged and
     counted independently, double counting 6.7 ha. Nested polygons are now
     flagged, excluded from totals and from the table, and left visible on the
     map. Totals count 133 standalone polygons.
 
-24. Three data center sites carry building-precision pins, not one. The earlier
+26. Three data center sites carry building-precision pins, not one. The earlier
     count came from matching the precision field exactly against "building"
     while the values read "building (OSM way 553651276)". The error appeared in
     three documents at once. The defensible statement is that 11 of 14 pins are
@@ -255,7 +272,7 @@ the site says so. What makes the measurement worth reading this month:
 
 ## Perspective
 
-25. Agriculture dwarfs both industries: US irrigation runs about 73 billion
+27. Agriculture dwarfs both industries: US irrigation runs about 73 billion
     gallons per day, orders of magnitude beyond either. Any golf-vs-data-center
     argument is a fight over rounding errors in the water budget, which is
     itself the finding: the debate is about visibility and consent, not volume.

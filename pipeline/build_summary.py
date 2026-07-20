@@ -305,6 +305,31 @@ def main():
         if lanina:
             peryear["gap_lanina_mean"] = round(sum(lanina) / len(lanina), 4)
 
+    # ---- third instrument: thermal ----------------------------------------
+    # Evaporative cooling is the physics irrigation actually has, and Landsat
+    # surface temperature was free in Earth Engine all along. It fails the same
+    # control, and it agrees with the reflectance indices on the population.
+    lst = {}
+    lst_path = DATA / "lst_anomaly.csv"
+    if lst_path.exists():
+        lrows = [r for r in csv.DictReader(open(lst_path))]
+        pairs = [
+            (num(r, "cooling_signal"), num(r, "signal_2026"))
+            for r in lrows
+            if num(r, "cooling_signal") is not None and num(r, "signal_2026") is not None
+        ]
+        if pairs:
+            thr = -0.5  # kelvin of extra cooling relative to baseline
+            lst = dict(
+                lst_n=len(pairs),
+                lst_hit_rate=round(100 * sum(1 for a, _ in pairs if a <= thr) / len(pairs), 1),
+                lst_null_rate=round(100 * sum(1 for _, b2 in pairs if b2 <= thr) / len(pairs), 1),
+                lst_gap_base=round(mean([num(r, "gap_base") for r in lrows]), 3),
+                lst_gap_elnino=round(mean([num(r, "gap_elnino") for r in lrows]), 3),
+                lst_shift=round(mean([a - b2 for a, b2 in pairs]), 3),
+            )
+            lst["lst_excess"] = round(lst["lst_hit_rate"] - lst["lst_null_rate"], 1)
+
     # ---- the visibility finding: DENR-named baseline gap vs everyone else --
     gap_base_denr = mean([num(r, "gap_base") for r in rows if denr_by_id.get(r["osm_id"])])
     gap_base_rest = mean([num(r, "gap_base") for r in rows if not denr_by_id.get(r["osm_id"])])
@@ -392,6 +417,7 @@ def main():
         else None,
         **ndmi,
         **peryear,
+        **lst,
         null_strong=null_strong,
         null_browned=null_browned,
         null_n=len(sig26_all),

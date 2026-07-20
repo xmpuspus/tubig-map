@@ -274,8 +274,15 @@ a{color:var(--pos)}
       <span data-n="ndvi_excess"></span> for NDVI. The two indices agree with each other
       (Pearson +0.88, 12 of 15 top courses shared), so they are measuring the same thing and
       neither can resolve one dry season of per-course irrigation response against a 300 m ring.</p>
-      <p class="src">analysis/empirical_null.py and analysis/index_shootout.py. Every rate here
-      comes from site/data/summary.json.</p>
+      <p><b>Nor is it the wrong physics.</b> Reflectance indices read colour. The textbook way to
+      see irrigation is heat: water leaving a wet canopy carries heat with it, so watered turf runs
+      cooler than dry ground beside it. Landsat surface temperature has been free in the same
+      archive throughout. It fails the control too, at
+      <span data-n="lst_hit_rate"></span> percent in the drought against
+      <span data-n="lst_null_rate"></span> percent with none. Three instruments on three different
+      physical channels, all unable to pick out a single course.</p>
+      <p class="src">analysis/empirical_null.py, analysis/index_shootout.py,
+      pipeline/lst_anomaly.py. Every rate here comes from site/data/summary.json.</p>
     </div>
     <div class="card">
       <h3>The population did respond to the drought</h3>
@@ -293,6 +300,13 @@ a{color:var(--pos)}
       drought, against <span data-n="gap_lanina_mean"></span> in the La Nina seasons of 2021 and
       2022. Two independent droughts, nearly the same number, and the wet years clearly apart from
       both. That is the population effect showing up twice without being asked to.</p>
+      <p><b>And a second instrument agrees.</b> Landsat surface temperature is a different
+      physical channel from reflectance, and it tells the same story: courses sat
+      <span data-n="lst_gap_base"></span> K cooler than their surroundings in normal seasons and
+      <span data-n="lst_gap_elnino"></span> K warmer during the drought, a shift of
+      <span data-n="lst_shift"></span> K (p = 0.004). Browner and hotter than their neighbourhoods
+      when water got scarce. The two instruments correlate at -0.61 across courses, which is the
+      sign the physics requires.</p>
       <p>That is the opposite direction from the viral version of this argument, and it is the
       most defensible thing in the dataset because averaging courses is exactly what beats the
       per-course noise. Worth knowing how it decomposes: into the drought the average course fell

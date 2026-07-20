@@ -439,6 +439,22 @@ def main():
         f"La Nina {summary.get('gap_lanina_mean')}",
     )
 
+    check(
+        52,
+        "a third instrument on a different physical channel was tried and reported",
+        (DATA / "lst_anomaly.csv").exists()
+        and summary.get("lst_excess") is not None
+        and summary["lst_excess"] < 0
+        and 'data-n="lst_hit_rate"' in html,
+        f"thermal excess {summary.get('lst_excess')} pts",
+    )
+    check(
+        53,
+        "the thermal channel corroborates the population finding in the same direction",
+        summary.get("lst_shift", 0) > 0 and summary.get("pop_shift", 0) < 0,
+        f"LST warmed {summary.get('lst_shift')} K while NDVI fell {summary.get('pop_shift')}",
+    )
+
     print(f"\n{sum(results)}/{len(results)} checks pass")
     sys.exit(0 if all(results) else 1)
 

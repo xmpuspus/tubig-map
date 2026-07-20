@@ -160,6 +160,43 @@ is identical across all five by construction, since the baseline cancels from
 that difference, which means the surviving conclusion cannot be baseline
 dependent at all. `analysis/base_sensitivity.py`.
 
+---
+
+## Round 4 (2026-07-20)
+
+### The third instrument, and the physics objection closed
+
+Reflectance indices read colour. The textbook signature of irrigation is not
+colour but heat: water leaving a wet canopy carries heat with it, so watered turf
+runs cooler than dry ground beside it. Landsat Collection 2 surface temperature
+(ST_B10) has been free in the same Earth Engine archive throughout, so declining
+to use it had been a choice, exactly like NDMI. `pipeline/lst_anomaly.py` runs it
+through the same geometries, windows, ring construction and control season.
+
+| instrument | physical channel | drought rate | control rate | excess | verdict |
+|---|---|---|---|---|---|
+| NDVI (B8, B4) | greenness | 20.3% | 29.0% | -8.7 pts | fails |
+| NDMI (B8A, B11) | canopy moisture | 15.9% | 21.0% | -5.1 pts | fails |
+| Landsat ST_B10 | surface temperature | 29.9% | 32.1% | -2.2 pts | fails |
+
+Three instruments on three different physical channels, none able to resolve a
+single course. The per-course boundary is now measured three ways rather than
+asserted.
+
+### Thermal independently confirms the surviving finding
+
+The same run corroborates the population-level result through a sensor that
+shares no photons with Sentinel-2. Courses sat 0.046 K COOLER than their
+surroundings in normal dry seasons and 0.068 K WARMER during the 2024 drought, a
+shift of +0.343 K (naive permutation p = 0.0039). Browner and hotter than their
+neighbourhoods when water got scarce, which is one coherent physical story told
+by two unrelated instruments.
+
+The per-course thermal and NDVI signals correlate at -0.610 across 134 courses,
+which is the sign the physics requires if both track moisture. So the
+instruments agree with each other and agree about the population; they simply
+cannot resolve individuals.
+
 ### Boundaries, with their exact missing input
 
 - **Water volume per facility.** Cannot be derived from any optical index.
@@ -173,10 +210,15 @@ dependent at all. `analysis/base_sensitivity.py`.
 - **Rizal coverage.** A 2008 amendment reportedly extended the ban to "Metro
   Manila and Rizal towns" but the specific municipalities are not recoverable
   from available sources. Missing input: the amending resolution number and text.
-- **Per-course irrigation response.** Now a measured boundary rather than an
-  assumed one: two indices, tested against a matched control, both fail. Missing
-  input: either sub-seasonal time series rather than one seasonal median, or
-  thermal or radar observation, or ground truth on which courses irrigated and
-  from what source. Not a band-choice problem.
+- **Per-course irrigation response.** A measured boundary, established three
+  ways: NDVI, NDMI and Landsat surface temperature all fail the same matched
+  control, on three different physical channels. Not a band-choice problem and
+  not a physics-choice problem. Missing input: either sub-seasonal time series
+  rather than one seasonal median (Sentinel-2 revisit gives roughly 15 usable
+  scenes per season, so this is testable but is a different study), or
+  metre-scale imagery that resolves fairway from rough and tree from turf, or
+  ground truth on which courses irrigated and from what source. The honest
+  statement is that a seasonal median against a 300 m ring is the wrong study
+  design for a per-course question, not that the wrong band was picked.
 - **Whether the DENR directive is still in force.** No rescission or compliance
   report found. Missing input: a DENR statement or the directive's own terms.
