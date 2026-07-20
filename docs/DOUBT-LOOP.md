@@ -356,6 +356,45 @@ was hardcoded, the same class as `comparator_series` in round 7. Both computed
 now. Five numbers that drifted green through both suites are recomputed from
 source and verified by tampering.
 
+---
+
+## Round 11 (2026-07-20) - the first CONVERGED verdict, and what it still changed
+
+A fifth convergence critic returned **CONVERGED**: it built three pieces of
+evidence this project had never used, each chosen to break the last claim
+standing, and all three confirmed it instead.
+
+- **SRTM terrain matching** (`USGS/SRTMGL1_003`), which this page had said was
+  not free. It is free and it runs in ninety seconds. The 1 km grass control is
+  already elevation-matched to about a metre; terrain explains 0.9 percent of
+  the gap and the direction holds under every terrain restriction.
+- **Landsat thermal against the matched control.** The thermal corroboration was
+  withdrawn in round 7 for inheriting the ring confound, but that was never
+  tested directly. Tested: +0.343 K (p 0.022) against the ring becomes +0.049 K
+  (p 0.79) against matched grass. The withdrawal was right.
+- **The wet season.** Every window this project ever built was Feb-Apr.
+
+### The wet season removes most of the water reading
+
+That last one is not a confirmation so much as a reframing, and it is now
+published. Running the same grass-matched contrast over Aug-Oct, the southwest
+monsoon, when nobody irrigates turf:
+
+| season | gap vs matched grass | cluster p |
+|---|---|---|
+| dry, Feb-Apr | +0.0801 | < 0.0001 |
+| wet, Aug-Oct | +0.0649 | < 0.0001 |
+| dry minus wet | +0.0152 | **0.307** |
+
+81 percent of the gap survives into the season nobody waters, and the seasonal
+part is not distinguishable from zero. So the surviving contrast measures what a
+golf course is (turf species, mowing, fertiliser, drainage) rather than what is
+poured on it. The hero says exactly that.
+
+Also fixed: figures were numbered 1, 2, 2, 4; check 68 was bypassable by writing
+"four instrument failures"; the social card's numbers were unguarded; and the
+page claimed terrain matching was unavailable when it takes ninety seconds.
+
 ### Boundaries, with their exact missing input
 
 - **Water volume per facility.** Cannot be derived from any optical index.
@@ -370,6 +409,12 @@ source and verified by tampering.
 - **Rizal coverage.** A 2008 amendment reportedly extended the ban to "Metro
   Manila and Rizal towns" but the specific municipalities are not recoverable
   from available sources. Missing input: the amending resolution number and text.
+- **Whether any of the turf-versus-grass contrast is water.** 81 percent of it
+  is present in the monsoon and the seasonal remainder is not significant, so
+  the honest reading is that little or none of it is dry-season irrigation.
+  Missing input: ground truth on which courses irrigate and from what source.
+  No satellite supplies it, and no optical index can separate species and
+  fertiliser from water.
 - **The magnitude of the turf-versus-grass contrast.** Direction is robust
   across two independently built control frames; size is not, and one frame
   loses significance once cemeteries are excluded. Missing input: a control

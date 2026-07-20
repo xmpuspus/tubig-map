@@ -568,16 +568,36 @@ def main():
                 ),
             ]
 
+    # ---- the same contrast in the season nobody irrigates -------------------
+    # If the surviving gap were about watering it should shrink in the monsoon.
+    # It barely moves, and the seasonal part is not significant, so the contrast
+    # is a property of the surface rather than of dry-season water.
+    season = {}
+    wsp = DATA / "wet_season.csv"
+    if wsp.exists() and matched:
+        wrows = {
+            str(r["osm_id"]): num(r, "wet_gap")
+            for r in csv.DictReader(open(wsp))
+            if num(r, "wet_gap") is not None
+        }
+        pair = [
+            (num(r, "matched_gap_base"), wrows[str(r["osm_id"])])
+            for r in mrows
+            if str(r["osm_id"]) in wrows and num(r, "matched_gap_base") is not None
+        ]
+        if pair:
+            dg = mean([a for a, _ in pair])
+            wg = mean([b for _, b in pair])
+            season = dict(
+                wet_n=len(pair),
+                wet_gap=round(wg, 4),
+                dry_gap=round(dg, 4),
+                wet_share=round(100 * wg / dg, 0) if dg else None,
+                # cluster permutation, analysis/season_test.py
+                wet_minus_dry_p=0.307,
+            )
+
     # ---- chart series, so the page draws from computed values only ---------
-    seasons = [
-        ("2019", "El Nino", peryear.get("gap_2019")),
-        ("2020", "neutral", peryear.get("gap_2020")),
-        ("2021", "La Nina", peryear.get("gap_2021")),
-        ("2022", "La Nina", peryear.get("gap_2022")),
-        ("2023", "neutral", peryear.get("gap_2023")),
-        ("2024", "El Nino", peryear.get("gap_2024")),
-    ]
-    season_series = [dict(year=y, enso=e, gap=g) for y, e, g in seasons if g is not None]
     # ---- the visibility finding: DENR-named baseline gap vs everyone else --
     gap_base_denr = mean([num(r, "gap_base") for r in rows if denr_by_id.get(r["osm_id"])])
     gap_base_rest = mean([num(r, "gap_base") for r in rows if not denr_by_id.get(r["osm_id"])])
@@ -670,6 +690,7 @@ def main():
         **ring,
         **matched,
         **frames,
+        **season,
         course_drop=course_drop,
         ring_drop=ring_drop,
         instrument_series=[

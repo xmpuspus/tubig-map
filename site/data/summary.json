@@ -153,6 +153,11 @@
    "p": 0.22
   }
  ],
+ "wet_n": 115,
+ "wet_gap": 0.0649,
+ "dry_gap": 0.0801,
+ "wet_share": 81.0,
+ "wet_minus_dry_p": 0.307,
  "course_drop": -0.036,
  "ring_drop": -0.0212,
  "instrument_series": [

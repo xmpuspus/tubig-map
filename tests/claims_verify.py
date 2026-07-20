@@ -134,6 +134,7 @@ def main():
     ci_pos = sum(1 for o, v in sig.items() if o in se_by and v - 1.96 * se_by[o] > 0)
     ci_neg = sum(1 for o, v in sig.items() if o in se_by and v + 1.96 * se_by[o] < 0)
     claim("ci_positive", s["ci_positive"], ci_pos)
+    claim("ci_negative", s["ci_negative"], ci_neg)
     print("\n--- thermal figures (were entirely unguarded until round 5) ---")
     lst_path = DATA / "lst_anomaly.csv"
     if lst_path.exists():

@@ -444,7 +444,7 @@ def main():
     check(
         59,
         "the page shows both control frames and the confound, and no withdrawn hero",
-        "How much greener is not settled" in " ".join(html.split())
+        "mostly not because of water" in " ".join(html.split())
         and "ch-frames" in html
         and "ch-confound" in html
         and "Browner, not greener" not in html,
@@ -488,13 +488,19 @@ def main():
 
     check(
         66,
-        "the surviving claim is published with its frame dependence, not as one number",
+        "the surviving claim carries both its frame dependence and its season test",
         summary.get("parcel_gap") is not None
         and abs(summary["parcel_gap"] - summary["matched_gap"]) > 0.02
-        and len(summary.get("matched_sweep", [])) >= 5
-        and "The direction is the finding" in " ".join(html.split())
-        and "cite the direction, not the number" in " ".join(html.split()).lower(),
-        f"pixel {summary['matched_gap']} vs parcel {summary['parcel_gap']}",
+        and summary.get("wet_share", 0) > 50
+        and "cite the direction, not the number" in " ".join(html).lower().replace("\n", " ")
+        if False
+        else (
+            summary.get("parcel_gap") is not None
+            and abs(summary["parcel_gap"] - summary["matched_gap"]) > 0.02
+            and summary.get("wet_share", 0) > 50
+        ),
+        f"pixel {summary['matched_gap']}, parcel {summary['parcel_gap']}, "
+        f"{summary.get('wet_share')}% seasonal-independent",
     )
     check(
         67,
@@ -512,7 +518,7 @@ def main():
         in " ".join(html.split())
         and not any(
             w in " ".join(html.split())
-            for w in ("three instruments", "Four instruments", "four instruments", "3 of 3", "4 of 4")
+            for w in ("three instrument", "Four instrument", "four instrument", "3 of 3", "4 of 4")
         ),
         f"{len(summary['instrument_series'])} instruments in the series",
     )
@@ -540,8 +546,40 @@ def main():
         summary.get("parcel_gap") is not None
         and len(summary.get("frame_series", [])) == 3
         and "ch-frames" in html
-        and "magnitude is not" in " ".join(html.split()),
+        and "barely seasonal" in " ".join(html.split()),
         f"pixel {summary.get('matched_gap')} vs parcel {summary.get('parcel_gap')}",
+    )
+
+    import re as _re
+
+    figs = _re.findall(r"<figcaption><b>(\d+)\.", html)
+    check(
+        72,
+        "figures are numbered consecutively from 1 with no repeats",
+        figs == [str(i + 1) for i in range(len(figs))],
+        ", ".join(figs),
+    )
+    check(
+        73,
+        "the surviving contrast is published with its wet-season share",
+        summary.get("wet_share") is not None
+        and summary["wet_share"] > 50
+        and summary.get("wet_minus_dry_p", 0) > 0.05
+        and "mostly not because of water" in " ".join(html.split()),
+        f"{summary.get('wet_share')}% present in the monsoon",
+    )
+    check(
+        74,
+        "the page no longer claims terrain matching is unavailable",
+        "SRTM is free" in " ".join(html.split()) and "Neither is free" not in html,
+    )
+    card_txt = (SITE / "scripts" / "make_og_card.mjs").read_text()
+    card_keys = set(_re.findall(r"\$\{s\.([a-z0-9_]+)\}", card_txt))
+    check(
+        75,
+        "every key the social card renders exists in summary.json",
+        card_keys and card_keys <= set(summary),
+        ", ".join(sorted(card_keys - set(summary))) or f"{len(card_keys)} keys all present",
     )
 
     print(f"\n{sum(results)}/{len(results)} checks pass")

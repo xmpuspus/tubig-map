@@ -266,6 +266,12 @@ a{color:var(--pos)}
       <figcaption><b>1. Greener than comparable grass, by an amount the frame decides.</b>
       Three ways of drawing a grass control, same question.</figcaption>
       <div id="ch-frames"></div>
+      <p class="src"><b>And it is barely seasonal.</b> Measured again over Aug-Oct, the monsoon,
+      the same contrast is <span data-n="wet_gap"></span> against
+      <span data-n="dry_gap"></span> in the dry season, so
+      <span data-n="wet_share"></span> percent of it survives into a season when nobody waters
+      turf. The difference between the seasons is not significant (cluster p =
+      <span data-n="wet_minus_dry_p"></span>). pipeline/wet_season.py, analysis/season_test.py</p>
       <p class="src">Positive in every frame, but the pixel frame and the parcel frame differ by
       more than the pixel frame's own robustness sweep, and excluding cemeteries the parcel result
       is not significant (p = 0.22, n = <span data-n="parcel_nc_n"></span>). The two frames
@@ -285,7 +291,7 @@ a{color:var(--pos)}
     </figure>
 
     <figure class="fig">
-      <figcaption><b>2. Both differenced findings die when the ring has to be vegetation.</b>
+      <figcaption><b>3. Both differenced findings die when the ring has to be vegetation.</b>
       Same statistic, all courses against those with a mostly-vegetated ring.</figcaption>
       <div id="ch-confound"></div>
       <p class="src">Neither survives. The DENR contrast falls from
@@ -341,15 +347,15 @@ a{color:var(--pos)}
       <p>Any ranking of courses by drought response, withdrawn in round 1 after the detector fired
       more often with no drought than with one. And now the two population findings that were
       differenced against the ring, because that difference is largely land cover. This page has
-      published four instrument failures and two withdrawn findings; none of it is hidden.</p>
+      published five instrument failures and two withdrawn findings; none of it is hidden.</p>
     </div>
     <div class="card">
       <h3>Where a real measurement would start</h3>
-      <p>Both grass controls here are still opportunistic: whatever grass happens to sit nearby,
-      not grass matched to a course on soil, slope, aspect and rainfall. The two frames correlate
-      only +0.27, which is how much that matters. A propensity-matched design, or metre-scale
-      imagery that separates fairway from rough and tree from turf, is what would settle the
-      magnitude. Neither is free.</p>
+      <p>Both grass controls are opportunistic: whatever grass sits nearby, not grass matched on
+      soil, rainfall or management. Terrain at least is settled, since SRTM is free in the same
+      archive and the 1 km control turns out to be elevation-matched to about a metre. What is not
+      settled is management, and the honest next step is ground truth on which courses irrigate
+      and from what source, which no satellite supplies.</p>
     </div>
   </div>
 </section>
@@ -525,14 +531,13 @@ async function boot() {
   }
 
   document.getElementById("hero").innerHTML = `
-    <div class="stat lead"><b>Greener than comparable grass. How much greener is not settled.</b>
-      <span>Every earlier finding compared golf courses against a 300 m ring that is
-      ${summary.lc_ring_tree}% tree cover and ${summary.lc_ring_built}% buildings, against a
-      ${summary.lc_golf_grass}%-grass interior, and all of them were withdrawn. Compare turf
-      against grass instead and courses are greener, in two independent ways of drawing the
-      control. But the two disagree on size, ${signed(summary.matched_gap, 3)} against
-      ${signed(summary.parcel_gap, 3)}, and one stops being significant once cemeteries come out.
-      The direction is the finding; the magnitude is not.</span></div>
+    <div class="stat lead"><b>Greener than comparable grass, and mostly not because of water</b>
+      <span>Every earlier finding compared courses against a 300 m ring that is
+      ${summary.lc_ring_tree}% tree and ${summary.lc_ring_built}% buildings; all were withdrawn.
+      Against actual grass, courses are greener. But ${summary.wet_share}% of that gap is still
+      there in the monsoon, when nobody irrigates, and the seasonal part is not significant
+      (p = ${summary.wet_minus_dry_p}). So it measures what a golf course is, turf species, mowing,
+      fertiliser, drainage, rather than what is poured on it.</span></div>
     <div class="stat"><b>5 of 5</b>
       <span>instruments and designs that still cannot pick out an individual course in a
       drought</span></div>
