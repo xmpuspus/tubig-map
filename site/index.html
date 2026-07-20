@@ -91,6 +91,23 @@ h2{font-size:22px;margin:0 0 10px}
 /* Tables have a hard minimum content width. Without this wrapper a 5-column
    table pushes the document past a 375px phone, and the browser shrink-to-fit
    zooms the whole page out rather than just scrolling the table. */
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.fig{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px}
+.fig figcaption{font-size:14px;color:var(--ink-2);margin:0 0 14px;line-height:1.45}
+.fig figcaption b{color:var(--ink)}
+.fig .src{margin:10px 0 0}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart .lab{font:12px system-ui,sans-serif;fill:var(--ink-2)}
+.chart .val{font:12px system-ui,sans-serif;fill:var(--ink);font-variant-numeric:tabular-nums}
+.chart .sub{font:10.5px system-ui,sans-serif;fill:var(--muted)}
+.chart .axis{stroke:var(--hairline);stroke-width:1}
+.chart .zero{stroke:var(--ink-2);stroke-width:1}
+.chart rect.bar{rx:2}
+.chart g.row:hover rect.bar{opacity:.78}
+.swatches{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;color:var(--ink-2)}
+.swatches span{display:flex;align-items:center;gap:5px}
+.swatches i{width:11px;height:11px;border-radius:2px;display:inline-block}
 .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{border-collapse:collapse;width:100%;font-size:14px;background:var(--surface)}
 th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--hairline)}
@@ -137,14 +154,9 @@ a{color:var(--pos)}
 <header>
   <p class="kicker">tubig = water &middot; an open measurement, not an accusation</p>
   <h1>Who competes for Metro Manila's groundwater</h1>
-  <p class="lede">Golf courses and the data center buildout draw on the same stressed
-  groundwater, and some of both sit inside the areas where the National Water Resources Board
-  banned new deep wells. Regulators have named golf courses in water-conservation directives
-  repeatedly. They have never named a data center. This map
-  shows both industries on the restricted ground, and reports what a Sentinel-2 measurement of
-  the 2024 El Nino can and cannot support. Tested against a no-drought control season, the
-  per-course stay-green signal failed. What survives is a population-level result and a
-  baseline contrast, both reported below with the failure that produced them.</p>
+  <p class="lede">Philippine golf courses and data centers, mapped over the groundwater
+  NWRB designated critical in 2004. The satellite measurement meant to rank courses by irrigation
+  failed its control season, three instruments over. What survived is below, with the failure.</p>
   <div class="hero-stat" id="hero"></div>
 </header>
 
@@ -156,7 +168,7 @@ a{color:var(--pos)}
     <label><input type="checkbox" id="tg-golf" checked> Golf courses (greenness contrast)</label>
     <label><input type="checkbox" id="tg-denr" checked> DENR 2024 directive courses</label>
     <label><input type="checkbox" id="tg-dc" checked> Data centers</label>
-    <label><input type="checkbox" id="tg-mor" checked> Deep-well ban areas (NWRB-named)</label>
+    <label><input type="checkbox" id="tg-mor" checked> NWRB critical groundwater areas</label>
   </details>
   <div class="panel" id="legend">
     <b style="font-size:12px">Greener than its surroundings, normal dry seasons</b>
@@ -168,7 +180,7 @@ a{color:var(--pos)}
     <div class="key"><span class="sw" style="border:2px solid var(--ink);background:transparent"></span> named in DENR directive</div>
     <div class="key"><span class="dot" style="background:var(--dc)"></span> data center (size = disclosed MW)</div>
     <div class="key"><span class="dot" style="border:2px solid var(--dc);background:transparent"></span> building or planned</div>
-    <div class="key"><span class="sw" style="background:rgba(107,106,100,.18);border:1px solid var(--muted)"></span> area named in NWRB Res. 001-0904 (Rizal reported, unconfirmed)</div>
+    <div class="key"><span class="sw" style="background:rgba(107,106,100,.18);border:1px solid var(--muted)"></span> critical area designated 2004 (paler: wider extent, reported only)</div>
     </details>
   </div>
 </div>
@@ -196,7 +208,7 @@ a{color:var(--pos)}
   <h2>What the map shows</h2>
   <div class="cards">
     <div class="card">
-      <h3>The regulatory asymmetry</h3>
+      <h3>The regulatory asymmetry: <span data-n="denr_named_golf"></span> versus <span data-n="denr_named_dc"></span></h3>
       <p>In May 2024, at the peak of El Nino, the DENR ordered 13 named golf courses in Metro
       Manila and Rizal to conserve water: monitor mains overnight, prefer recycled water, stop
       irrigating from piped supply. No Philippine regulator has ever issued a water directive
@@ -205,16 +217,18 @@ a{color:var(--pos)}
     </div>
     <div class="card">
       <h3>Same restricted ground</h3>
-      <p>NWRB Resolution 001-0904 bans deep-well drilling in Metro Manila and in five named
-      municipalities in Bulacan and Cavite. <span data-n="golf_inside_named"></span> mapped golf
-      courses covering <span data-n="ha_inside_named"></span> hectares sit inside those named
-      areas, alongside <span data-n="dc_in_named"></span> of the
-      <span data-n="dc_sites"></span> tracked data center sites. Counting Rizal, where an
-      extension is reported but unconfirmed, raises that to
+      <p>NWRB Resolution 001-0904 (2004) designates eight critical groundwater areas covering
+      sixteen local government units in Bulacan, Metro Manila and Cavite, and restricts how water
+      permits are issued there. <span data-n="golf_inside_designated"></span> mapped golf courses
+      covering <span data-n="ha_inside_designated"></span> hectares sit inside them, alongside
+      <span data-n="dc_in_designated"></span> of the <span data-n="dc_sites"></span> tracked data
+      center sites. Counting the wider extent the Supreme Court and 2008 press describe for a
+      later ban, all of Metro Manila plus Rizal, raises that to
       <span data-n="golf_inside_any"></span> courses and <span data-n="dc_in_any"></span> sites.</p>
-      <p class="src">Resolution 001-0904 as quoted in Supreme Court G.R. No. 208383 (2016);
-      boundaries from OSM. The five-province version this map used until 2026-07-20 was not
-      supported by any source and roughly doubled these counts.</p>
+      <p class="src">Primary document: NWRB Res. 001-0904, 22 September 2004, retrieved via the
+      Internet Archive. Boundaries from OSM. This map said "five provinces" until 2026-07-20 and
+      then "Metro Manila entire" until later the same day; both overstated the designation, and
+      the counts have fallen by more than half since.</p>
     </div>
     <div class="card">
       <h3>Nobody can compute the comparison</h3>
@@ -243,123 +257,72 @@ a{color:var(--pos)}
 </section>
 
 <section>
-  <h2>What the measurement found, including where it failed</h2>
-  <p class="sub">Group differences are permutation-tested (20,000 resamples, so p values floor at
-  about 5 in 100,000 and are reported as bounds below that). Courses cluster spatially: 138
-  polygons form roughly 60 independent groups at 10 km, so tests here shuffle whole clusters
-  where that matters and the effective sample size is nearer 60 to 99 than 138. This project ran
-  21 tests in total; at that family size a Bonferroni threshold is p = 0.0024, and each card below
-  says whether it clears it. The first card governs how much weight the rest can carry.</p>
-  <div class="cards">
-    <div class="card" style="border-color:var(--flag);border-left:4px solid var(--flag);background:#fdfaf8">
-      <h3>The per-course detector failed its control</h3>
-      <span class="big" id="i-null"></span>
-      <p>Feb-Apr 2026 was ENSO-neutral, so running the identical statistic on it gives a control
-      with no drought to detect. If the threshold measured drought irrigation it should almost
-      never fire there. It fires <span data-n="null_hit_rate"></span> percent of the time in the
-      normal season against <span data-n="drought_hit_rate"></span> percent in the drought season,
-      and the spread of the two distributions is the same to within 3 percent.</p>
-      <p><b>So no individual course can be picked out of the noise, and this project does not
-      claim otherwise.</b> An earlier version of this page led with "28 courses stayed green",
-      which is the drought-season count with no control beside it. That framing is withdrawn.
-      The ranked table further down is kept only so the failure is visible: each course is shown
-      in both seasons, and the two columns disagree about as often as they agree.</p>
-      <p><b>And it is not the wrong index.</b> The obvious objection is that NDVI measures
-      greenness, while water stress shows up first in canopy moisture. So the same measurement was
-      re-run on NDMI, which uses the shortwave-infrared band where leaf water absorbs, from the
-      same Sentinel-2 collection that was being queried all along. NDMI fails the same control:
-      <span data-n="ndmi_hit_rate"></span> percent of courses clear the threshold in the drought
-      season against <span data-n="ndmi_null_rate"></span> percent with no drought, an excess of
-      <span data-n="ndmi_excess"></span> points against
-      <span data-n="ndvi_excess"></span> for NDVI. The two indices agree with each other
-      (Pearson +0.88, 12 of 15 top courses shared), so they are measuring the same thing and
-      neither can resolve one dry season of per-course irrigation response against a 300 m ring.</p>
-      <p><b>Nor is it the wrong physics.</b> Reflectance indices read colour. The textbook way to
-      see irrigation is heat: water leaving a wet canopy carries heat with it, so watered turf runs
-      cooler than dry ground beside it. Landsat surface temperature has been free in the same
-      archive throughout. It fails the control too, at
-      <span data-n="lst_hit_rate"></span> percent in the drought against
-      <span data-n="lst_null_rate"></span> percent with none. Three instruments on three different
-      physical channels, all unable to pick out a single course.</p>
-      <p class="src">analysis/empirical_null.py, analysis/index_shootout.py,
-      pipeline/lst_anomaly.py. Every rate here comes from site/data/summary.json.</p>
-    </div>
+  <h2>What the measurement found</h2>
+  <p class="sub">Three findings, each shown against the control that tested it. Numbers come from
+  site/data/summary.json; the scripts behind each chart are named beneath it.</p>
+
+  <div class="figs">
+    <figure class="fig">
+      <figcaption><b>1. No instrument detects drought irrigation per course.</b>
+      Each fires about as often in a season with no drought as in the drought.</figcaption>
+      <div id="ch-instruments"></div>
+      <p class="src">Feb-Apr 2026 was ENSO-neutral, so it is a matched control.
+      analysis/index_shootout.py, pipeline/lst_anomaly.py</p>
+    </figure>
+
+    <figure class="fig">
+      <figcaption><b>2. The two El Nino seasons match, and the wet seasons sit apart.</b>
+      Course-minus-ring greenness gap, by season.</figcaption>
+      <div id="ch-seasons"></div>
+      <p class="src">Nothing selected 2019; it was inside the baseline all along.
+      pipeline/ndvi_peryear.py</p>
+    </figure>
+
+    <figure class="fig">
+      <figcaption><b>3. Courses browned relative to their surroundings in the drought.</b>
+      Shift against each comparator season, cluster-robust p beside each bar.</figcaption>
+      <div id="ch-comparators"></div>
+      <p class="src">Same direction against every season; clears 0.05 against three of six.
+      analysis/comparator_sensitivity.py</p>
+    </figure>
+  </div>
+
+  <div class="cards" style="margin-top:18px">
     <div class="card">
-      <h3>The population did respond to the drought</h3>
-      <span class="big" id="i-pop"></span>
-      <p>The same data supports a result about all <span data-n="golf_measured"></span> courses
-      together that it cannot support about any one of them. Mean signal was
-      <span data-n="all_mean_2024"></span> in the drought season against
-      <span data-n="all_mean_2026"></span> in the normal season, a paired shift of
-      <span data-n="pop_shift"></span> (permutation p = 0.002). Philippine golf courses as a class
-      browned relative to their surroundings during the drought and returned to parity
-      afterwards.</p>
-      <p><b>It replicates in a second drought.</b> Measuring each baseline year separately, the
-      average course-minus-ring gap was <span data-n="gap_2019"></span> in 2019, when El Nino
-      conditions carried into the dry season, and <span data-n="gap_2024"></span> in the 2024
-      drought, against <span data-n="gap_lanina_mean"></span> in the La Nina seasons of 2021 and
-      2022. Two independent droughts, nearly the same number, and the wet years clearly apart from
-      both. That is the population effect showing up twice without being asked to.</p>
-      <p><b>And a second instrument agrees.</b> Landsat surface temperature is a different
-      physical channel from reflectance, and it tells the same story: courses sat
-      <span data-n="lst_gap_base"></span> K cooler than their surroundings in normal seasons and
-      <span data-n="lst_gap_elnino"></span> K warmer during the drought, a shift of
-      <span data-n="lst_shift"></span> K (p = 0.004). Browner and hotter than their neighbourhoods
-      when water got scarce. The two instruments correlate at -0.61 across courses, which is the
-      sign the physics requires.</p>
-      <p>That is the opposite direction from the viral version of this argument, and it is the
-      most defensible thing in the dataset because averaging courses is exactly what beats the
-      per-course noise. Worth knowing how it decomposes: into the drought the average course fell
-      0.036 in NDVI while its ring fell 0.021, so the courses browned harder than their
-      surroundings. And 45 of 138 rings actually greened during the drought, which is a reminder
-      that a ring is a piece of countryside with its own weather and crops, not a null.</p>
-    </div>
-    <div class="card">
-      <h3>The named courses are the most conspicuously green</h3>
+      <h3>Named courses stand out year-round</h3>
       <span class="big" id="i-visible"></span>
-      <p>This one is measured over five pooled seasons rather than one, so it rests on a median of
-      <span data-n="obs_base_median"></span> observations per pixel instead of
-      <span data-n="obs_elnino_median"></span>, and it survives where the single-season signal
-      does not. In normal years the DENR-named courses stand out against their surroundings by an
-      NDVI gap of <span data-n="denr_gap_base"></span>, against
-      <span data-n="rest_gap_base"></span> for every other mapped course. Shuffling whole
-      10 km clusters rather than individual courses, so that neighbouring courses cannot count
-      as independent evidence, gives p = 0.005. It is the only group comparison here that clears
-      a Bonferroni threshold for the full family of 21 tests this project ran.</p>
-      <p>This contrast is chronic rather than seasonal: it correlates at +0.88 between the
-      drought season and the normal one, so it describes how a course sits against its
-      neighbourhood in general and not how it behaved when water got scarce. Much of it is simply
-      where they sit: Metro Manila courses average +0.308 against +0.051 elsewhere, because the
-      surroundings are built up. A persistent greenness contrast is
-      equally consistent with heavier year-round irrigation and with being green land in a dense
-      city, and this measurement cannot separate the two. It takes no view on whether the 13
-      were the right 13.</p>
+      <p>Normal-season gap against surroundings, DENR-named versus every other course
+      (cluster p = 0.005). Chronic, not seasonal: it correlates +0.88 between drought and normal
+      seasons. It cannot separate heavier irrigation from being green land in a dense city.</p>
     </div>
     <div class="card">
-      <h3>Forty-four courses are barer than their surroundings</h3>
+      <h3>Barer than their surroundings</h3>
       <span class="big" id="i-inverted"></span>
-      <p>In normal dry seasons <span data-n="inverted_baseline"></span> of the mapped polygons
-      have a negative baseline gap: the land inside the course is less green than the ring around
-      it. A working irrigated course is not usually barer than its neighbourhood, so these are
-      likely construction, sand-heavy layouts, closed courses, or OSM polygons that do not match
-      the playing surface.</p>
-      <p>They matter because a course with an unusually bare baseline produces a large positive
-      "signal" simply by returning to normal. They are excluded from the ranked table for that
-      reason, which is why the previously top-ranked entry no longer appears.</p>
+      <p>Courses with a negative baseline gap. They produce large positive signals by returning to
+      normal, so they are excluded from the table below.</p>
+    </div>
+    <div class="card">
+      <h3>Thin sampling behind the drought year</h3>
+      <span class="big" id="i-obs"></span>
+      <p>Median cloud-free observations per pixel, 2024 against the pooled baseline.
+      <span data-n="obs_under_10"></span> courses have fewer than ten.</p>
     </div>
   </div>
 </section>
 
 <section>
-  <h2>The areas NWRB actually named</h2>
-  <p class="sub">An earlier version of this map drew five whole provinces. The only source for
-  that was a law firm article saying restrictions apply "especially in Metro Manila and nearby
-  provinces (e.g., Bulacan, Cavite, Rizal, Laguna)", which names no resolution and claims no
-  province-wide coverage. The Supreme Court, quoting NWRB Resolution 001-0904 in G.R. No. 208383
-  (2016), names Metro Manila plus Guiguinto, Bocaue, Marilao and Meycauayan in Bulacan and
-  Dasmarinas in Cavite. Rizal is carried separately because a later extension is reported but the
-  amending resolution could not be located. Laguna is dropped: no primary source names it.
-  Correcting this roughly halved every co-location count on this page.</p>
+  <h2>The areas NWRB actually designated</h2>
+  <p class="sub">This took three attempts and the record is worth stating. The map first drew five
+  whole provinces, sourced from a law firm article saying restrictions apply "especially in Metro
+  Manila and nearby provinces (e.g., Bulacan, Cavite, Rizal, Laguna)", which names no resolution.
+  It then drew Metro Manila entire, from the Supreme Court's description in G.R. No. 208383.
+  The primary document, obtained from the Internet Archive after nwrb.gov.ph refused automated
+  requests, is narrower than both: Resolution 001-0904 designates eight critical areas, and they
+  are sub-city. Manila, Malabon, Marikina, San Juan, Taguig and Valenzuela are not among them.
+  Two entries are partial, since "North Caloocan" and "West Quezon City" have no administrative
+  boundary to draw and the whole city is shown instead. Laguna appears in no source and is
+  dropped. Metro Manila entire and Rizal are kept as the wider extent later reporting describes,
+  labelled as such.</p>
   <div class="tablewrap">
   <table id="prov-table" aria-label="Golf courses by moratorium area">
     <thead><tr><th>Area</th><th>Basis</th><th class="num">Courses</th><th class="num">Hectares</th>
@@ -428,7 +391,7 @@ a{color:var(--pos)}
     watering.</p></div>
     <div class="card"><h3>Most of the map is not Metro Manila</h3><p>The headline asks about Metro
     Manila's groundwater, but the golf layer is national: only
-    <span data-n="golf_inside_named"></span> of <span data-n="golf_standalone"></span> mapped
+    <span data-n="golf_inside_designated"></span> of <span data-n="golf_standalone"></span> mapped
     courses are inside an area NWRB named, and several courses in the table are on other islands
     entirely. Rows are labelled with their area so this is visible rather than implied.</p></div>
     <div class="card"><h3>The error bars are wide and incomplete</h3><p>Intervals come from
@@ -511,19 +474,19 @@ async function boot() {
   }
 
   document.getElementById("hero").innerHTML = `
-    <div class="stat lead"><b>${summary.denr_named_golf} vs ${summary.denr_named_dc}</b>
-      <span>golf courses versus data centers ever named in a Philippine regulator's water
-      directive. That asymmetry is a matter of public record, not a satellite measurement.</span></div>
-    <div class="stat"><b>${summary.golf_inside_named} of ${summary.golf_standalone}</b>
-      <span>mapped golf courses sit inside an area NWRB actually named
-      (${Math.round(summary.ha_inside_named).toLocaleString()} ha), alongside
-      ${summary.dc_in_named} of ${summary.dc_sites} data center sites</span></div>
+    <div class="stat lead"><b>Browner, not greener</b>
+      <span>Through the 2024 drought the average Philippine golf course lost more greenness than
+      the land around it: ${Math.abs(summary.course_drop).toFixed(3)} against
+      ${Math.abs(summary.ring_drop).toFixed(3)} NDVI. The viral version of this argument has it
+      the other way round.</span></div>
+    <div class="stat"><b>3 of 3</b>
+      <span>instruments failed the no-drought control: greenness, canopy moisture, and surface
+      temperature</span></div>
+    <div class="stat"><b>${summary.ci_positive} of ${summary.golf_measured}</b>
+      <span>courses whose drought signal can be told apart from zero, so none is singled out
+      here</span></div>
     <div class="stat"><b>${summary.dc_disclosures} of ${summary.dc_sites}</b>
-      <span>data center sites publish any water metric at all</span></div>
-    <div class="stat"><b>${summary.null_strong} vs ${summary.strong_signal}</b>
-      <span>courses clearing the stay-green threshold in a normal season versus the drought
-      season. The detector fires more often when there is no drought, so it does not work
-      per course. See below.</span></div>`;
+      <span>data center sites publish any water metric at all</span></div>`;
 
   document.querySelectorAll("[data-n]").forEach(el => {
     const v = summary[el.dataset.n];
@@ -541,15 +504,106 @@ async function boot() {
   set("i-null", `${summary.null_strong} fire with no drought vs ${summary.strong_signal} with one`);
   set("i-pop", `${signed(summary.all_mean_2024)} in drought, ${signed(summary.all_mean_2026)} after`);
   set("i-visible", `${signed(summary.denr_gap_base)} vs ${signed(summary.rest_gap_base)} normal-season gap`);
-  set("i-inverted", `${summary.inverted_baseline} of ${summary.golf_measured} inverted`);
+  set("i-inverted", `${summary.inverted_baseline} of ${summary.golf_measured}`);
+  set("i-obs", `${summary.obs_elnino_median} vs ${summary.obs_base_median}`);
   set("ramp-lo", "-" + GAP_MAX.toFixed(2) + " or lower");
   set("ramp-hi", "+" + GAP_MAX.toFixed(2) + " or higher");
+
+  // ---- charts. Plain SVG, no library, every value read from summary.json.
+  // Diverging encoding for ENSO: dry and wet poles with a neutral grey midpoint.
+  const ENSO_FILL = {"El Nino": "#e34948", "neutral": "#6b6a64", "La Nina": "#1c5cab"};
+  const esc = (t) => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  function svg(w, h, body) {
+    return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" preserveAspectRatio="xMinYMin meet">${body}</svg>`;
+  }
+
+  // Grouped bars: two rates per instrument, drought vs no-drought control.
+  function chartInstruments(el, rows) {
+    const W = 440, LEFT = 150, RIGHT = 48, BH = 13, GAP = 5, ROW = 46;
+    const H = rows.length * ROW + 26;
+    const max = Math.max(...rows.flatMap(r => [r.drought, r.control])) * 1.15;
+    const sc = v => (W - LEFT - RIGHT) * (v / max);
+    let b = "";
+    rows.forEach((r, i) => {
+      const y = i * ROW + 6;
+      b += `<g class="row">
+        <text class="lab" x="0" y="${y + 12}">${esc(r.name)}</text>
+        <text class="sub" x="0" y="${y + 26}">${esc(r.sub)}</text>
+        <rect class="bar" x="${LEFT}" y="${y}" width="${sc(r.drought)}" height="${BH}" fill="#a8451f"></rect>
+        <text class="val" x="${LEFT + sc(r.drought) + 6}" y="${y + 11}">${r.drought}%</text>
+        <rect class="bar" x="${LEFT}" y="${y + BH + GAP}" width="${sc(r.control)}" height="${BH}" fill="#c9c7c0"></rect>
+        <text class="val" x="${LEFT + sc(r.control) + 6}" y="${y + BH + GAP + 11}">${r.control}%</text>
+        <title>${esc(r.name)}: fires on ${r.drought}% of courses in the drought season and ${r.control}% with no drought</title>
+      </g>`;
+    });
+    b += `<line class="axis" x1="${LEFT}" y1="0" x2="${LEFT}" y2="${H - 20}"></line>`;
+    el.innerHTML = svg(W, H, b) +
+      `<div class="swatches"><span><i style="background:#a8451f"></i>drought season</span>
+       <span><i style="background:#c9c7c0"></i>control season, no drought</span></div>`;
+  }
+
+  // Season bars, coloured by ENSO phase.
+  function chartSeasons(el, rows) {
+    const W = 420, LEFT = 44, RIGHT = 52, ROW = 30, BH = 16;
+    const H = rows.length * ROW + 10;
+    const max = Math.max(...rows.map(r => r.gap)) * 1.18;
+    const sc = v => (W - LEFT - RIGHT) * (v / max);
+    let b = "";
+    rows.forEach((r, i) => {
+      const y = i * ROW + 4;
+      b += `<g class="row">
+        <text class="lab" x="0" y="${y + 12}">${esc(r.year)}</text>
+        <rect class="bar" x="${LEFT}" y="${y}" width="${sc(r.gap)}" height="${BH}" fill="${ENSO_FILL[r.enso] || "#6b6a64"}"></rect>
+        <text class="val" x="${LEFT + sc(r.gap) + 6}" y="${y + 12}">+${r.gap.toFixed(3)}</text>
+        <title>${esc(r.year)} (${esc(r.enso)}): course-minus-ring gap +${r.gap.toFixed(4)}</title>
+      </g>`;
+    });
+    b += `<line class="axis" x1="${LEFT}" y1="0" x2="${LEFT}" y2="${H - 8}"></line>`;
+    el.innerHTML = svg(W, H, b) +
+      `<div class="swatches">
+        <span><i style="background:#e34948"></i>El Nino</span>
+        <span><i style="background:#6b6a64"></i>neutral</span>
+        <span><i style="background:#1c5cab"></i>La Nina</span></div>`;
+  }
+
+  // Diverging bars around zero, with the p value direct-labelled.
+  function chartComparators(el, rows) {
+    const W = 440, LEFT = 118, RIGHT = 96, ROW = 30, BH = 16;
+    const H = rows.length * ROW + 22;
+    const max = Math.max(...rows.map(r => Math.abs(r.shift))) * 1.05 || 1;
+    const sc = v => (W - LEFT - RIGHT) * (Math.abs(v) / max);
+    let b = "";
+    rows.forEach((r, i) => {
+      const y = i * ROW + 4;
+      const sig = r.p < 0.05;
+      b += `<g class="row">
+        <text class="lab" x="0" y="${y + 12}">${esc(r.year)} ${esc(r.enso)}</text>
+        <rect class="bar" x="${LEFT}" y="${y}" width="${Math.max(sc(r.shift), 1.5)}" height="${BH}"
+          fill="${ENSO_FILL[r.enso] || "#6b6a64"}" opacity="${sig ? 1 : 0.4}"></rect>
+        <text class="val" x="${LEFT + sc(r.shift) + 7}" y="${y + 12}"
+          style="fill:${sig ? "var(--ink)" : "var(--muted)"}">p ${r.p < 0.001 ? "&lt;0.001" : r.p.toFixed(3)}${sig ? "" : " n.s."}</text>
+        <title>${esc(r.year)} (${esc(r.enso)}): the drought sat ${Math.abs(r.shift).toFixed(3)} lower, cluster p ${r.p}</title>
+      </g>`;
+    });
+    b += `<line class="axis" x1="${LEFT}" y1="0" x2="${LEFT}" y2="${H - 16}"></line>
+      <text class="sub" x="${LEFT}" y="${H - 3}">how much browner the drought season was</text>`;
+    el.innerHTML = svg(W, H, b);
+  }
+
+  const mount = (id, fn, rows) => {
+    const el = document.getElementById(id);
+    if (el && rows && rows.length) fn(el, rows);
+  };
+  mount("ch-instruments", chartInstruments, summary.instrument_series);
+  mount("ch-seasons", chartSeasons, summary.season_series);
+  mount("ch-comparators", chartComparators, summary.comparator_series);
 
   const ptbody = document.querySelector("#prov-table tbody");
   summary.provinces.forEach(p => {
     const tr = document.createElement("tr");
     tr.innerHTML = `<td>${p.area}</td>
-      <td>${p.status === "named" ? "named in NWRB Res. 001-0904" : "reported extension, unconfirmed"}</td>
+      <td>${p.status === "designated" ? "designated critical area, Res. 001-0904 (2004)" : "wider extent, reported only"}</td>
       <td class="num">${p.courses}</td>
       <td class="num">${p.hectares.toLocaleString()}</td>
       <td class="num">${p.mean_signal == null ? "n/a" : signed(p.mean_signal, 3)}</td>`;

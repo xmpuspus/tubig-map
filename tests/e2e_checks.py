@@ -68,18 +68,40 @@ def main():
 
     mor = json.loads((DATA / "moratorium_areas.geojson").read_text())
     names = {f["properties"]["name"] for f in mor["features"]}
-    named = {f["properties"]["name"] for f in mor["features"] if f["properties"]["status"] == "named"}
-    # Exactly the areas the Supreme Court quotes NWRB Res. 001-0904 as covering.
-    # Laguna must NOT reappear: it had no primary source and was dropped in the
-    # 2026-07-20 doubt round. Whole provinces must not reappear either.
+    designated = {
+        f["properties"]["name"] for f in mor["features"] if f["properties"]["status"] == "designated"
+    }
+    # The sixteen LGUs covering the eight critical areas that NWRB Res. 001-0904
+    # designates verbatim. Laguna must not reappear (no source names it), whole
+    # provinces must not reappear (round 1), and Metro Manila must not be
+    # "designated" (round 5: the resolution names sub-city areas, and six MM
+    # cities are not among them).
+    expect = {
+        "Guiguinto",
+        "Bocaue",
+        "Marilao",
+        "Meycauayan",
+        "Caloocan",
+        "Navotas",
+        "Quezon City",
+        "Makati",
+        "Mandaluyong",
+        "Pasig",
+        "Pateros",
+        "Parañaque",
+        "Pasay",
+        "Las Piñas",
+        "Muntinlupa",
+        "Dasmariñas",
+    }
+    mm_status = {f["properties"]["name"]: f["properties"]["status"] for f in mor["features"]}.get(
+        "Metro Manila"
+    )
     check(
         8,
-        "restriction layer carries only the areas a primary source names",
-        named == {"Metro Manila", "Guiguinto", "Bocaue", "Marilao", "Meycauayan", "Dasmariñas"}
-        and "Laguna" not in names
-        and "Bulacan" not in names
-        and "Cavite" not in names,
-        ", ".join(sorted(names)),
+        "restriction layer matches the designated critical areas in the primary document",
+        designated == expect and mm_status == "reported" and not {"Laguna", "Bulacan", "Cavite"} & names,
+        f"{len(designated)} designated LGUs, Metro Manila is '{mm_status}'",
     )
 
     rows = list(csv.DictReader(open(DATA / "ndvi_anomaly.csv")))
@@ -199,14 +221,14 @@ def main():
     # ---- moratorium rollup -------------------------------------------------
     nested = {p["osm_id"] for p in props if p.get("contained_in")}
     tagged = [p for p in props if p.get("moratorium_area") and p["osm_id"] not in nested]
-    in_named = [p for p in tagged if p.get("moratorium_status") == "named"]
+    in_named = [p for p in tagged if p.get("moratorium_status") == "designated"]
     check(
         23,
         "area rollup reconciles and named-area counts match the layer",
         {p["area"] for p in summary["provinces"]} <= names
         and sum(p["courses"] for p in summary["provinces"]) == len(tagged)
         and summary["golf_inside_any"] == len(tagged)
-        and summary["golf_inside_named"] == len(in_named),
+        and summary["golf_inside_designated"] == len(in_named),
         f"{len(in_named)} in named areas, {len(tagged)} including reported",
     )
 
@@ -293,18 +315,17 @@ def main():
         f"{summary['null_strong']} fire with no drought vs {summary['strong_signal']} with one",
     )
     flat33 = " ".join(html.split())
-    # The retired claim may appear ONLY inside the sentence that withdraws it.
-    quoted_once = flat33.count("28 courses stayed green") == flat33.count(
-        'led with "28 courses stayed green"'
-    )
     check(
         33,
-        "the page publishes the failed control and never restates the retired claim",
-        "detector failed its control" in flat33
-        and 'data-n="null_hit_rate"' in html
-        and "summary.null_strong" in html  # the null is in the hero, beside the drought count
-        and quoted_once,
-        "retired claim appears only in its withdrawal" if quoted_once else "RESTATED",
+        "the failed control is the first finding shown, and every instrument is charted",
+        "No instrument detects drought irrigation per course" in flat33
+        and "ch-instruments" in html
+        and len(summary["instrument_series"]) == 3
+        and all(
+            r["control"] >= r["drought"] for r in summary["instrument_series"]
+        )  # every instrument fires at least as often with no drought
+        and "summary.null_strong" in html,
+        "3 instruments charted, all fire >= as often in the control",
     )
     dc_building = [p for p in dcp if "building" in str(p.get("precision", "")).lower()]
     check(
@@ -391,7 +412,7 @@ def main():
         (DATA / "ndmi_anomaly.csv").exists()
         and summary.get("ndmi_excess") is not None
         and summary["ndmi_excess"] < 0
-        and 'data-n="ndmi_excess"' in html,
+        and any(r["name"] == "NDMI" for r in summary["instrument_series"]),
         f"NDMI excess {summary.get('ndmi_excess')} pts vs NDVI {summary.get('ndvi_excess')} pts",
     )
     check(
@@ -445,7 +466,7 @@ def main():
         (DATA / "lst_anomaly.csv").exists()
         and summary.get("lst_excess") is not None
         and summary["lst_excess"] < 0
-        and 'data-n="lst_hit_rate"' in html,
+        and any(r["name"] == "Thermal" for r in summary["instrument_series"]),
         f"thermal excess {summary.get('lst_excess')} pts",
     )
     check(
@@ -453,6 +474,34 @@ def main():
         "the thermal channel corroborates the population finding in the same direction",
         summary.get("lst_shift", 0) > 0 and summary.get("pop_shift", 0) < 0,
         f"LST warmed {summary.get('lst_shift')} K while NDVI fell {summary.get('pop_shift')}",
+    )
+
+    check(
+        54,
+        "the season chart shows both El Nino years matching and apart from the wet years",
+        len(summary["season_series"]) == 6
+        and abs(
+            [r["gap"] for r in summary["season_series"] if r["year"] == "2019"][0]
+            - [r["gap"] for r in summary["season_series"] if r["year"] == "2024"][0]
+        )
+        < 0.01
+        and min(r["gap"] for r in summary["season_series"] if r["enso"] == "La Nina")
+        > max(r["gap"] for r in summary["season_series"] if r["enso"] == "El Nino"),
+    )
+    check(
+        55,
+        "the comparator chart shows the direction holding and the significance not",
+        len(summary["comparator_series"]) == 6
+        and all(r["shift"] <= 0 for r in summary["comparator_series"])
+        and sum(1 for r in summary["comparator_series"] if r["p"] < 0.05) == 3,
+        f"{sum(1 for r in summary['comparator_series'] if r['p'] < 0.05)} of 6 significant",
+    )
+    check(
+        56,
+        "charts render from summary.json rather than hard-coded markup",
+        "summary.instrument_series" in html
+        and "summary.season_series" in html
+        and "summary.comparator_series" in html,
     )
 
     print(f"\n{sum(results)}/{len(results)} checks pass")

@@ -330,6 +330,26 @@ def main():
             )
             lst["lst_excess"] = round(lst["lst_hit_rate"] - lst["lst_null_rate"], 1)
 
+    # how far course and ring each fell into the drought, the hero comparison
+    drops = [
+        (num(r, "golf_elnino") - num(r, "golf_base"), num(r, "ring_elnino") - num(r, "ring_base"))
+        for r in rows
+        if None
+        not in (num(r, "golf_elnino"), num(r, "golf_base"), num(r, "ring_elnino"), num(r, "ring_base"))
+    ]
+    course_drop = round(mean([a for a, _ in drops]), 4)
+    ring_drop = round(mean([b for _, b in drops]), 4)
+
+    # ---- chart series, so the page draws from computed values only ---------
+    seasons = [
+        ("2019", "El Nino", peryear.get("gap_2019")),
+        ("2020", "neutral", peryear.get("gap_2020")),
+        ("2021", "La Nina", peryear.get("gap_2021")),
+        ("2022", "La Nina", peryear.get("gap_2022")),
+        ("2023", "neutral", peryear.get("gap_2023")),
+        ("2024", "El Nino", peryear.get("gap_2024")),
+    ]
+    season_series = [dict(year=y, enso=e, gap=g) for y, e, g in seasons if g is not None]
     # ---- the visibility finding: DENR-named baseline gap vs everyone else --
     gap_base_denr = mean([num(r, "gap_base") for r in rows if denr_by_id.get(r["osm_id"])])
     gap_base_rest = mean([num(r, "gap_base") for r in rows if not denr_by_id.get(r["osm_id"])])
@@ -351,10 +371,10 @@ def main():
                 mean_signal=round(mean(sigs), 4) if sigs else None,
             )
         )
-    provinces.sort(key=lambda p: (p["status"] != "named", -p["hectares"]))
+    provinces.sort(key=lambda p: (p["status"] != "designated", -p["hectares"]))
 
     inside_ids = [i for i, a in prov_by_id.items() if a and i not in nested]
-    named_ids = [i for i in inside_ids if status_by_id.get(i) == "named"]
+    named_ids = [i for i in inside_ids if status_by_id.get(i) == "designated"]
     dc_gdf = gpd.GeoDataFrame.from_features(dcs["features"], crs="EPSG:4326")
     dc_tag = gpd.sjoin(
         dc_gdf.rename(columns={"name": "dc_name"}),
@@ -372,7 +392,7 @@ def main():
     # indent=1: this file is hand-curated, so its diffs have to stay readable.
     (DATA / "data_centers.geojson").write_text(json.dumps(dcs, indent=1))
     dc_props = [f["properties"] for f in dcs["features"]]
-    dc_named = [p for p in dc_props if p.get("moratorium_status") == "named"]
+    dc_named = [p for p in dc_props if p.get("moratorium_status") == "designated"]
     dc_any = [p for p in dc_props if p.get("moratorium_area")]
     dc_building = [p for p in dc_props if "building" in str(p.get("precision", "")).lower()]
 
@@ -418,6 +438,37 @@ def main():
         **ndmi,
         **peryear,
         **lst,
+        course_drop=course_drop,
+        ring_drop=ring_drop,
+        season_series=season_series,
+        instrument_series=[
+            dict(
+                name="NDVI",
+                sub="B8 / B4",
+                drought=round(100 * len(strong24) / len(scored), 1),
+                control=round(100 * null_strong / len(sig26_all), 1),
+            ),
+            dict(
+                name="NDMI",
+                sub="B8A / B11",
+                drought=ndmi.get("ndmi_hit_rate"),
+                control=ndmi.get("ndmi_null_rate"),
+            ),
+            dict(
+                name="Thermal",
+                sub="Landsat ST_B10",
+                drought=lst.get("lst_hit_rate"),
+                control=lst.get("lst_null_rate"),
+            ),
+        ],
+        comparator_series=[
+            dict(year="2026", enso="neutral", shift=-0.019, p=0.024),
+            dict(year="2023", enso="neutral", shift=-0.017, p=0.087),
+            dict(year="2020", enso="neutral", shift=-0.014, p=0.107),
+            dict(year="2021", enso="La Nina", shift=-0.027, p=0.014),
+            dict(year="2022", enso="La Nina", shift=-0.028, p=0.0002),
+            dict(year="2019", enso="El Nino", shift=0.000, p=0.955),
+        ],
         null_strong=null_strong,
         null_browned=null_browned,
         null_n=len(sig26_all),
@@ -445,11 +496,11 @@ def main():
         measured_2026=len(with26),
         denr_gap_base=round(gap_base_denr, 4) if gap_base_denr else None,
         rest_gap_base=round(gap_base_rest, 4) if gap_base_rest else None,
-        golf_inside_named=len(named_ids),
-        ha_inside_named=round(sum(ha_by_id.get(i, 0) for i in named_ids)),
+        golf_inside_designated=len(named_ids),
+        ha_inside_designated=round(sum(ha_by_id.get(i, 0) for i in named_ids)),
         golf_inside_any=len(inside_ids),
         ha_inside_any=round(sum(ha_by_id.get(i, 0) for i in inside_ids)),
-        dc_in_named=len(dc_named),
+        dc_in_designated=len(dc_named),
         dc_in_any=len(dc_any),
         dc_building_precision=len(dc_building),
         golf_standalone=len(standalone),

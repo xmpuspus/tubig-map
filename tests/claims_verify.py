@@ -85,13 +85,13 @@ def main():
     claim("null_hit_rate > drought_hit_rate", True, s["null_hit_rate"] > s["drought_hit_rate"])
 
     print("\n--- geography ---")
-    inside_named = [i for i, a in area.items() if a and stat.get(i) == "named" and i not in nested]
+    inside_named = [i for i, a in area.items() if a and stat.get(i) == "designated" and i not in nested]
     inside_any = [i for i, a in area.items() if a and i not in nested]
-    claim("golf_inside_named", s["golf_inside_named"], len(inside_named))
+    claim("golf_inside_designated", s["golf_inside_designated"], len(inside_named))
     claim("golf_inside_any", s["golf_inside_any"], len(inside_any))
-    claim("ha_inside_named", s["ha_inside_named"], round(sum(ha[i] for i in inside_named)))
-    dcnamed = sum(1 for d in dcs if d["properties"].get("moratorium_status") == "named")
-    claim("dc_in_named", s["dc_in_named"], dcnamed)
+    claim("ha_inside_designated", s["ha_inside_designated"], round(sum(ha[i] for i in inside_named)))
+    dcnamed = sum(1 for d in dcs if d["properties"].get("moratorium_status") == "designated")
+    claim("dc_in_designated", s["dc_in_designated"], dcnamed)
     claim(
         "dc_building_precision",
         s["dc_building_precision"],
@@ -147,8 +147,79 @@ def main():
         all(lb[i]["irrigation_signal"] >= lb[i + 1]["irrigation_signal"] for i in range(len(lb) - 1)),
     )
 
-    print("\n--- every data-n token on the page resolves ---")
+    print("\n--- thermal figures (were entirely unguarded until round 5) ---")
+    lst_path = DATA / "lst_anomaly.csv"
+    if lst_path.exists():
+        lr = list(csv.DictReader(open(lst_path)))
+
+        def col(name):
+            return [f(r[name]) for r in lr if f(r[name]) is not None]
+
+        claim(
+            "lst_gap_base", s["lst_gap_base"], round(sum(col("gap_base")) / len(col("gap_base")), 3), tol=1e-3
+        )
+        claim(
+            "lst_gap_elnino",
+            s["lst_gap_elnino"],
+            round(sum(col("gap_elnino")) / len(col("gap_elnino")), 3),
+            tol=1e-3,
+        )
+        pairs = [
+            (f(r["cooling_signal"]), f(r["signal_2026"]))
+            for r in lr
+            if f(r["cooling_signal"]) is not None and f(r["signal_2026"]) is not None
+        ]
+        claim("lst_shift", s["lst_shift"], round(sum(a - b for a, b in pairs) / len(pairs), 3), tol=1e-3)
+        claim("lst_n", s["lst_n"], len(pairs))
+        thr = -0.5
+        claim(
+            "lst_hit_rate",
+            s["lst_hit_rate"],
+            round(100 * sum(1 for a, _ in pairs if a <= thr) / len(pairs), 1),
+            tol=0.05,
+        )
+        claim(
+            "lst_null_rate",
+            s["lst_null_rate"],
+            round(100 * sum(1 for _, b in pairs if b <= thr) / len(pairs), 1),
+            tol=0.05,
+        )
+
+    print("\n--- per-year gaps behind the replication claim ---")
+    py_path = DATA / "ndvi_peryear.csv"
+    if py_path.exists():
+        pr = list(csv.DictReader(open(py_path)))
+        for y in (2019, 2021, 2022):
+            g = [
+                f(r[f"golf_y{y}"]) - f(r[f"ring_y{y}"])
+                for r in pr
+                if f(r[f"golf_y{y}"]) is not None and f(r[f"ring_y{y}"]) is not None
+            ]
+            if f"gap_{y}" in s:
+                claim(f"gap_{y}", s[f"gap_{y}"], round(sum(g) / len(g), 4), tol=1e-4)
+
     html = (SITE / "index.html").read_text()
+    print("\n--- numbers written in prose, not read from summary.json ---")
+    # These three were wrong on the live site for hours while every check passed,
+    # because nothing verified a number that a human had typed into a sentence.
+    flat = " ".join(html.split())
+    prose = {
+        "population cluster p (0.024 in the table)": "0.024",
+        "thermal cluster p": "cluster p = 0.022",
+        "thermal non-significant baseline move": "cluster p = 0.35",
+        "DENR cluster p": "gives p = 0.005",
+    }
+    for label, needle in prose.items():
+        claim(f"prose: {label}", True, needle in flat)
+    # and the specific errors must not come back
+    for label, needle in {
+        "no naive p as the headline": "(permutation p = 0.002)",
+        "no false Bonferroni pass": "only group comparison here that clears",
+        "no unsupported ban language": "bans deep-well drilling",
+    }.items():
+        claim(f"prose: {label}", True, needle not in flat)
+
+    print("\n--- every data-n token on the page resolves ---")
     import re
 
     tokens = set(re.findall(r'data-n="([a-z0-9_]+)"', html))

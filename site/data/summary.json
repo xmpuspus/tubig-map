@@ -31,6 +31,98 @@
  "lst_gap_elnino": 0.068,
  "lst_shift": 0.343,
  "lst_excess": -2.2,
+ "course_drop": -0.036,
+ "ring_drop": -0.0212,
+ "season_series": [
+  {
+   "year": "2019",
+   "enso": "El Nino",
+   "gap": 0.0653
+  },
+  {
+   "year": "2020",
+   "enso": "neutral",
+   "gap": 0.0794
+  },
+  {
+   "year": "2021",
+   "enso": "La Nina",
+   "gap": 0.0927
+  },
+  {
+   "year": "2022",
+   "enso": "La Nina",
+   "gap": 0.0932
+  },
+  {
+   "year": "2023",
+   "enso": "neutral",
+   "gap": 0.0828
+  },
+  {
+   "year": "2024",
+   "enso": "El Nino",
+   "gap": 0.0657
+  }
+ ],
+ "instrument_series": [
+  {
+   "name": "NDVI",
+   "sub": "B8 / B4",
+   "drought": 20.3,
+   "control": 29.0
+  },
+  {
+   "name": "NDMI",
+   "sub": "B8A / B11",
+   "drought": 15.9,
+   "control": 21.0
+  },
+  {
+   "name": "Thermal",
+   "sub": "Landsat ST_B10",
+   "drought": 29.9,
+   "control": 32.1
+  }
+ ],
+ "comparator_series": [
+  {
+   "year": "2026",
+   "enso": "neutral",
+   "shift": -0.019,
+   "p": 0.024
+  },
+  {
+   "year": "2023",
+   "enso": "neutral",
+   "shift": -0.017,
+   "p": 0.087
+  },
+  {
+   "year": "2020",
+   "enso": "neutral",
+   "shift": -0.014,
+   "p": 0.107
+  },
+  {
+   "year": "2021",
+   "enso": "La Nina",
+   "shift": -0.027,
+   "p": 0.014
+  },
+  {
+   "year": "2022",
+   "enso": "La Nina",
+   "shift": -0.028,
+   "p": 0.0002
+  },
+  {
+   "year": "2019",
+   "enso": "El Nino",
+   "shift": 0.0,
+   "p": 0.955
+  }
+ ],
  "null_strong": 40,
  "null_browned": 29,
  "null_n": 138,
@@ -58,29 +150,64 @@
  "measured_2026": 28,
  "denr_gap_base": 0.2797,
  "rest_gap_base": 0.0581,
- "golf_inside_named": 18,
- "ha_inside_named": 965,
+ "golf_inside_designated": 14,
+ "ha_inside_designated": 891,
  "golf_inside_any": 21,
  "ha_inside_any": 1450,
- "dc_in_named": 6,
+ "dc_in_designated": 4,
  "dc_in_any": 7,
  "dc_building_precision": 3,
  "golf_standalone": 133,
  "golf_nested": 5,
  "provinces": [
   {
-   "area": "Metro Manila",
-   "status": "named",
-   "courses": 16,
-   "hectares": 517,
-   "mean_signal": -0.0466
-  },
-  {
    "area": "Dasmari\u00f1as",
-   "status": "named",
+   "status": "designated",
    "courses": 2,
    "hectares": 447,
    "mean_signal": 0.0297
+  },
+  {
+   "area": "Mandaluyong",
+   "status": "designated",
+   "courses": 1,
+   "hectares": 114,
+   "mean_signal": -0.0422
+  },
+  {
+   "area": "Makati",
+   "status": "designated",
+   "courses": 2,
+   "hectares": 100,
+   "mean_signal": -0.0235
+  },
+  {
+   "area": "Quezon City",
+   "status": "designated",
+   "courses": 5,
+   "hectares": 90,
+   "mean_signal": -0.0033
+  },
+  {
+   "area": "Las Pi\u00f1as",
+   "status": "designated",
+   "courses": 2,
+   "hectares": 80,
+   "mean_signal": -0.1385
+  },
+  {
+   "area": "Muntinlupa",
+   "status": "designated",
+   "courses": 1,
+   "hectares": 59,
+   "mean_signal": -0.0186
+  },
+  {
+   "area": "Pasig",
+   "status": "designated",
+   "courses": 1,
+   "hectares": 1,
+   "mean_signal": -0.1293
   },
   {
    "area": "Rizal",
@@ -88,6 +215,13 @@
    "courses": 3,
    "hectares": 486,
    "mean_signal": 0.0409
+  },
+  {
+   "area": "Metro Manila",
+   "status": "reported",
+   "courses": 4,
+   "hectares": 73,
+   "mean_signal": -0.0536
   }
  ],
  "bbox": [

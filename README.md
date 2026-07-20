@@ -38,7 +38,9 @@ adversarial review that produced most of them is in
   measure drought response, so no individual course is ranked by water use here.
 - **What survives is the population.** Across all 138 courses the mean signal
   was -0.0148 in the drought season against +0.0046 in the control, a paired
-  shift of -0.0194 (p = 0.002). Philippine golf courses as a class browned
+  shift of -0.0194 (cluster-robust p = 0.024 against the 2026 comparator; the
+  direction holds against every season measured, significance does not, see
+  docs/FINDINGS.md). Philippine golf courses as a class browned
   relative to their surroundings during the drought and returned to parity
   afterwards, which is the opposite direction from the viral claim.
 - **The named courses are the most conspicuously green**, by a normal-season

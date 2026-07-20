@@ -11,23 +11,46 @@ Turning that into five hard province polygons overstated the restriction badly:
 it asserted uniform province-wide coverage that no source supports, and it
 inflated every "inside the restricted area" count on the site.
 
-The primary evidence available is the Supreme Court's quotation of NWRB
-Resolution No. 001-0904 in First Mega Holdings Corp. v. Guiguinto Water District,
-G.R. No. 208383, 8 June 2016 (786 Phil. 746):
+CORRECTED AGAIN 2026-07-20 (round 5), after obtaining the primary document.
 
-    "the NWRB had imposed a total ban on deep water drilling in Metro Manila,
-     as well as Guiguinto, Bocaue, Marilao, and Meycauayan in Bulacan, and
-     Dasmarinas in Cavite to prevent over-extraction of ground water."
+nwrb.gov.ph returns 403, but the Internet Archive has the resolution, and a
+convergence critic pointed that out. It is a scanned PDF titled
 
-So the named coverage is Metro Manila as a region, four Bulacan municipalities,
-and one Cavite city. Laguna appears in no primary source found and is dropped.
-Rizal is reported to have been added by a later amendment extending the ban to
-"Metro Manila and Rizal towns", but the amending resolution number and the
-specific towns are not recoverable from public sources, so Rizal is carried as
-a separate, explicitly labelled "reported" area rather than as a confirmed one.
+    "RESOLUTION NO. 001-0904, Policy Recommendations for Metro Manila
+     Critical Areas", approved 22 September 2004
 
-nwrb.gov.ph returns 403 to automated fetches, so the resolution PDF itself is a
-documented boundary in docs/DOUBT-LOOP.md.
+and it says two things this project had wrong.
+
+First, it is NOT a ban. It adopts eight policy recommendations on how water
+permit applications are processed, keyed jointly to whether an area is critical
+and whether MWSS already serves it adequately. Paragraph 1 revokes or suspends
+permits "in areas adequately served by MWSS, regardless of whether or not
+located in critical areas". The Supreme Court in G.R. No. 208383 (2016)
+characterised NWRB as having imposed "a total ban on deep water drilling in
+Metro Manila, as well as Guiguinto, Bocaue, Marilao, and Meycauayan in Bulacan,
+and Dasmarinas in Cavite", but that is the Court describing NWRB's practice,
+including later issuances, not a quotation of this resolution's operative text.
+
+Second, the areas are sub-city, not whole Metro Manila. The resolution names
+eight critical areas verbatim:
+
+    Area 1: Guiguinto, Bulacan
+    Area 2: Bocaue and Marilao, Bulacan
+    Area 3: Meycauayan, Bulacan and North Caloocan
+    Area 4: Navotas, Caloocan and West Quezon City
+    Area 5: Makati, Mandaluyong, Pasig and Pateros
+    Area 6: Paranaque and Pasay
+    Area 7: Las Pinas and Muntinlupa
+    Area 8: Dasmarinas, Cavite
+
+So Manila, Malabon, Marikina, San Juan, Taguig and Valenzuela are NOT in the
+2004 designation, and drawing Metro Manila whole overstated it exactly as the
+five-province version had, one scale down.
+
+This layer now carries the designated LGUs as status "designated", and Metro
+Manila as a whole plus Rizal as status "reported", which is the extent the
+Supreme Court and contemporaneous press describe for the later ban but which no
+located document defines. Laguna stays dropped: no source names it.
 """
 
 import json
@@ -42,28 +65,52 @@ RAW = ROOT / "data" / "raw" / "moratorium_overpass_v2.json"
 OUT = ROOT / "data" / "moratorium_areas.geojson"
 UA = {"User-Agent": "tubig-map/0.2 (civic-data research; xpuspus@gmail.com)"}
 
-# Named in the Supreme Court's quotation of NWRB Res. 001-0904.
-NAMED = ["Metro Manila", "Guiguinto", "Bocaue", "Marilao", "Meycauayan", "Dasmariñas"]
-# Reported later extension; specific municipalities not identified in any source found.
-REPORTED = ["Rizal"]
+# The eight critical areas designated verbatim in NWRB Res. 001-0904 (2004),
+# resolved to the LGUs that OSM can draw. "North Caloocan" and "West Quezon
+# City" are sub-city districts with no admin boundary, so Caloocan and Quezon
+# City are drawn whole and flagged as partial in the layer.
+DESIGNATED = [
+    "Guiguinto",
+    "Bocaue",
+    "Marilao",
+    "Meycauayan",  # Bulacan
+    "Caloocan",
+    "Navotas",
+    "Quezon City",  # Areas 3, 4
+    "Makati",
+    "Mandaluyong",
+    "Pasig",
+    "Pateros",  # Area 5
+    "Parañaque",
+    "Pasay",  # Area 6
+    "Las Piñas",
+    "Muntinlupa",  # Area 7
+    "Dasmariñas",  # Area 8
+]
+PARTIAL = {"Caloocan": "North Caloocan only", "Quezon City": "West Quezon City only"}
+# Wider extent the Supreme Court and 2008 press describe for a later ban, with
+# no locatable defining document.
+REPORTED = ["Metro Manila", "Rizal"]
 
-QUERY = """
-[out:json][timeout:240];
+# Bound every query to Luzon. Without this, "Pateros" resolves to Pateros,
+# Washington State, which is larger than Metro Manila's smallest LGU and so wins
+# any "keep the biggest polygon" rule. It shipped a US town into the map once.
+PH_BBOX = "(13.8,120.5,15.4,121.6)"
+_LGU = "".join(f'  relation["name"="{n}"]["boundary"="administrative"]{PH_BBOX};\n' for n in DESIGNATED)
+QUERY = f"""
+[out:json][timeout:300];
 (
-  relation["name"="Metro Manila"]["boundary"="administrative"]["admin_level"="3"];
-  relation["name"="Guiguinto"]["boundary"="administrative"];
-  relation["name"="Bocaue"]["boundary"="administrative"];
-  relation["name"="Marilao"]["boundary"="administrative"];
-  relation["name"="Meycauayan"]["boundary"="administrative"];
-  relation["name"="Dasmariñas"]["boundary"="administrative"];
-  relation["name"="Rizal"]["boundary"="administrative"]["admin_level"="4"];
+{_LGU}  relation["name"="Metro Manila"]["boundary"="administrative"]["admin_level"="3"]{PH_BBOX};
+  relation["name"="Rizal"]["boundary"="administrative"]["admin_level"="4"]{PH_BBOX};
 );
 out geom;
 """
 
 SOURCE = {
-    "named": "NWRB Res. 001-0904, as quoted in SC G.R. No. 208383 (2016)",
-    "reported": "reported later extension; amending resolution not located",
+    "designated": "critical area designated in NWRB Res. 001-0904 (22 Sept 2004)",
+    "reported": (
+        "wider extent described by SC G.R. No. 208383 (2016) and 2008 press; no defining document located"
+    ),
 }
 
 
@@ -84,19 +131,34 @@ def main():
     gdf["name"] = gdf["tags"].apply(lambda t: (t or {}).get("name", ""))
     gdf["admin_level"] = gdf["tags"].apply(lambda t: (t or {}).get("admin_level", ""))
 
-    want = {n: "named" for n in NAMED} | {n: "reported" for n in REPORTED}
+    want = {n: "designated" for n in DESIGNATED} | {n: "reported" for n in REPORTED}
     gdf = gdf[gdf["name"].isin(want)].copy()
     gdf["status"] = gdf["name"].map(want)
     gdf["source"] = gdf["status"].map(SOURCE)
+    gdf["extent_note"] = gdf["name"].map(PARTIAL)
 
     # OSM returns both a municipality and a same-named province in places
     # (Rizal is also a Bulacan municipality). Keep the largest polygon per name,
     # except Rizal where the province is the intended feature anyway.
     gdf["_area"] = gdf.to_crs(32651).geometry.area
     gdf = gdf.sort_values("_area", ascending=False).drop_duplicates(subset="name", keep="first")
-    gdf = gdf[["name", "status", "source", "geometry"]].sort_values("name")
+    gdf = gdf[["name", "status", "source", "extent_note", "geometry"]].sort_values("name")
     gdf["geometry"] = gdf.geometry.simplify(0.0005)
     gdf.to_file(OUT, driver="GeoJSON")
+
+    # Fail loudly rather than shipping a polygon from another country.
+    outside = [
+        row["name"]
+        for _, row in gdf.iterrows()
+        if not (
+            117 < row.geometry.bounds[0]
+            and row.geometry.bounds[2] < 127
+            and 4 < row.geometry.bounds[1]
+            and row.geometry.bounds[3] < 21
+        )
+    ]
+    if outside:
+        raise SystemExit(f"geometry outside the Philippines for: {outside}")
 
     for _, row in gdf.iterrows():
         print(f"{row['name']:<16} {row['status']:<9} {row.geometry.geom_type}")
