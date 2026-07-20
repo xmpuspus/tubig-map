@@ -199,6 +199,31 @@ def main():
                 claim(f"gap_{y}", s[f"gap_{y}"], round(sum(g) / len(g), 4), tol=1e-4)
 
     html = (SITE / "index.html").read_text()
+    print("\n--- the matched control ---")
+    mcp = DATA / "matched_control.csv"
+    if mcp.exists():
+        mr = [
+            r
+            for r in csv.DictReader(open(mcp))
+            if f(r["matched_signal"]) is not None
+            and f(r["matched_signal_2026"]) is not None
+            and (f(r["ring_grass_frac"]) or 0) >= 0.02
+        ]
+        claim("matched_n", s["matched_n"], len(mr))
+        gaps = [f(r["matched_gap_base"]) for r in mr if f(r["matched_gap_base"]) is not None]
+        claim("matched_gap", s["matched_gap"], round(sum(gaps) / len(gaps), 4), tol=1e-4)
+        claim(
+            "matched_hit_rate",
+            s["matched_hit_rate"],
+            round(100 * sum(1 for r in mr if f(r["matched_signal"]) >= STRONG) / len(mr), 1),
+            tol=0.05,
+        )
+        claim(
+            "matched still fails its control",
+            True,
+            s["matched_hit_rate"] < s["matched_null_rate"],
+        )
+
     print("\n--- numbers written in prose, not read from summary.json ---")
     # These three were wrong on the live site for hours while every check passed,
     # because nothing verified a number that a human had typed into a sentence.

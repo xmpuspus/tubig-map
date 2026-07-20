@@ -320,7 +320,7 @@ def main():
         "the failed control is the first finding shown, and every instrument is charted",
         "none detects drought irrigation per course" in flat33
         and "ch-instruments" in html
-        and len(summary["instrument_series"]) == 4
+        and len(summary["instrument_series"]) == 5
         and all(
             r["control"] >= r["drought"] for r in summary["instrument_series"]
         )  # every instrument fires at least as often with no drought
@@ -367,8 +367,12 @@ def main():
     )
     check(
         39,
-        "map colours by the pooled baseline contrast, not the failed single-season signal",
-        "GAP_MAX" in html and '["get", "gap_base"]' in html and '-SIGNAL_MAX, "#e34948"' not in html,
+        "map colours by an undifferenced measurement, not any ring-differenced quantity",
+        "NDVI_LO" in html
+        and '["get", "golf_base"]' in html
+        # neither the failed single-season signal nor the ring contrast may drive the fill
+        and '["get", "irrigation_signal"]' not in html
+        and 'interpolate-lab", ["linear"], ["get", "gap_base"]' not in html,
     )
 
     check(
@@ -532,8 +536,9 @@ def main():
     )
     check(
         59,
-        "the page leads with the confound rather than a finding differenced against the ring",
-        "The control was never a control" in " ".join(html.split())
+        "the page shows the matched control and the confound, and no withdrawn hero",
+        "Greener than the grass next door" in " ".join(html.split())
+        and "ch-matched" in html
         and "ch-confound" in html
         and "Browner, not greener" not in html,
     )
@@ -563,6 +568,35 @@ def main():
                 re.search(r"tr\.innerHTML = `<td>\$\{row\.name\}</td>(.*?)`;", html, re.S).group(0),
             )
         ),
+    )
+
+    check(
+        62,
+        "each course carries its ring's built-up fraction so the confound travels with it",
+        all(p.get("ring_built") is not None for p in props) and "ring_built" in html and "% built-up" in html,
+    )
+
+    check(
+        63,
+        "the matched control exists and its per-course detector still fails",
+        (DATA / "matched_control.csv").exists()
+        and summary.get("matched_excess") is not None
+        and summary["matched_excess"] < 0
+        and any(r["name"] == "Grass-matched" for r in summary["instrument_series"]),
+        f"matched excess {summary.get('matched_excess')} pts on n={summary.get('matched_n')}",
+    )
+    check(
+        64,
+        "the withdrawn population finding stays dead under the matched control",
+        summary.get("matched_pop_p", 0) > 0.05 and abs(summary.get("matched_pop_shift", 1)) < 0.005,
+        f"matched shift {summary.get('matched_pop_shift')}, p {summary.get('matched_pop_p')}",
+    )
+    check(
+        65,
+        "the one surviving satellite result is stated as a contrast, never as water",
+        summary.get("matched_gap", 0) > 0
+        and "greener than nearby grassland" in " ".join(html.split())
+        and "cannot say how much water" in " ".join(html.split()),
     )
 
     print(f"\n{sum(results)}/{len(results)} checks pass")

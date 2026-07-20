@@ -281,6 +281,38 @@ honest deliverable.
   "same direction against every season" false. Both fixed.
 - The signal table emitted 8 cells under 7 headers.
 
+---
+
+## Round 8 (2026-07-20) - building the control instead of naming it
+
+Round 7 ended by naming a land-cover-matched control as the obvious next study
+and stopping there. Naming a fix and stopping is the failure mode this loop
+exists to catch, so it was built.
+
+`pipeline/matched_control.py` replaces the annulus with grassland pixels only,
+from the same ESA WorldCover layer round 7 used, inside a 1 km ring with all golf
+land excluded. Turf against turf, land cover held fixed, water free to vary. 115
+of 138 courses have enough grass nearby to support it.
+
+| question | result |
+|---|---|
+| does the per-course detector work now? | no: 33.0% drought vs 38.3% control, excess -5.3 pts |
+| does the withdrawn population finding return? | no: -0.0005, cluster p 0.95 |
+| is the course greener than matched grass? | **yes: +0.0801 NDVI, cluster p < 0.0001** |
+
+So the withdrawal in round 7 was correct rather than an overshoot, the
+per-course boundary now stands on five designs rather than four, and the project
+gains its first positive satellite result with a control worth the name.
+
+The claim is stated narrowly: managed turf is greener than unmanaged grass in
+the dry season. That is what management looks like. It is not a water volume,
+and DECISIONS.md still forbids converting it into one.
+
+The DENR contrast under the matched control is +0.132 (n=8 named courses with a
+usable grass ring) against +0.222 on the annulus, so roughly 40 percent of it was
+land cover. n=8 is too small to publish as a group finding and it is not on the
+site.
+
 ### Boundaries, with their exact missing input
 
 - **Water volume per facility.** Cannot be derived from any optical index.
@@ -308,7 +340,10 @@ honest deliverable.
   question, whatever is measured inside it. Round 7 sharpened this further: the
   ring is 52% tree and 23% built-up against a 61%-grass interior, so the control
   is not merely noisy, it is a different land cover. The buildable next step is a
-  land-cover-matched control (grass parks, cemeteries, playing fields) from the
-  same WorldCover layer plus OSM, not a fifth index against the same annulus.
+  land-cover-matched control, which round 8 built. That control still does not
+  detect a per-course drought response, so the boundary now rests on five
+  designs. Missing input: metre-scale imagery separating fairway from rough and
+  tree from turf, or ground truth on which courses irrigated and from what
+  source. Neither is free.
 - **Whether the DENR directive is still in force.** No rescission or compliance
   report found. Missing input: a DENR statement or the directive's own terms.

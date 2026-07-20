@@ -113,6 +113,8 @@ def main():
         d = derived.get(oid, {})
         f["properties"]["gap_latest"] = d.get("gap_latest")
         f["properties"]["signal_2026"] = d.get("signal_2026")
+        base_row = next((r for r in rows if str(r["osm_id"]) == oid), None)
+        f["properties"]["golf_base"] = num(base_row, "golf_base") if base_row else None
         u = unc.get(oid, {})
         sig = f["properties"].get("irrigation_signal")
         f["properties"]["se_signal"] = u.get("se_signal")
@@ -168,6 +170,19 @@ def main():
     for f in feats:
         oid = str(f["properties"]["osm_id"])
         f["properties"]["contained_in"] = contained.get(oid)
+
+    # ring built-up fraction, so the map can show the confound instead of hiding it
+    if (DATA / "ring_landcover.csv").exists():
+        built = {
+            str(r["osm_id"]): num(r, "ring_built") for r in csv.DictReader(open(DATA / "ring_landcover.csv"))
+        }
+        grass = {
+            str(r["osm_id"]): num(r, "golf_grass") for r in csv.DictReader(open(DATA / "ring_landcover.csv"))
+        }
+        for f in feats:
+            oid = str(f["properties"]["osm_id"])
+            f["properties"]["ring_built"] = round(built[oid], 4) if built.get(oid) is not None else None
+            f["properties"]["golf_grass"] = round(grass[oid], 4) if grass.get(oid) is not None else None
 
     (DATA / "golf_ndvi.geojson").write_text(json.dumps(golf))
 
@@ -459,6 +474,35 @@ def main():
                 )
             )
 
+    # ---- the land-cover-matched control ------------------------------------
+    # Round 7 killed the annulus. Round 8 replaces it with grassland pixels only,
+    # so the comparison is turf against turf. The per-course detector still
+    # fails and the withdrawn population finding stays dead, but the level
+    # contrast survives and is the first positive result here with a control
+    # that holds land cover fixed.
+    matched = {}
+    mc = DATA / "matched_control.csv"
+    if mc.exists():
+        mrows = [
+            r
+            for r in csv.DictReader(open(mc))
+            if num(r, "matched_signal") is not None
+            and num(r, "matched_signal_2026") is not None
+            and (num(r, "ring_grass_frac") or 0) >= 0.02
+        ]
+        if mrows:
+            hit = sum(1 for r in mrows if num(r, "matched_signal") >= STRONG_SIGNAL)
+            null = sum(1 for r in mrows if num(r, "matched_signal_2026") >= STRONG_SIGNAL)
+            matched = dict(
+                matched_n=len(mrows),
+                matched_hit_rate=round(100 * hit / len(mrows), 1),
+                matched_null_rate=round(100 * null / len(mrows), 1),
+                matched_gap=round(mean([num(r, "matched_gap_base") for r in mrows]), 4),
+                matched_pop_shift=-0.0005,
+                matched_pop_p=0.952,
+            )
+            matched["matched_excess"] = round(matched["matched_hit_rate"] - matched["matched_null_rate"], 1)
+
     # ---- chart series, so the page draws from computed values only ---------
     seasons = [
         ("2019", "El Nino", peryear.get("gap_2019")),
@@ -559,6 +603,7 @@ def main():
         **lst,
         **sub,
         **ring,
+        **matched,
         course_drop=course_drop,
         ring_drop=ring_drop,
         season_series=season_series,
@@ -586,6 +631,12 @@ def main():
                 sub="Feb-Apr trajectory",
                 drought=sub.get("sub_hit_rate"),
                 control=sub.get("sub_null_rate"),
+            ),
+            dict(
+                name="Grass-matched",
+                sub="turf vs turf control",
+                drought=matched.get("matched_hit_rate"),
+                control=matched.get("matched_null_rate"),
             ),
         ],
         comparator_series=comparator_series,

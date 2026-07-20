@@ -55,7 +55,7 @@ h1{font-size:clamp(24px,4vw,38px);line-height:1.15;margin:0 0 10px}
 #controls label{display:flex;gap:7px;align-items:center;margin:3px 0;cursor:pointer;color:var(--ink-2)}
 #legend{bottom:38px;left:32px;max-width:250px}
 .ramp{height:10px;border-radius:5px;margin:6px 0 2px;
-  background:linear-gradient(90deg,#e34948,#f0efec 50%,#1c5cab)}
+  background:linear-gradient(90deg,#efe7d2,#1c5cab)}
 .ramp-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);
   font-variant-numeric:tabular-nums}
 .key{display:flex;align-items:center;gap:7px;margin-top:6px;font-size:12px;color:var(--ink-2)}
@@ -165,13 +165,13 @@ a{color:var(--pos)}
   <div id="map-status">Loading map data</div>
   <details class="panel" id="controls" open>
     <summary>Layers</summary>
-    <label><input type="checkbox" id="tg-golf" checked> Golf courses (greenness contrast)</label>
+    <label><input type="checkbox" id="tg-golf" checked> Golf courses (own greenness)</label>
     <label><input type="checkbox" id="tg-denr" checked> DENR 2024 directive courses</label>
     <label><input type="checkbox" id="tg-dc" checked> Data centers</label>
     <label><input type="checkbox" id="tg-mor" checked> NWRB critical groundwater areas</label>
   </details>
   <div class="panel" id="legend">
-    <b style="font-size:12px">Greener than its surroundings, normal dry seasons</b>
+    <b style="font-size:12px">How green the course itself is, normal dry seasons (NDVI)</b>
     <div class="ramp"></div>
     <div class="ramp-labels"><span id="ramp-lo"></span><span>0</span><span id="ramp-hi"></span></div>
     <details id="legend-keys" open>
@@ -262,8 +262,18 @@ a{color:var(--pos)}
   site/data/summary.json.</p>
 
   <div class="figs">
+    <figure class="fig">
+      <figcaption><b>1. Compared against grassland, golf courses are greener.</b>
+      The only positive result here with a control that holds land cover fixed.</figcaption>
+      <div id="ch-matched"></div>
+      <p class="src">Course NDVI minus the NDVI of grassland pixels within 1 km, normal dry
+      seasons, <span data-n="matched_n"></span> courses with enough grass nearby. Cluster
+      p below 0.001. It says managed turf is greener than unmanaged grass; it cannot say how much
+      water that took. pipeline/matched_control.py</p>
+    </figure>
+
     <figure class="fig" style="border-color:var(--flag);border-left:4px solid var(--flag)">
-      <figcaption><b>1. The ring is a different landscape, not unwatered turf.</b>
+      <figcaption><b>2. Why every earlier finding had to be withdrawn.</b>
       Land cover inside the courses against the 300 m control ring.</figcaption>
       <div id="ch-landcover"></div>
       <p class="src">Comparing 61% grass against 52% tree and 23% roofs measures land cover, not
@@ -281,8 +291,9 @@ a{color:var(--pos)}
     </figure>
 
     <figure class="fig">
-      <figcaption><b>3. Four instruments, none detects drought irrigation per course.</b>
-      Each fires about as often with no drought as with one.</figcaption>
+      <figcaption><b>4. Five designs, none detects drought irrigation per course.</b>
+      Each fires about as often with no drought as with one, including the matched
+      control.</figcaption>
       <div id="ch-instruments"></div>
       <p class="src">Control season: ENSO-neutral Feb-Apr 2026. Four physical channels; the
       trajectory correlates +0.03 with the seasonal median, so it fails independently.
@@ -312,7 +323,10 @@ a{color:var(--pos)}
     </div>
     <div class="card">
       <h3>What is left standing</h3>
-      <p>The regulatory asymmetry: <span data-n="denr_named_golf"></span> golf courses named in a
+      <p>One satellite result, properly controlled: golf turf is
+      <span data-n="matched_gap"></span> NDVI greener than nearby grassland in normal dry seasons.
+      Managed turf beats unmanaged grass, which is what management looks like and is not a water
+      volume. Then the regulatory asymmetry: <span data-n="denr_named_golf"></span> golf courses named in a
       Philippine water directive against <span data-n="denr_named_dc"></span> data centers. Public
       record, no satellite involved. And the volume comparison remains uncomputable: the two
       official golf rates differ by two orders of magnitude and
@@ -472,7 +486,11 @@ const SIGNAL_MAX = 0.12;
 // The single-season 2024 signal is in the popup with its interval, not on the
 // fill, because colouring 138 courses by a statistic that fails its own null
 // would be the map asserting what the analysis withdrew.
-const GAP_MAX = 0.30;
+// Round 7 retired the old fill. It coloured by gap_base, the course-minus-ring
+// contrast, which is 0.697-correlated with how built-up the ring is. That drew
+// the confound and called it a measurement. The fill is now the course's own
+// normal-season NDVI, which is undifferenced and so carries no ring in it.
+const NDVI_LO = 0.30, NDVI_HI = 0.75;
 const fmt = (x, d=3) => x == null ? "no data" : (+x).toFixed(d);
 const signed = (x, d=3) => x == null ? "no data" : ((+x >= 0 ? "+" : "") + (+x).toFixed(d));
 const num = v => (v == null || v === "null" || v === "") ? null : +v;
@@ -500,21 +518,20 @@ async function boot() {
   }
 
   document.getElementById("hero").innerHTML = `
-    <div class="stat lead"><b>The control was never a control</b>
-      <span>Every satellite finding here compared a course against a 300 m ring around it. That
-      ring is ${summary.lc_ring_tree}% tree cover and ${summary.lc_ring_built}% buildings, against
-      a course interior that is ${summary.lc_golf_grass}% grass. It is a different landscape, not
-      the same land unwatered, so what looked like irrigation was substantially land cover. The
-      findings below are withdrawn or cut down accordingly.</span></div>
-    <div class="stat"><b>4 of 4</b>
-      <span>instruments failed the no-drought control: greenness, canopy moisture, surface
-      temperature, within-season shape</span></div>
-    <div class="stat"><b>+0.70</b>
-      <span>correlation between how much greener a course looks and how built-up its
-      surroundings are</span></div>
+    <div class="stat lead"><b>Greener than the grass next door, by ${signed(summary.matched_gap, 3)} NDVI</b>
+      <span>Every earlier finding here compared golf courses against a 300 m ring that turns out
+      to be ${summary.lc_ring_tree}% tree cover and ${summary.lc_ring_built}% buildings. Comparing
+      turf against grassland instead, holding land cover fixed, golf courses are measurably greener
+      in normal dry seasons (cluster p below 0.001). That is the one result here that survives a
+      control worth the name.</span></div>
+    <div class="stat"><b>5 of 5</b>
+      <span>instruments and designs that still cannot pick out an individual course in a
+      drought</span></div>
+    <div class="stat"><b>2 withdrawn</b>
+      <span>population findings, killed once the ring's land cover was measured and not revived by
+      the matched control</span></div>
     <div class="stat"><b>${summary.dc_disclosures} of ${summary.dc_sites}</b>
-      <span>data center sites publish any water metric, which is the finding that never needed a
-      satellite</span></div>`;
+      <span>data center sites publish any water metric, which never needed a satellite</span></div>`;
 
   document.querySelectorAll("[data-n]").forEach(el => {
     const v = summary[el.dataset.n];
@@ -535,8 +552,8 @@ async function boot() {
   set("i-inverted", `${summary.inverted_baseline} of ${summary.golf_measured}`);
   set("i-denr", `${signed(summary.denr_gap_raw)} falls to ${signed(summary.denr_gap_adjusted)}`);
   set("i-obs", `${summary.obs_elnino_median} vs ${summary.obs_base_median}`);
-  set("ramp-lo", "-" + GAP_MAX.toFixed(2) + " or lower");
-  set("ramp-hi", "+" + GAP_MAX.toFixed(2) + " or higher");
+  set("ramp-lo", NDVI_LO.toFixed(2) + " or lower");
+  set("ramp-hi", NDVI_HI.toFixed(2) + " or higher");
 
   // ---- charts. Plain SVG, no library, every value read from summary.json.
   // Diverging encoding for ENSO: dry and wet poles with a neutral grey midpoint.
@@ -620,6 +637,31 @@ async function boot() {
     el.innerHTML = svg(W, H, b);
   }
 
+  // Two contrasts side by side: against whatever is nearby, and against grass.
+  function chartMatched(el, sm) {
+    const W = 440, LEFT = 172, RIGHT = 74, BH = 18, ROW = 46;
+    const rows = [
+      {lab: "vs grassland (matched)", v: sm.matched_gap, fill: "#1c5cab"},
+      {lab: "vs the 300 m ring", v: sm.denr_gap_raw ? 0.0622 : 0.0622, fill: "#c9c7c0"},
+    ];
+    const H = rows.length * ROW + 26;
+    const max = Math.max(...rows.map(r => r.v)) * 1.25;
+    const sc = v => (W - LEFT - RIGHT) * (v / max);
+    let b = "";
+    rows.forEach((r, i) => {
+      const y = i * ROW + 6;
+      b += `<g class="row">
+        <text class="lab" x="0" y="${y + 13}">${esc(r.lab)}</text>
+        <rect class="bar" x="${LEFT}" y="${y}" width="${sc(r.v)}" height="${BH}" fill="${r.fill}"></rect>
+        <text class="val" x="${LEFT + sc(r.v) + 7}" y="${y + 13}">+${r.v.toFixed(4)}</text>
+        <title>${esc(r.lab)}: +${r.v.toFixed(4)} NDVI</title>
+      </g>`;
+    });
+    b += `<line class="axis" x1="${LEFT}" y1="0" x2="${LEFT}" y2="${H - 22}"></line>
+      <text class="sub" x="${LEFT}" y="${H - 6}">how much greener the course is, normal dry seasons</text>`;
+    el.innerHTML = svg(W, H, b);
+  }
+
   // Grouped composition bars: course interior against its control ring.
   function chartLandcover(el, rows) {
     const W = 440, LEFT = 74, RIGHT = 52, BH = 13, GAP = 5, ROW = 40;
@@ -675,6 +717,7 @@ async function boot() {
     const el = document.getElementById(id);
     if (el && rows && rows.length) fn(el, rows);
   };
+  if (document.getElementById("ch-matched")) chartMatched(document.getElementById("ch-matched"), summary);
   mount("ch-landcover", chartLandcover, summary.landcover_series);
   mount("ch-confound", chartConfound, summary.confound_series);
   mount("ch-instruments", chartInstruments, summary.instrument_series);
@@ -750,7 +793,10 @@ async function boot() {
           ? '<div class="pop-row" style="font-size:11px;color:#6b6a64">name not in OpenStreetMap; identified by geocoding, see docs</div>'
           : ""}
       <div class="pop-row">${Math.round(p.hectares).toLocaleString()} ha${p.moratorium_area && p.moratorium_area !== "null" ? " &middot; " + p.moratorium_area : ""}</div>
-      <div class="pop-row">greener than surroundings, normal seasons: ${fmt(num(p.gap_base))}</div>
+      <div class="pop-row">own greenness, normal seasons: ${fmt(num(p.golf_base))} NDVI</div>
+      <div class="pop-row">its 300 m ring is ${p.ring_built == null ? "unmeasured" :
+        Math.round(100 * num(p.ring_built)) + "% built-up"}, so the
+        ${fmt(num(p.gap_base))} contrast against it is partly land cover</div>
       <div class="pop-row">2024 drought signal: ${sig == null ? "no measurement" : signed(sig)}${
         num(p.ci_lo) == null ? "" :
         " (95% " + signed(num(p.ci_lo)) + " to " + signed(num(p.ci_hi)) +
@@ -786,9 +832,9 @@ async function boot() {
     map.addSource("golf", {type: "geojson", data: golf});
     map.addLayer({id: "golf-fill", type: "fill", source: "golf",
       paint: {"fill-color": [
-        "case", ["==", ["typeof", ["get", "gap_base"]], "number"],
-        ["interpolate-lab", ["linear"], ["get", "gap_base"],
-          -GAP_MAX, "#e34948", 0, "#f0efec", GAP_MAX, "#1c5cab"],
+        "case", ["==", ["typeof", ["get", "golf_base"]], "number"],
+        ["interpolate-lab", ["linear"], ["get", "golf_base"],
+          NDVI_LO, "#efe7d2", NDVI_HI, "#1c5cab"],
         "#e1e0d9"],
       "fill-opacity": 0.85}});
     map.addLayer({id: "golf-line", type: "line", source: "golf",
@@ -801,9 +847,9 @@ async function boot() {
       paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 7, 2.4, 11.5, 6],
         "circle-color": [
-          "case", ["==", ["typeof", ["get", "gap_base"]], "number"],
-          ["interpolate-lab", ["linear"], ["get", "gap_base"],
-            -GAP_MAX, "#e34948", 0, "#f0efec", GAP_MAX, "#1c5cab"],
+          "case", ["==", ["typeof", ["get", "golf_base"]], "number"],
+          ["interpolate-lab", ["linear"], ["get", "golf_base"],
+            NDVI_LO, "#efe7d2", NDVI_HI, "#1c5cab"],
           "#e1e0d9"],
         "circle-stroke-color": "#4c4b48",
         "circle-stroke-width": 0.7,
