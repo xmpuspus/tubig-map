@@ -86,6 +86,24 @@ def main():
     claim("null fires more than drought", True, s["null_strong"] > s["strong_signal"])
     claim("null_hit_rate > drought_hit_rate", True, s["null_hit_rate"] > s["drought_hit_rate"])
 
+    print("\n--- the hero and co-location numbers, previously unguarded ---")
+    # dc_in_any and dc_disclosures are recomputed from the data files; the two
+    # directive facts are constants and are pinned to their documented values so
+    # a stray edit cannot change what the hero says.
+    dc_any = sum(1 for d in dcs if d["properties"].get("moratorium_area"))
+    claim("dc_in_any", s["dc_in_any"], dc_any)
+    wue = sum(
+        1
+        for d in dcs
+        if d["properties"].get("water_disclosure") and "WUE" in str(d["properties"]["water_disclosure"])
+    )
+    claim("dc_disclosures", s["dc_disclosures"], wue)
+    # directive facts, pinned. 13 golf courses (GMA News 2024-05-07), zero data
+    # centers ever named (docs/SOURCES.md). If either constant is edited in
+    # build_summary this fails.
+    claim("denr_named_golf (GMA 2024)", s["denr_named_golf"], 13)
+    claim("denr_named_dc (never named)", s["denr_named_dc"], 0)
+
     print("\n--- geography ---")
     inside_named = [i for i, a in area.items() if a and stat.get(i) == "designated" and i not in nested]
     inside_any = [i for i, a in area.items() if a and i not in nested]

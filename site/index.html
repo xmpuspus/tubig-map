@@ -382,8 +382,7 @@ a{color:var(--pos)}
   labelled as such.</p>
   <div class="tablewrap">
   <table id="prov-table" aria-label="Golf courses by moratorium area">
-    <thead><tr><th>Area</th><th>Basis</th><th class="num">Courses</th><th class="num">Hectares</th>
-      <th class="num">Mean 2024 signal</th></tr></thead>
+    <thead><tr><th>Area</th><th>Basis</th><th class="num">Courses</th><th class="num">Hectares</th></tr></thead>
     <tbody></tbody>
   </table>
   </div>
@@ -705,8 +704,7 @@ async function boot() {
     tr.innerHTML = `<td>${p.area}</td>
       <td>${p.status === "designated" ? "designated critical area, Res. 001-0904 (2004)" : "wider extent, reported only"}</td>
       <td class="num">${p.courses}</td>
-      <td class="num">${p.hectares.toLocaleString()}</td>
-      <td class="num">${p.mean_signal == null ? "n/a" : signed(p.mean_signal, 3)}</td>`;
+      <td class="num">${p.hectares.toLocaleString()}</td>`;
     ptbody.appendChild(tr);
   });
 

@@ -1,15 +1,25 @@
-# Doubt loop ledger
+## Status: CONVERGED at round 13 (2026-07-20)
 
-Adversarial convergence loop against four dismisser personas: a remote sensing
-scientist, an applied statistician, a Philippine water-policy journalist, and
-counsel for a named golf club and data centre operator.
+An eighth convergence critic, sent hard at the non-satellite claims that now
+carry the weight, verified each against primary sources (the GMA 2024 article,
+the rendered 001-0904 scan, the Digital Edge WUE disclosure, a course-level
+bootstrap of the surviving contrast) and could not name any reachable evidence
+the project refuses to use. It found one harness hole, not a wrong number: four
+displayed figures, including the 13-vs-0 hero and the co-location counts, were
+recomputed by neither test suite. That is now closed, tamper-verified, so the
+convergence is durable rather than resting on a gap in the checks.
 
-**Convergence test:** a fresh critic in dismisser persona can no longer name an
-available piece of evidence, dataset, band or statistical control that this
-project refuses to use, and every remaining gap names its exact missing input
-in these docs.
+Where the project landed. The satellite work is a documented account of a
+measurement that did not work: five per-course designs that fail a matched
+control, two population findings withdrawn and re-confirmed dead once the ring
+was measured, one turf-versus-grass contrast that is 81 percent present in the
+monsoon and so mostly not about water. The claims that stand need no satellite:
+the 13-versus-0 regulatory asymmetry (now anchored to the 2009 golf water regime,
+not one 2024 letter), the corrected NWRB geography, and the volume comparison
+that stays uncomputable. Every published figure is recomputed from source by
+tests/claims_verify.py, which now covers 108 claims.
 
----
+The full round-by-round record follows.
 
 ## Round 1 (2026-07-20)
 
@@ -432,6 +442,22 @@ provenance file contradicted the map), and still described the old "named"
 layer schema from before round 5. The discredited five-province raw cache
 (data/raw/moratorium_overpass.json) was committed and read by nothing; removed.
 Dead chartMatched() code and its no-op DOM writes removed.
+
+---
+
+## Round 13 (2026-07-20) - CONVERGED, durably
+
+The critic verified the load-bearing non-satellite claims against primary
+sources and found nothing refused. The one defect was harness coverage: the
+13-vs-0 hero (`denr_named_golf`, `denr_named_dc`), the `dc_in_any` co-location
+count and the `dc_disclosures` count were recomputed by neither suite, so a
+future recompute could drift them silently even though all four are correct
+today. Setting them to 25/3/99/7 passed both suites. Now pinned:
+`dc_in_any` and `dc_disclosures` recomputed from the geojson, the two directive
+constants pinned to their documented values, all four tamper-verified.
+
+Also removed a withdrawn per-course "mean 2024 signal" column that lingered in
+the area-rollup table; per-course drought numbers were retired five designs ago.
 
 ### Boundaries, with their exact missing input
 
