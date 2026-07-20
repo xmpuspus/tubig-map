@@ -1,16 +1,39 @@
 {
  "golf_features": 138,
- "golf_hectares": 6705,
+ "golf_hectares": 6699,
  "golf_measured": 138,
  "denr_mapped": 12,
  "denr_named_golf": 13,
  "denr_named_dc": 0,
  "dc_sites": 14,
  "dc_disclosures": 1,
- "dc_in_moratorium": 11,
  "strong_signal": 28,
  "strong_signal_threshold": 0.03,
+ "all_mean_2024": -0.0148,
+ "all_mean_2026": 0.0046,
+ "pop_shift": -0.0194,
+ "ndvi_excess": -8.7,
+ "ndmi_n": 138,
+ "ndmi_hit_rate": 15.9,
+ "ndmi_null_rate": 21.0,
+ "ndmi_excess": -5.1,
+ "null_strong": 40,
+ "null_browned": 29,
+ "null_n": 138,
+ "null_hit_rate": 29.0,
+ "drought_hit_rate": 20.3,
+ "inverted_baseline": 44,
  "browned_more": 46,
+ "ci_positive": 9,
+ "ci_negative": 20,
+ "ci_decisive": 29,
+ "strong_signal_ci": 9,
+ "browned_more_ci": 20,
+ "obs_elnino_median": 15.9,
+ "obs_elnino_min": 5.6,
+ "obs_base_median": 54.2,
+ "obs_under_10": 32,
+ "se_signal_median": 0.0425,
  "measured_large": 85,
  "browned_more_large": 28,
  "strong_signal_large": 19,
@@ -21,43 +44,36 @@
  "measured_2026": 28,
  "denr_gap_base": 0.2797,
  "rest_gap_base": 0.0581,
- "golf_inside_moratorium": 45,
- "ha_inside_moratorium": 2940,
+ "golf_inside_named": 18,
+ "ha_inside_named": 965,
+ "golf_inside_any": 21,
+ "ha_inside_any": 1450,
+ "dc_in_named": 6,
+ "dc_in_any": 7,
+ "dc_building_precision": 3,
+ "golf_standalone": 133,
+ "golf_nested": 5,
  "provinces": [
   {
-   "area": "Rizal",
-   "courses": 6,
-   "hectares": 491,
-   "mean_signal": 0.0643,
-   "strong": 5
-  },
-  {
-   "area": "Bulacan",
-   "courses": 2,
-   "hectares": 89,
-   "mean_signal": 0.0493,
-   "strong": 1
-  },
-  {
-   "area": "Cavite",
-   "courses": 10,
-   "hectares": 1014,
-   "mean_signal": -0.0189,
-   "strong": 3
-  },
-  {
-   "area": "Laguna",
-   "courses": 11,
-   "hectares": 907,
-   "mean_signal": -0.0247,
-   "strong": 2
-  },
-  {
    "area": "Metro Manila",
+   "status": "named",
    "courses": 16,
-   "hectares": 439,
-   "mean_signal": -0.0362,
-   "strong": 1
+   "hectares": 517,
+   "mean_signal": -0.0466
+  },
+  {
+   "area": "Dasmari\u00f1as",
+   "status": "named",
+   "courses": 2,
+   "hectares": 447,
+   "mean_signal": 0.0297
+  },
+  {
+   "area": "Rizal",
+   "status": "reported",
+   "courses": 3,
+   "hectares": 486,
+   "mean_signal": 0.0409
   }
  ],
  "bbox": [
@@ -67,37 +83,22 @@
   18.138
  ],
  "bbox_moratorium": [
-  120.4161,
-  13.9668,
-  121.6207,
-  15.272
+  120.7917,
+  14.2482,
+  121.4511,
+  14.8674
  ],
  "min_leaderboard_ha": 20,
  "top_signals": [
-  {
-   "osm_id": "1347745645",
-   "name": "Tandatangan Golf Course",
-   "hectares": 37,
-   "irrigation_signal": 0.2244,
-   "signal_2026": 0.193,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "144672538",
-   "name": "Tagaytay Midlands Golf Club",
-   "hectares": 80,
-   "irrigation_signal": 0.0922,
-   "signal_2026": 0.0978,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
   {
    "osm_id": "31712056",
    "name": "Eastridge Golf & Country Club",
    "hectares": 85,
    "irrigation_signal": 0.0873,
    "signal_2026": 0.008,
+   "ci_lo": 0.0162,
+   "ci_hi": 0.1584,
+   "n_elnino": 16.5,
    "denr_2024": "eastridge",
    "moratorium_area": "Rizal"
   },
@@ -107,6 +108,9 @@
    "hectares": 74,
    "irrigation_signal": 0.0831,
    "signal_2026": 0.1361,
+   "ci_lo": -0.0063,
+   "ci_hi": 0.1725,
+   "n_elnino": 13.7,
    "denr_2024": null,
    "moratorium_area": null
   },
@@ -116,8 +120,11 @@
    "hectares": 160,
    "irrigation_signal": 0.0803,
    "signal_2026": 0.1169,
+   "ci_lo": -0.0077,
+   "ci_hi": 0.1683,
+   "n_elnino": 11.0,
    "denr_2024": null,
-   "moratorium_area": "Cavite"
+   "moratorium_area": null
   },
   {
    "osm_id": "1259077065",
@@ -125,6 +132,9 @@
    "hectares": 74,
    "irrigation_signal": 0.0799,
    "signal_2026": 0.0595,
+   "ci_lo": 0.0146,
+   "ci_hi": 0.1452,
+   "n_elnino": 22.2,
    "denr_2024": null,
    "moratorium_area": null
   },
@@ -134,8 +144,11 @@
    "hectares": 68,
    "irrigation_signal": 0.0765,
    "signal_2026": 0.0012,
+   "ci_lo": -0.0119,
+   "ci_hi": 0.1649,
+   "n_elnino": 8.4,
    "denr_2024": null,
-   "moratorium_area": "Bulacan"
+   "moratorium_area": null
   },
   {
    "osm_id": "16611953",
@@ -143,8 +156,11 @@
    "hectares": 147,
    "irrigation_signal": 0.0587,
    "signal_2026": 0.033,
+   "ci_lo": -0.0136,
+   "ci_hi": 0.131,
+   "n_elnino": 12.7,
    "denr_2024": null,
-   "moratorium_area": "Laguna"
+   "moratorium_area": null
   },
   {
    "osm_id": "5172611",
@@ -152,6 +168,9 @@
    "hectares": 101,
    "irrigation_signal": 0.0516,
    "signal_2026": 0.0613,
+   "ci_lo": -0.0223,
+   "ci_hi": 0.1255,
+   "n_elnino": 16.9,
    "denr_2024": null,
    "moratorium_area": null
   },
@@ -161,6 +180,9 @@
    "hectares": 116,
    "irrigation_signal": 0.0476,
    "signal_2026": 0.0653,
+   "ci_lo": -0.0243,
+   "ci_hi": 0.1195,
+   "n_elnino": 18.0,
    "denr_2024": null,
    "moratorium_area": null
   },
@@ -170,6 +192,9 @@
    "hectares": 179,
    "irrigation_signal": 0.0443,
    "signal_2026": 0.0368,
+   "ci_lo": -0.0178,
+   "ci_hi": 0.1064,
+   "n_elnino": 21.0,
    "denr_2024": "sun-valley",
    "moratorium_area": "Rizal"
   },
@@ -179,35 +204,71 @@
    "hectares": 72,
    "irrigation_signal": 0.0435,
    "signal_2026": 0.0495,
+   "ci_lo": -0.0553,
+   "ci_hi": 0.1423,
+   "n_elnino": 14.5,
    "denr_2024": null,
    "moratorium_area": null
   },
   {
-   "osm_id": "15979150",
-   "name": "",
-   "hectares": 119,
-   "irrigation_signal": 0.0392,
-   "signal_2026": 0.0328,
+   "osm_id": "1078077919",
+   "name": "FA Korea Country Club",
+   "hectares": 159,
+   "irrigation_signal": 0.0353,
+   "signal_2026": -0.0152,
+   "ci_lo": -0.0341,
+   "ci_hi": 0.1047,
+   "n_elnino": 18.7,
    "denr_2024": null,
    "moratorium_area": null
   },
   {
-   "osm_id": "148049007",
-   "name": "Subic Golf Club",
-   "hectares": 88,
-   "irrigation_signal": 0.038,
-   "signal_2026": -0.003,
+   "osm_id": "146701718",
+   "name": "Santa Elena Golf Course and Country Club",
+   "hectares": 154,
+   "irrigation_signal": 0.0352,
+   "signal_2026": 0.0272,
+   "ci_lo": -0.0493,
+   "ci_hi": 0.1197,
+   "n_elnino": 15.0,
    "denr_2024": null,
    "moratorium_area": null
   },
   {
-   "osm_id": "153513039",
-   "name": "Splendido Golf Course",
-   "hectares": 56,
-   "irrigation_signal": 0.0359,
-   "signal_2026": 0.0389,
+   "osm_id": "11907837",
+   "name": "Riviera Golf Course",
+   "hectares": 158,
+   "irrigation_signal": 0.0323,
+   "signal_2026": 0.0395,
+   "ci_lo": -0.0675,
+   "ci_hi": 0.1321,
+   "n_elnino": 8.1,
+   "denr_2024": null,
+   "moratorium_area": "Dasmari\u00f1as"
+  },
+  {
+   "osm_id": "10296616",
+   "name": "Eagle Ridge Golf Club",
+   "hectares": 180,
+   "irrigation_signal": 0.03,
+   "signal_2026": 0.0275,
+   "ci_lo": -0.0619,
+   "ci_hi": 0.1219,
+   "n_elnino": 9.3,
    "denr_2024": null,
    "moratorium_area": null
+  },
+  {
+   "osm_id": "8791554",
+   "name": "Orchard Residential Estate Golf and Country Club",
+   "hectares": 289,
+   "irrigation_signal": 0.027,
+   "signal_2026": 0.0233,
+   "ci_lo": -0.0508,
+   "ci_hi": 0.1048,
+   "n_elnino": 13.4,
+   "denr_2024": null,
+   "moratorium_area": "Dasmari\u00f1as"
   }
  ]
 }

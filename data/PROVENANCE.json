@@ -1,0 +1,33 @@
+{
+ "_comment": "When each committed pipeline artifact was produced, and against which Earth Engine collections. EE reprocesses collections, so a re-run can legitimately differ from what is committed here.",
+ "generated": "2026-07-20T16:50:11Z",
+ "ee_collections": [
+  "COPERNICUS/S2_SR_HARMONIZED",
+  "GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED"
+ ],
+ "cloud_score_threshold": 0.65,
+ "scale_m": 10,
+ "windows": {
+  "base": "2019-2023 Feb-Apr pooled",
+  "elnino": "2024 Feb-Apr",
+  "latest": "2026 Feb-Apr"
+ },
+ "artifacts": {
+  "data/ndvi_anomaly.csv": {
+   "bytes": 13311,
+   "mtime_utc": "2026-07-20T13:26:13Z"
+  },
+  "data/ndvi_quality.csv": {
+   "bytes": 16685,
+   "mtime_utc": "2026-07-20T16:26:33Z"
+  },
+  "data/golf_courses.geojson": {
+   "bytes": 376994,
+   "mtime_utc": "2026-07-20T13:10:53Z"
+  },
+  "data/moratorium_areas.geojson": {
+   "bytes": 36400,
+   "mtime_utc": "2026-07-20T16:35:33Z"
+  }
+ }
+}

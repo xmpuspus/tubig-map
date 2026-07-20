@@ -52,11 +52,10 @@ await page.evaluate(async () => {
         golf courses versus data centers ever named in a Philippine regulator's
         water directive, though both sit on the same restricted groundwater</div>
       <div style="font-size:15px;color:#4c4b48;line-height:1.55">
-        ${s.golf_inside_moratorium} of ${s.golf_features} mapped courses and
-        ${s.dc_in_moratorium} of ${s.dc_sites} data center sites are inside the NWRB
-        deep-well moratorium areas.<br>
-        Sentinel-2 finds ${s.strong_signal} courses stayed green through the 2024 El Nino
-        and ${s.browned_more} browned faster than their surroundings.</div>
+        ${s.golf_inside_named} of ${s.golf_standalone} mapped courses and
+        ${s.dc_in_named} of ${s.dc_sites} data center sites sit inside an area NWRB named.<br>
+        The per-course satellite signal fires on ${s.null_hit_rate}% of courses with no drought
+        and ${s.drought_hit_rate}% with one, so it is reported as a failed instrument.</div>
       <div style="margin-top:26px;font-size:15px;color:#6b6a64">tubig-map.vercel.app</div>
     </div>`;
   document.body.appendChild(el);

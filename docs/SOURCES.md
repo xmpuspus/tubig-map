@@ -54,10 +54,27 @@ subset is restated here with links.
 
 ## Moratorium and water-stress context
 
-- NWRB deep-well moratorium / critical groundwater areas: Metro Manila,
-  Bulacan, Cavite, Rizal, Laguna. Sourced from legal commentary
-  (https://www.lawyer-philippines.com/articles/moratorium-on-deep-wells-in-the-philippines)
-  pending a primary NWRB document; labeled as such on the site.
+- NWRB deep-well restriction areas. CORRECTED 2026-07-20. Until that date this
+  project drew Metro Manila, Bulacan, Cavite, Rizal and Laguna as whole
+  provinces, sourced from legal commentary
+  (https://www.lawyer-philippines.com/articles/moratorium-on-deep-wells-in-the-philippines).
+  That article says only that restrictions apply "especially in Metro Manila and
+  nearby provinces (e.g., Bulacan, Cavite, Rizal, Laguna)", cites no resolution
+  number, and claims no province-wide coverage. Hardening it into five province
+  polygons roughly doubled every co-location count on the site.
+  The best available primary evidence is the Supreme Court's quotation of NWRB
+  Resolution No. 001-0904 in First Mega Holdings Corp. v. Guiguinto Water
+  District, G.R. No. 208383, 8 June 2016 (786 Phil. 746):
+  https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/4/62095
+  "the NWRB had imposed a total ban on deep water drilling in Metro Manila, as
+  well as Guiguinto, Bocaue, Marilao, and Meycauayan in Bulacan, and Dasmarinas
+  in Cavite to prevent over-extraction of ground water."
+  The layer now carries exactly those areas with status "named". Laguna is
+  dropped: no primary source found names it. Rizal is carried with status
+  "reported" because a later extension to "Metro Manila and Rizal towns" is
+  reported in contemporaneous coverage but the amending resolution was not
+  located. The resolution PDF at nwrb.gov.ph returns 403 to automated fetches;
+  a manual download is the named missing input in docs/DOUBT-LOOP.md.
 - NWRB Resolution 05-0925 (Sept 2025): telemetered meters required for
   industrial/municipal permits >= 10 L/s. The dataset that would settle this
   map's question, not yet published.
@@ -142,14 +159,66 @@ so neither shifted materially.
 
 ## Data center pin precision, and what it forbids
 
-13 of the 14 tracked sites are geocoded to city, district or campus level;
-exactly one (Reliance IT Center) is building-precision. A nearest-neighbour
+11 of the 14 tracked sites are geocoded to city, district or campus level;
+three are building-precision (VITRO Paranaque, Reliance IT Center, DITO CO64).
+An earlier version of this file said "exactly one", which came from matching
+the precision field exactly against "building" while the actual values read
+"building (OSM way 553651276)". The same error reached two other documents. A nearest-neighbour
 computation therefore returns physically meaningless results, including 0.00 km
 between Equinix MN3 and Club Intramuros because a city centroid happens to fall
 inside that polygon. No claim about physical adjacency between data centers and
 golf courses appears on the site. Co-location is asserted only at the level of
 the five moratorium areas, which are large enough that centroid error cannot
 flip the answer.
+
+## Known systematics in the Sentinel-2 series
+
+- **Processing baseline discontinuity.** ESA changed the L2A processing
+  baseline on 2022-01-25, adding a radiometric offset to reflectance. The
+  2019-2023 pooled baseline window straddles that change while the 2024 and
+  2026 windows sit wholly after it, so the baseline mixes two calibrations and
+  the comparison windows do not. NDVI is a normalised ratio and cancels much of
+  a uniform offset, but not all of it, and this is not corrected here. It is a
+  systematic that pushes on the baseline, which is one more reason the
+  single-season contrast against that baseline is not trustworthy per course.
+- **Edge-only polygons.** A 20 m inward buffer is applied to keep boundary
+  pixels out. On five polygons under about 0.2 ha it removes the whole shape and
+  the pipeline falls back to the raw polygon, so those rows are measured
+  entirely on mixed edge pixels. They are flagged with `edge_only` in
+  data/ndvi_anomaly.csv, and they are already excluded from the published table
+  by the 20 ha floor.
+- **The control ring is weakly protective.** Differencing against the ring
+  reduces the spread of the drought-season measure by about 1.5 percent while
+  substantially reordering which courses rank highest, and 45 of 138 rings
+  greened during the drought rather than browning. The ring removes shared
+  weather in principle; in practice it adds its own land-cover signal.
+- **No asset version pin.** Earth Engine reprocesses collections. This project
+  records the run date of each pipeline output in data/PROVENANCE.json but does
+  not pin an immutable asset version, so a re-run can legitimately differ from
+  the committed CSVs.
+
+## Uncertainty and the control season
+
+- Observation counts. pipeline/ndvi_quality.py records, per course and per
+  control ring, the per-pixel count of unmasked Sentinel-2 observations and the
+  temporal NDVI spread behind every median, using the same geometries and the
+  same Cloud Score+ mask as the main pipeline (it imports them, so they cannot
+  drift). Median 15.9 valid observations per pixel for Feb-Apr 2024 against
+  54.2 for the pooled 2019-2023 baseline; 32 courses under ten; minimum 5.6.
+- Intervals. analysis/uncertainty.py turns those into a standard error per
+  median (1.2533 * sd / sqrt(n)) and propagates four of them into the signal.
+  Two modelling choices are stated in that file's docstring and they push in
+  opposite directions: the four medians are treated as independent, which
+  widens the interval, and each course is treated as one effective spatial unit
+  rather than thousands of pixels, which also widens it. The result is an upper
+  bound on uncertainty from temporal sampling only. It does not cover
+  geolocation, BRDF, atmospheric correction residual, or the control ring's
+  land-cover mismatch.
+- The control season. Feb-Apr 2026 was ENSO-neutral, so the same statistic
+  computed on it is a matched empirical null. analysis/empirical_null.py. The
+  threshold fires on 29.0 percent of courses there against 20.3 percent in the
+  drought season. That result governs the whole per-course layer and is
+  reported on the site rather than in a footnote.
 
 ## Disclaimer
 

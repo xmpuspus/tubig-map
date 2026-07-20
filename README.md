@@ -26,34 +26,35 @@ measures the part that can be measured from orbit.
 
 ## Findings
 
-The full set with sources is in [docs/FINDINGS.md](docs/FINDINGS.md). The short version:
+The full set with sources is in [docs/FINDINGS.md](docs/FINDINGS.md). The
+adversarial review that produced most of them is in
+[docs/DOUBT-LOOP.md](docs/DOUBT-LOOP.md). The short version:
 
-- 45 of the 138 mapped courses, and 11 of 14 tracked data center sites, sit
-  inside the five provinces where the NWRB restricts new deep wells.
-- **Most courses did not stay green.** 46 browned faster than their
-  surroundings during the 2024 drought against 28 that stayed green, and the
-  median course signal is negative. Restricting to the 85 courses of at least
-  20 hectares it is 28 against 19, so the direction holds either way. The
-  stay-green pattern is a minority, which is the opposite of how the viral
-  version of this argument runs.
-- **The named courses are the most conspicuously green, and their drought
-  behaviour did not differ.** In normal years they stand out against their
-  surroundings by an NDVI gap of +0.280 versus +0.058 for every other course
-  (permutation p < 0.0001), though much of that is location: Metro Manila
-  courses average +0.308 against +0.051 elsewhere. Their drought-season change
-  was statistically indistinguishable from every other course (p = 0.70). This
-  does not say they use less water than anyone else; a persistent greenness
-  contrast fits heavier irrigation just as well as it fits being green land in
-  a dense city, and the measurement cannot separate the two.
-- **Half went back when the drought lifted.** Of the 28 courses with a clear
-  2024 signal, 13 fell below the threshold in the normal Feb-Apr 2026 season
-  and 15 stayed elevated (paired permutation p = 0.004). The control rings did
-  not shift, so this is not the neighbourhoods changing.
-- Rizal has the highest mean signal of the five restricted areas and Metro
-  Manila the lowest. Being inside a moratorium area does not predict the signal
-  at all (p = 0.76), a null worth stating.
+- **The per-course satellite signal failed its control, and this project says
+  so on its front page.** Feb-Apr 2026 was ENSO-neutral, so running the same
+  statistic on it gives a season with no drought to detect. The stay-green
+  threshold fires on 29.0 percent of courses there against 20.3 percent in the
+  2024 drought. A detector that fires more often with no drought does not
+  measure drought response, so no individual course is ranked by water use here.
+- **What survives is the population.** Across all 138 courses the mean signal
+  was -0.0148 in the drought season against +0.0046 in the control, a paired
+  shift of -0.0194 (p = 0.002). Philippine golf courses as a class browned
+  relative to their surroundings during the drought and returned to parity
+  afterwards, which is the opposite direction from the viral claim.
+- **The named courses are the most conspicuously green**, by a normal-season
+  NDVI gap of +0.280 against +0.058 for every other course. That holds because
+  it is pooled over five seasons rather than one. It does not say they use more
+  water: a persistent contrast fits heavier irrigation and fits being green land
+  in a dense city equally well.
+- **The restricted geography was wrong and is corrected.** NWRB Resolution
+  001-0904, as quoted by the Supreme Court, names Metro Manila plus five
+  municipalities in Bulacan and Cavite, not five whole provinces. 18 courses and
+  6 of 14 data center sites sit inside the named areas, roughly half what this
+  map claimed before 2026-07-20.
 - 1 of 14 tracked data center sites publishes any water metric. The DENR has
-  named golf courses in water directives; it has named zero data centers.
+  named golf courses in water directives; it has named zero data centers. That
+  asymmetry is public record, not a satellite measurement, and it is the only
+  headline claim here that does not depend on the imagery.
 
 Why it matters this month: Angat Dam, which supplies about 90 percent of Metro
 Manila's raw water, is at its lowest recorded level (152.85 m, 7.15 m below the
@@ -68,11 +69,17 @@ season turned, which is the point as the next dry season approaches.
 For each OSM golf polygon, the pipeline compares NDVI inside the course
 against a 30-300 m control ring around it (other golf land excluded), in
 Feb-Apr windows: 2019-2023 pooled (normal), 2024 (El Nino), 2026 (latest).
-Cloud Score+ per-pixel masking, 10 m scale. A course whose greenness advantage
-over its surroundings grew during the drought was being watered. The metric is
-greenness, not liters; staying green is compatible with the DENR directive if
-the water was recycled, and the satellite cannot see the source. No
-accusations are made or implied.
+Cloud Score+ per-pixel masking, 10 m scale.
+
+The intended reading was that a course whose greenness advantage over its
+surroundings grew during the drought was being watered. Tested against the
+ENSO-neutral 2026 season that inference does not hold per course: the threshold
+fires more often with no drought than with one. Tree canopy, ponds, a high
+water table, uneven rainfall across 300 metres, relaid turf, or a ring of
+irrigated rice paddy all move the same number, and no optical index separates
+them. The metric is greenness, not liters; staying green is in any case
+compatible with the DENR directive, which asks for recycled water rather than
+less water. No accusations are made or implied.
 
 ## Data
 
@@ -80,8 +87,9 @@ accusations are made or implied.
 |---|---|---|
 | Golf courses (138) | OSM `leisure=golf_course` via Overpass | ~6,700 ha; Valley Golf, one of the DENR-13, is missing from OSM |
 | Data centers (14) | Hand-curated from operator press | Per-site source URL and pin-precision label |
-| Moratorium areas (5) | OSM admin boundaries | Coverage per legal commentary on NWRB issuances |
-| Stay-green signal | Sentinel-2 L2A + Cloud Score+ | `pipeline/ndvi_anomaly.py` |
+| Restriction areas (7) | OSM admin boundaries | 6 named in NWRB Res. 001-0904 per SC G.R. 208383, plus Rizal as a reported extension |
+| Stay-green signal | Sentinel-2 L2A + Cloud Score+ | `pipeline/ndvi_anomaly.py`; fails its control, see findings |
+| Observation counts | Sentinel-2 scene counts per polygon | `pipeline/ndvi_quality.py` |
 
 Provenance for every number: [docs/SOURCES.md](docs/SOURCES.md).
 
@@ -92,7 +100,7 @@ python3.12 -m venv .venv && .venv/bin/pip install -r requirements.txt
 make data      # OSM golf + curated data centers + moratorium boundaries
 make ndvi      # Earth Engine measurement (needs an EE account or SA key)
 make summary   # site/data/summary.json + layer copies
-make e2e       # 31 offline checks against committed data
+make e2e       # 39 offline checks against committed data
 make serve     # local map at http://localhost:8737
 ```
 

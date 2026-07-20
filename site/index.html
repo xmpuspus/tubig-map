@@ -4,24 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TUBIG-MAP: who competes for Metro Manila's groundwater</title>
-<meta name="description" content="Philippine golf courses and data centers over the NWRB deep-well moratorium areas, with a Sentinel-2 stay-green measurement of golf irrigation during the 2024 El Nino.">
+<meta name="description" content="Philippine golf courses and data centers mapped over the areas where NWRB restricts deep wells. The per-course satellite stay-green signal was tested against a no-drought control season and failed; what survives is a population-level result, reported with the failure.">
 <link rel="canonical" href="https://tubig-map.vercel.app/">
 <meta name="theme-color" content="#f9f9f7">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:site_name" content="TUBIG-MAP">
 <meta property="og:title" content="Who competes for Metro Manila's groundwater">
-<meta property="og:description" content="Regulators named 13 golf courses in a water directive and zero data centers. Both sit on the same restricted groundwater. Measured from Sentinel-2, not asserted.">
+<meta property="og:description" content="Regulators named 13 golf courses in a water directive and zero data centers. The satellite measurement meant to go with that failed its control season, and this map says so on its front page.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://tubig-map.vercel.app/">
-<meta property="og:image" content="https://tubig-map.vercel.app/og-card.png?v=20260720">
+<meta property="og:image" content="https://tubig-map.vercel.app/og-card.png?v=20260720b">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Map of Philippine golf courses and data centers over the NWRB deep-well moratorium areas">
+<meta property="og:image:alt" content="Map of Philippine golf courses and data centers over the areas where NWRB restricts deep wells">
 <meta property="og:locale" content="en_PH">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Who competes for Metro Manila's groundwater">
-<meta name="twitter:description" content="Regulators named 13 golf courses in a water directive and zero data centers. Both sit on the same restricted groundwater.">
-<meta name="twitter:image" content="https://tubig-map.vercel.app/og-card.png?v=20260720">
+<meta name="twitter:description" content="Regulators named 13 golf courses in a water directive and zero data centers. The satellite measurement meant to go with that failed its control season.">
+<meta name="twitter:image" content="https://tubig-map.vercel.app/og-card.png?v=20260720b">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <style>
@@ -137,11 +137,14 @@ a{color:var(--pos)}
 <header>
   <p class="kicker">tubig = water &middot; an open measurement, not an accusation</p>
   <h1>Who competes for Metro Manila's groundwater</h1>
-  <p class="lede">Golf courses and data centers cluster in the same five provinces where the
-  National Water Resources Board restricts new deep wells. Regulators have named golf courses
-  in water-conservation directives repeatedly. They have never named a data center. This map
-  shows both industries on the restricted ground, and measures from satellite which golf courses
-  stayed green through the 2024 El Nino drought.</p>
+  <p class="lede">Golf courses and the data center buildout draw on the same stressed
+  groundwater, and some of both sit inside the areas where the National Water Resources Board
+  banned new deep wells. Regulators have named golf courses in water-conservation directives
+  repeatedly. They have never named a data center. This map
+  shows both industries on the restricted ground, and reports what a Sentinel-2 measurement of
+  the 2024 El Nino can and cannot support. Tested against a no-drought control season, the
+  per-course stay-green signal failed. What survives is a population-level result and a
+  baseline contrast, both reported below with the failure that produced them.</p>
   <div class="hero-stat" id="hero"></div>
 </header>
 
@@ -150,13 +153,13 @@ a{color:var(--pos)}
   <div id="map-status">Loading map data</div>
   <details class="panel" id="controls" open>
     <summary>Layers</summary>
-    <label><input type="checkbox" id="tg-golf" checked> Golf courses (stay-green signal)</label>
+    <label><input type="checkbox" id="tg-golf" checked> Golf courses (greenness contrast)</label>
     <label><input type="checkbox" id="tg-denr" checked> DENR 2024 directive courses</label>
     <label><input type="checkbox" id="tg-dc" checked> Data centers</label>
-    <label><input type="checkbox" id="tg-mor" checked> Deep-well moratorium areas</label>
+    <label><input type="checkbox" id="tg-mor" checked> Deep-well ban areas (NWRB-named)</label>
   </details>
   <div class="panel" id="legend">
-    <b style="font-size:12px">Stay-green signal, El Nino 2024</b>
+    <b style="font-size:12px">Greener than its surroundings, normal dry seasons</b>
     <div class="ramp"></div>
     <div class="ramp-labels"><span id="ramp-lo"></span><span>0</span><span id="ramp-hi"></span></div>
     <details id="legend-keys" open>
@@ -165,7 +168,7 @@ a{color:var(--pos)}
     <div class="key"><span class="sw" style="border:2px solid var(--ink);background:transparent"></span> named in DENR directive</div>
     <div class="key"><span class="dot" style="background:var(--dc)"></span> data center (size = disclosed MW)</div>
     <div class="key"><span class="dot" style="border:2px solid var(--dc);background:transparent"></span> building or planned</div>
-    <div class="key"><span class="sw" style="background:rgba(107,106,100,.18);border:1px solid var(--muted)"></span> moratorium area</div>
+    <div class="key"><span class="sw" style="background:rgba(107,106,100,.18);border:1px solid var(--muted)"></span> area named in NWRB Res. 001-0904 (Rizal reported, unconfirmed)</div>
     </details>
   </div>
 </div>
@@ -202,13 +205,16 @@ a{color:var(--pos)}
     </div>
     <div class="card">
       <h3>Same restricted ground</h3>
-      <p>The NWRB restricts new deep wells in Metro Manila, Bulacan, Cavite, Rizal and Laguna,
-      the areas it considers critical or over-extracted. <span data-n="golf_inside_moratorium"></span>
-      golf courses covering <span data-n="ha_inside_moratorium"></span> hectares sit inside those
-      areas, alongside <span data-n="dc_in_moratorium"></span> of the
-      <span data-n="dc_sites"></span> tracked data center sites, drawing on the same stressed
-      groundwater and the same Angat-dependent piped system.</p>
-      <p class="src">Moratorium coverage per legal commentary on NWRB issuances; boundaries from OSM.</p>
+      <p>NWRB Resolution 001-0904 bans deep-well drilling in Metro Manila and in five named
+      municipalities in Bulacan and Cavite. <span data-n="golf_inside_named"></span> mapped golf
+      courses covering <span data-n="ha_inside_named"></span> hectares sit inside those named
+      areas, alongside <span data-n="dc_in_named"></span> of the
+      <span data-n="dc_sites"></span> tracked data center sites. Counting Rizal, where an
+      extension is reported but unconfirmed, raises that to
+      <span data-n="golf_inside_any"></span> courses and <span data-n="dc_in_any"></span> sites.</p>
+      <p class="src">Resolution 001-0904 as quoted in Supreme Court G.R. No. 208383 (2016);
+      boundaries from OSM. The five-province version this map used until 2026-07-20 was not
+      supported by any source and roughly doubled these counts.</p>
     </div>
     <div class="card">
       <h3>Nobody can compute the comparison</h3>
@@ -223,94 +229,142 @@ a{color:var(--pos)}
     <div class="card">
       <h3>The satellite measurement</h3>
       <p>For each of the <span data-n="golf_measured"></span> mapped golf courses, Sentinel-2
-      imagery compares greenness inside the course against a 300-meter ring around it, in the
-      2024 El Nino dry season versus normal years. Turf that stayed green while its surroundings
-      browned beyond the usual gap is being watered. This measures greenness, not liters, and
-      carries no accusation.</p>
-      <p class="src">Method: NDVI medians, Cloud Score+ mask, Feb-Apr windows. Details in the repo.</p>
+      imagery compares greenness inside the course against a 300-meter ring around it, across
+      three windows: 2019-2023 pooled, the 2024 El Nino, and ENSO-neutral 2026. The drought
+      median rests on about <span data-n="obs_elnino_median"></span> cloud-free observations per
+      pixel against <span data-n="obs_base_median"></span> for the pooled baseline, and
+      <span data-n="obs_under_10"></span> courses have fewer than ten.</p>
+      <p>That thin single-season sampling is why the per-course drought signal does not survive
+      its control. This measures greenness, not liters, and carries no accusation.</p>
+      <p class="src">Method: NDVI medians, Cloud Score+ mask, Feb-Apr windows, per-course
+      observation counts in data/ndvi_quality.csv.</p>
     </div>
   </div>
 </section>
 
 <section>
-  <h2>What the measurement found</h2>
-  <p class="sub">Four results computed from the same table that drives the map. Group differences
-  are tested by permutation (20,000 resamples), not assumed.</p>
+  <h2>What the measurement found, including where it failed</h2>
+  <p class="sub">Group differences are permutation-tested (20,000 resamples, so p values floor at
+  about 5 in 100,000 and are reported as bounds below that). Courses cluster spatially: 138
+  polygons form roughly 60 independent groups at 10 km, so tests here shuffle whole clusters
+  where that matters and the effective sample size is nearer 60 to 99 than 138. This project ran
+  21 tests in total; at that family size a Bonferroni threshold is p = 0.0024, and each card below
+  says whether it clears it. The first card governs how much weight the rest can carry.</p>
   <div class="cards">
+    <div class="card" style="border-color:var(--flag);border-left:4px solid var(--flag);background:#fdfaf8">
+      <h3>The per-course detector failed its control</h3>
+      <span class="big" id="i-null"></span>
+      <p>Feb-Apr 2026 was ENSO-neutral, so running the identical statistic on it gives a control
+      with no drought to detect. If the threshold measured drought irrigation it should almost
+      never fire there. It fires <span data-n="null_hit_rate"></span> percent of the time in the
+      normal season against <span data-n="drought_hit_rate"></span> percent in the drought season,
+      and the spread of the two distributions is the same to within 3 percent.</p>
+      <p><b>So no individual course can be picked out of the noise, and this project does not
+      claim otherwise.</b> An earlier version of this page led with "28 courses stayed green",
+      which is the drought-season count with no control beside it. That framing is withdrawn.
+      The ranked table further down is kept only so the failure is visible: each course is shown
+      in both seasons, and the two columns disagree about as often as they agree.</p>
+      <p><b>And it is not the wrong index.</b> The obvious objection is that NDVI measures
+      greenness, while water stress shows up first in canopy moisture. So the same measurement was
+      re-run on NDMI, which uses the shortwave-infrared band where leaf water absorbs, from the
+      same Sentinel-2 collection that was being queried all along. NDMI fails the same control:
+      <span data-n="ndmi_hit_rate"></span> percent of courses clear the threshold in the drought
+      season against <span data-n="ndmi_null_rate"></span> percent with no drought, an excess of
+      <span data-n="ndmi_excess"></span> points against
+      <span data-n="ndvi_excess"></span> for NDVI. The two indices agree with each other
+      (Pearson +0.88, 12 of 15 top courses shared), so they are measuring the same thing and
+      neither can resolve one dry season of per-course irrigation response against a 300 m ring.</p>
+      <p class="src">analysis/empirical_null.py and analysis/index_shootout.py. Every rate here
+      comes from site/data/summary.json.</p>
+    </div>
     <div class="card">
-      <h3>Most courses browned, they did not stay green</h3>
-      <span class="big" id="i-browned"></span>
-      <p>Across all <span data-n="golf_measured"></span> measured courses the median signal is
-      <span data-n="median_signal"></span> and only <span data-n="pct_positive"></span> percent are
-      positive at all. More courses browned faster than their surroundings during the drought than
-      stayed green. The stay-green pattern is a minority, which is the opposite of how the viral
-      version of this argument runs.</p>
-      <p class="src">Checked against the small-polygon problem: counting only the
-      <span data-n="measured_large"></span> courses of at least
-      <span data-n="min_leaderboard_ha"></span> hectares, it is still
-      <span data-n="browned_more_large"></span> browned against
-      <span data-n="strong_signal_large"></span> that stayed green. The direction holds either way.</p>
+      <h3>The population did respond to the drought</h3>
+      <span class="big" id="i-pop"></span>
+      <p>The same data supports a result about all <span data-n="golf_measured"></span> courses
+      together that it cannot support about any one of them. Mean signal was
+      <span data-n="all_mean_2024"></span> in the drought season against
+      <span data-n="all_mean_2026"></span> in the normal season, a paired shift of
+      <span data-n="pop_shift"></span> (permutation p = 0.002). Philippine golf courses as a class
+      browned relative to their surroundings during the drought and returned to parity
+      afterwards.</p>
+      <p>That is the opposite direction from the viral version of this argument, and it is the
+      most defensible thing in the dataset because averaging courses is exactly what beats the
+      per-course noise. Worth knowing how it decomposes: into the drought the average course fell
+      0.036 in NDVI while its ring fell 0.021, so the courses browned harder than their
+      surroundings. And 45 of 138 rings actually greened during the drought, which is a reminder
+      that a ring is a piece of countryside with its own weather and crops, not a null.</p>
     </div>
     <div class="card">
       <h3>The named courses are the most conspicuously green</h3>
       <span class="big" id="i-visible"></span>
-      <p>In normal years the DENR-named courses stand out against their surroundings by an NDVI gap
-      of <span data-n="denr_gap_base"></span>, against <span data-n="rest_gap_base"></span> for every
-      other mapped course (permutation p below 0.0001). Much of that is where they sit: Metro Manila
-      courses average +0.308 against +0.051 elsewhere, because the surroundings are built up. Their
-      drought-season change, though, was statistically indistinguishable from every other course
-      (p = 0.70).</p>
-      <p>What that does and does not say: a persistent greenness contrast is equally consistent with
-      heavier year-round irrigation and with simply being green land in a dense city. This
-      measurement cannot separate the two, so it takes no view on whether the 13 were the right 13.
-      It says only that they are the most visible from above, and that their behaviour through the
-      drought did not distinguish them.</p>
+      <p>This one is measured over five pooled seasons rather than one, so it rests on a median of
+      <span data-n="obs_base_median"></span> observations per pixel instead of
+      <span data-n="obs_elnino_median"></span>, and it survives where the single-season signal
+      does not. In normal years the DENR-named courses stand out against their surroundings by an
+      NDVI gap of <span data-n="denr_gap_base"></span>, against
+      <span data-n="rest_gap_base"></span> for every other mapped course. Shuffling whole
+      10 km clusters rather than individual courses, so that neighbouring courses cannot count
+      as independent evidence, gives p = 0.005. It is the only group comparison here that clears
+      a Bonferroni threshold for the full family of 21 tests this project ran.</p>
+      <p>This contrast is chronic rather than seasonal: it correlates at +0.88 between the
+      drought season and the normal one, so it describes how a course sits against its
+      neighbourhood in general and not how it behaved when water got scarce. Much of it is simply
+      where they sit: Metro Manila courses average +0.308 against +0.051 elsewhere, because the
+      surroundings are built up. A persistent greenness contrast is
+      equally consistent with heavier year-round irrigation and with being green land in a dense
+      city, and this measurement cannot separate the two. It takes no view on whether the 13
+      were the right 13.</p>
     </div>
     <div class="card">
-      <h3>When the drought lifted, half went back</h3>
-      <span class="big" id="i-revert"></span>
-      <p>Of the <span data-n="strong_signal"></span> courses with a clear stay-green signal in the
-      2024 drought, <span data-n="reverted_2026"></span> fell back below the threshold in the normal
-      Feb-Apr 2026 season and <span data-n="persisted_2026"></span> stayed elevated. The group mean
-      dropped from +0.068 to +0.044 (paired permutation p = 0.004). The control rings did not shift
-      between periods (p = 0.85), so this is not the neighbourhoods changing around them.</p>
-    </div>
-    <div class="card">
-      <h3>Rizal stands out, Metro Manila least</h3>
-      <span class="big" id="i-rizal"></span>
-      <p>Rizal has the highest mean signal of the five restricted areas and Metro Manila the lowest,
-      even though Metro Manila is where the named courses are. Across the whole set, being inside a
-      moratorium area does not predict the signal at all (inside -0.012 vs outside -0.016, p = 0.76).
-      That null is worth stating: the boundary marks where wells are restricted, not where turf
-      stayed green.</p>
+      <h3>Forty-four courses are barer than their surroundings</h3>
+      <span class="big" id="i-inverted"></span>
+      <p>In normal dry seasons <span data-n="inverted_baseline"></span> of the mapped polygons
+      have a negative baseline gap: the land inside the course is less green than the ring around
+      it. A working irrigated course is not usually barer than its neighbourhood, so these are
+      likely construction, sand-heavy layouts, closed courses, or OSM polygons that do not match
+      the playing surface.</p>
+      <p>They matter because a course with an unusually bare baseline produces a large positive
+      "signal" simply by returning to normal. They are excluded from the ranked table for that
+      reason, which is why the previously top-ranked entry no longer appears.</p>
     </div>
   </div>
 </section>
 
 <section>
-  <h2>The five restricted areas</h2>
-  <p class="sub">Golf land and stay-green counts inside each NWRB deep-well moratorium area.</p>
+  <h2>The areas NWRB actually named</h2>
+  <p class="sub">An earlier version of this map drew five whole provinces. The only source for
+  that was a law firm article saying restrictions apply "especially in Metro Manila and nearby
+  provinces (e.g., Bulacan, Cavite, Rizal, Laguna)", which names no resolution and claims no
+  province-wide coverage. The Supreme Court, quoting NWRB Resolution 001-0904 in G.R. No. 208383
+  (2016), names Metro Manila plus Guiguinto, Bocaue, Marilao and Meycauayan in Bulacan and
+  Dasmarinas in Cavite. Rizal is carried separately because a later extension is reported but the
+  amending resolution could not be located. Laguna is dropped: no primary source names it.
+  Correcting this roughly halved every co-location count on this page.</p>
   <div class="tablewrap">
   <table id="prov-table" aria-label="Golf courses by moratorium area">
-    <thead><tr><th>Moratorium area</th><th class="num">Courses</th><th class="num">Hectares</th>
-      <th class="num">Mean signal</th><th class="num">Stayed green</th></tr></thead>
+    <thead><tr><th>Area</th><th>Basis</th><th class="num">Courses</th><th class="num">Hectares</th>
+      <th class="num">Mean 2024 signal</th></tr></thead>
     <tbody></tbody>
   </table>
   </div>
 </section>
 
 <section>
-  <h2>Courses with the strongest stay-green signal</h2>
-  <p class="sub">El Nino 2024 signal, with the same course measured again in the normal Feb-Apr 2026
-  season. Select a row to find it on the map. Courses under
-  <span data-n="min_leaderboard_ha"></span> hectares are excluded from this ranking because driving
-  ranges and OSM slivers are mostly edge pixels; they remain on the map and in every total.</p>
+  <h2>The same courses in a drought season and a normal one</h2>
+  <p class="sub">This table is not a ranking of water use. It is the evidence for the first card
+  above. Each course carries its 2024 drought-season signal, a 95 percent interval, and the same
+  statistic for the ENSO-neutral 2026 season. If the measurement isolated drought irrigation the
+  two columns would agree and the intervals would clear zero. Mostly they do neither. Courses
+  under <span data-n="min_leaderboard_ha"></span> hectares, polygons nested inside another course,
+  unnamed parcels, and courses with a negative baseline gap are all excluded; every one of those
+  exclusions removes entries that would otherwise rank near the top.</p>
   <details open>
-    <summary>Top courses by El Nino 2024 irrigation signal</summary>
+    <summary>Ordered by 2024 signal, shown against the no-drought control season</summary>
     <div class="tablewrap">
-    <table id="signal-table" aria-label="Golf courses ranked by stay-green signal">
+    <table id="signal-table" aria-label="Golf courses in the drought season and a normal season">
       <thead><tr><th>Course</th><th class="num">Hectares</th><th class="num">2024 signal</th>
-        <th class="num">2026 signal</th><th>DENR 2024</th></tr></thead>
+        <th class="num">95% interval</th><th class="num">2026 control</th>
+        <th class="num">Obs</th><th>DENR 2024</th></tr></thead>
       <tbody></tbody>
     </table>
     </div>
@@ -327,15 +381,63 @@ a{color:var(--pos)}
     consistent with irrigation, including irrigation from recycled or harvested water, which is
     exactly what the DENR directive asks for. The signal cannot say where the water came from.</p></div>
     <div class="card"><h3>Data center pins vary in precision</h3><p>Each site carries a
-    precision label from building-level down to city-level, and its source. Only one of the
-    tracked sites has a building-precision pin, so this map does not make claims about how
-    physically close any data center is to any golf course. Co-location is stated at the level of
-    the restricted area only. Capacity claims for the national buildout disagree by an order of
-    magnitude across 2025-2026 sources; megawatt figures shown carry their source.</p></div>
-    <div class="card"><h3>One threshold, chosen not discovered</h3><p>The
-    <span data-n="strong_signal_threshold"></span> cutoff for a clear stay-green signal sits about
-    0.7 standard deviations above the mean. There is no natural break in the distribution, so the
-    counts move if the threshold moves. Every underlying value is in the repo.</p></div>
+    precision label and its source. <span data-n="dc_building_precision"></span> of
+    <span data-n="dc_sites"></span> are building-precision; the rest are city, district or campus
+    centroids, so this map makes no claim about how physically close any data center is to any
+    golf course. Co-location is stated at the level of the named restricted area only. Capacity
+    claims for the national buildout disagree by an order of magnitude across 2025-2026 sources;
+    megawatt figures carry their source.</p></div>
+    <div class="card"><h3>One threshold, and it did not work</h3><p>The
+    <span data-n="strong_signal_threshold"></span> cutoff was chosen, not discovered: there is no
+    natural break in the distribution. Tested against the no-drought 2026 season it fires more
+    often with no drought than with one, so it is reported here as a failed instrument rather
+    than used to count courses. Every underlying value is in the repo.</p></div>
+    <div class="card"><h3>OSM polygons overlap and repeat</h3><p>
+    <span data-n="golf_nested"></span> polygons lie wholly inside another mapped course, and
+    several courses are split across multiple polygons. Nested polygons are flagged, excluded
+    from totals and from the table, and left visible on the map. Totals count
+    <span data-n="golf_standalone"></span> standalone polygons.</p></div>
+    <div class="card"><h3>Many things other than irrigation move this number</h3><p>A course can
+    read greener than its ring because it has mature tree canopy while the ring is bare, because
+    it contains lakes or ponds, because it sits on a high water table or a spring, because rain
+    fell unevenly across 300 metres, or because turf was relaid that year. A course can read
+    browner because the ring is irrigated rice paddy on its own planting calendar. Twenty-three of
+    the 85 larger courses have rings greener than the course itself. None of these can be
+    separated from irrigation by an optical index, and staying green is in any case compatible
+    with the DENR directive, which asks courses to switch to recycled water rather than to stop
+    watering.</p></div>
+    <div class="card"><h3>Most of the map is not Metro Manila</h3><p>The headline asks about Metro
+    Manila's groundwater, but the golf layer is national: only
+    <span data-n="golf_inside_named"></span> of <span data-n="golf_standalone"></span> mapped
+    courses are inside an area NWRB named, and several courses in the table are on other islands
+    entirely. Rows are labelled with their area so this is visible rather than implied.</p></div>
+    <div class="card"><h3>The error bars are wide and incomplete</h3><p>Intervals come from
+    repeat-observation scatter only. They do not cover geolocation error, atmospheric correction
+    residual, or the fact that a control ring is not matched to its course on land cover, soil or
+    slope. A ring dominated by irrigated rice paddy carries its own water signal. Median interval
+    width is <span data-n="se_signal_median"></span> times four, which is wider than almost every
+    signal on the page.</p></div>
+  </div>
+  <div class="card" style="margin-top:16px;border-color:var(--flag);border-left:4px solid var(--flag);background:#fdfaf8">
+    <h3>If something here is wrong about your organisation</h3>
+    <p>Every figure on this page is computed from public data by scripts in the repository, and
+    every course and site is identifiable, so errors here attach to real named organisations. If a
+    polygon is not your land, a name is wrong, a status is out of date, a water disclosure exists
+    that this project did not find, or a measurement looks wrong to you, the fastest route is to
+    <a href="https://github.com/xmpuspus/tubig-map/issues">open an issue</a> or email
+    <a href="mailto:xpuspus@gmail.com">xpuspus@gmail.com</a>.</p>
+    <p>Corrections are applied to the underlying data and the change is recorded in
+    <a href="https://github.com/xmpuspus/tubig-map/blob/main/docs/DOUBT-LOOP.md">docs/DOUBT-LOOP.md</a>
+    with what was wrong and what replaced it, the same way this project has recorded its own
+    withdrawn findings. Corrections that arrive with evidence do not need to argue for
+    themselves.</p>
+    <p class="src">Raw data:
+    <a href="data/golf_ndvi.geojson">golf_ndvi.geojson</a>,
+    <a href="data/data_centers.geojson">data_centers.geojson</a>,
+    <a href="data/moratorium_areas.geojson">moratorium_areas.geojson</a>,
+    <a href="data/summary.json">summary.json</a>.
+    Method and provenance:
+    <a href="https://github.com/xmpuspus/tubig-map/blob/main/docs/SOURCES.md">docs/SOURCES.md</a>.</p>
   </div>
   <p class="disclaimer" style="margin-top:16px">All data sourced from public records and public
   satellite imagery (OpenStreetMap, DENR and MWSS statements as reported, operator disclosures,
@@ -355,6 +457,13 @@ a{color:var(--pos)}
 // +/-0.05, so a full-range ramp would wash everything out. Values beyond the
 // clamp saturate, and the legend says so in numbers rather than words.
 const SIGNAL_MAX = 0.12;
+// The map colours by gap_base, the course-minus-ring greenness contrast in
+// normal dry seasons. That is pooled over five seasons (median ~54 observations
+// per pixel) and is the part of this measurement that survived its control.
+// The single-season 2024 signal is in the popup with its interval, not on the
+// fill, because colouring 138 courses by a statistic that fails its own null
+// would be the map asserting what the analysis withdrew.
+const GAP_MAX = 0.30;
 const fmt = (x, d=3) => x == null ? "no data" : (+x).toFixed(d);
 const signed = (x, d=3) => x == null ? "no data" : ((+x >= 0 ? "+" : "") + (+x).toFixed(d));
 const num = v => (v == null || v === "null" || v === "") ? null : +v;
@@ -384,18 +493,17 @@ async function boot() {
   document.getElementById("hero").innerHTML = `
     <div class="stat lead"><b>${summary.denr_named_golf} vs ${summary.denr_named_dc}</b>
       <span>golf courses versus data centers ever named in a Philippine regulator's water
-      directive, though both sit on the same restricted groundwater</span></div>
-    <div class="stat"><b>${summary.golf_inside_moratorium} of ${summary.golf_features}</b>
-      <span>mapped golf courses sit inside the restricted areas
-      (${Math.round(summary.ha_inside_moratorium).toLocaleString()} of
-      ${Math.round(summary.golf_hectares).toLocaleString()} hectares); the rest are elsewhere in
-      the country</span></div>
-    <div class="stat"><b>${summary.dc_sites}</b>
-      <span>data center sites tracked, ${summary.dc_disclosures} with a published water metric</span></div>
-    <div class="stat"><b>${summary.strong_signal}</b>
-      <span>courses that stayed green in El Nino 2024</span></div>
-    <div class="stat"><b>${summary.browned_more}</b>
-      <span>courses that browned faster than their surroundings instead</span></div>`;
+      directive. That asymmetry is a matter of public record, not a satellite measurement.</span></div>
+    <div class="stat"><b>${summary.golf_inside_named} of ${summary.golf_standalone}</b>
+      <span>mapped golf courses sit inside an area NWRB actually named
+      (${Math.round(summary.ha_inside_named).toLocaleString()} ha), alongside
+      ${summary.dc_in_named} of ${summary.dc_sites} data center sites</span></div>
+    <div class="stat"><b>${summary.dc_disclosures} of ${summary.dc_sites}</b>
+      <span>data center sites publish any water metric at all</span></div>
+    <div class="stat"><b>${summary.null_strong} vs ${summary.strong_signal}</b>
+      <span>courses clearing the stay-green threshold in a normal season versus the drought
+      season. The detector fires more often when there is no drought, so it does not work
+      per course. See below.</span></div>`;
 
   document.querySelectorAll("[data-n]").forEach(el => {
     const v = summary[el.dataset.n];
@@ -410,21 +518,21 @@ async function boot() {
     document.getElementById("legend-keys").open = false;
   }
   const set = (id, txt) => { const e = document.getElementById(id); if (e) e.textContent = txt; };
-  set("i-browned", `${summary.browned_more} browned vs ${summary.strong_signal} stayed green`);
+  set("i-null", `${summary.null_strong} fire with no drought vs ${summary.strong_signal} with one`);
+  set("i-pop", `${signed(summary.all_mean_2024)} in drought, ${signed(summary.all_mean_2026)} after`);
   set("i-visible", `${signed(summary.denr_gap_base)} vs ${signed(summary.rest_gap_base)} normal-season gap`);
-  set("i-revert", `${summary.reverted_2026} of ${summary.measured_2026} went back`);
-  const top = summary.provinces[0], bottom = summary.provinces[summary.provinces.length - 1];
-  set("i-rizal", `${top.area} ${signed(top.mean_signal)} / ${bottom.area} ${signed(bottom.mean_signal)}`);
-  set("ramp-lo", "-" + SIGNAL_MAX.toFixed(2) + " or lower");
-  set("ramp-hi", "+" + SIGNAL_MAX.toFixed(2) + " or higher");
+  set("i-inverted", `${summary.inverted_baseline} of ${summary.golf_measured} inverted`);
+  set("ramp-lo", "-" + GAP_MAX.toFixed(2) + " or lower");
+  set("ramp-hi", "+" + GAP_MAX.toFixed(2) + " or higher");
 
   const ptbody = document.querySelector("#prov-table tbody");
   summary.provinces.forEach(p => {
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${p.area}</td><td class="num">${p.courses}</td>
+    tr.innerHTML = `<td>${p.area}</td>
+      <td>${p.status === "named" ? "named in NWRB Res. 001-0904" : "reported extension, unconfirmed"}</td>
+      <td class="num">${p.courses}</td>
       <td class="num">${p.hectares.toLocaleString()}</td>
-      <td class="num">${signed(p.mean_signal, 3)}</td>
-      <td class="num">${p.strong}</td>`;
+      <td class="num">${p.mean_signal == null ? "n/a" : signed(p.mean_signal, 3)}</td>`;
     ptbody.appendChild(tr);
   });
 
@@ -451,10 +559,16 @@ async function boot() {
     const tr = document.createElement("tr");
     tr.className = "clickable";
     tr.tabIndex = 0;
-    tr.innerHTML = `<td>${row.name || "(unnamed, OSM " + row.osm_id + ")"}</td>
+    const clears = row.ci_lo != null && row.ci_lo > 0;
+    tr.innerHTML = `<td>${row.name}</td>
       <td class="num">${Math.round(row.hectares).toLocaleString()}</td>
       <td class="num">${signed(row.irrigation_signal)}</td>
+      <td class="num" style="${clears ? "" : "color:var(--muted)"}">${
+        row.ci_lo == null ? "no data" :
+        signed(row.ci_lo) + " to " + signed(row.ci_hi) + (clears ? "" : " (spans 0)")}</td>
       <td class="num">${signed(row.signal_2026)}</td>
+      <td class="num">${row.n_elnino == null ? "" : Math.round(row.n_elnino)}</td>
+      <td style="${row.moratorium_area ? "" : "color:var(--muted)"}">${row.moratorium_area || "outside"}</td>
       <td>${row.denr_2024 ? "named" : ""}</td>`;
     const go = () => {
       const f = byId.get(String(row.osm_id));
@@ -475,11 +589,21 @@ async function boot() {
   function showGolf(p, lngLat) {
     const sig = num(p.irrigation_signal), sig26 = num(p.signal_2026);
     popup.setLngLat(lngLat).setHTML(`
-      <div class="pop-name">${p.name || "Unnamed golf course"}</div>
+      <div class="pop-name">${p.name || "Unnamed golf course"}</div>${
+        p.name_source && p.name_source !== "null"
+          ? '<div class="pop-row" style="font-size:11px;color:#6b6a64">name not in OpenStreetMap; identified by geocoding, see docs</div>'
+          : ""}
       <div class="pop-row">${Math.round(p.hectares).toLocaleString()} ha${p.moratorium_area && p.moratorium_area !== "null" ? " &middot; " + p.moratorium_area : ""}</div>
-      <div class="pop-row">2024 El Nino signal: ${sig == null ? "no measurement" : signed(sig)}</div>
-      <div class="pop-row">2026 normal season: ${sig26 == null ? "no measurement" : signed(sig26)}</div>
-      <div class="pop-row">gap vs ring: ${fmt(num(p.gap_elnino))} in 2024, ${fmt(num(p.gap_base))} in normal years</div>
+      <div class="pop-row">greener than surroundings, normal seasons: ${fmt(num(p.gap_base))}</div>
+      <div class="pop-row">2024 drought signal: ${sig == null ? "no measurement" : signed(sig)}${
+        num(p.ci_lo) == null ? "" :
+        " (95% " + signed(num(p.ci_lo)) + " to " + signed(num(p.ci_hi)) +
+        ((num(p.ci_lo) > 0 || num(p.ci_hi) < 0) ? ")" : ", spans zero)")}</div>
+      <div class="pop-row">same statistic, no-drought 2026: ${sig26 == null ? "no measurement" : signed(sig26)}</div>
+      <div class="pop-row" style="font-size:11px;color:#6b6a64">${
+        p.n_elnino == null ? "" : "based on ~" + Math.round(num(p.n_elnino)) + " cloud-free observations"}${
+        num(p.gap_base) != null && num(p.gap_base) <= 0 ? " &middot; barer than its surroundings in normal years" : ""}${
+        p.contained_in && p.contained_in !== "null" ? " &middot; lies inside another mapped course" : ""}</div>
       ${p.denr_2024 && p.denr_2024 !== "null" ? '<span class="badge">DENR 2024 water directive</span>' : ""}`)
       .addTo(map);
   }
@@ -488,7 +612,7 @@ async function boot() {
       <div class="pop-name">${p.name}</div>
       <div class="pop-row">${p.operator} &middot; ${p.city}, ${p.province}</div>
       <div class="pop-row">status: ${p.status}${num(p.mw) != null ? " &middot; " + p.mw + " MW (source-claimed)" : ""}</div>
-      <div class="pop-row">water disclosure: ${p.water_disclosure && p.water_disclosure !== "null" ? p.water_disclosure : "none published"}</div>
+      <div class="pop-row">water disclosure: ${p.water_disclosure && p.water_disclosure !== "null" ? p.water_disclosure : "no site-level metric found in public sources"}</div>
       <div class="pop-row" style="font-size:11px;color:#6b6a64">pin precision: ${p.precision}</div>`)
       .addTo(map);
   }
@@ -506,9 +630,9 @@ async function boot() {
     map.addSource("golf", {type: "geojson", data: golf});
     map.addLayer({id: "golf-fill", type: "fill", source: "golf",
       paint: {"fill-color": [
-        "case", ["==", ["typeof", ["get", "irrigation_signal"]], "number"],
-        ["interpolate-lab", ["linear"], ["get", "irrigation_signal"],
-          -SIGNAL_MAX, "#e34948", 0, "#f0efec", SIGNAL_MAX, "#1c5cab"],
+        "case", ["==", ["typeof", ["get", "gap_base"]], "number"],
+        ["interpolate-lab", ["linear"], ["get", "gap_base"],
+          -GAP_MAX, "#e34948", 0, "#f0efec", GAP_MAX, "#1c5cab"],
         "#e1e0d9"],
       "fill-opacity": 0.85}});
     map.addLayer({id: "golf-line", type: "line", source: "golf",
@@ -521,9 +645,9 @@ async function boot() {
       paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 7, 2.4, 11.5, 6],
         "circle-color": [
-          "case", ["==", ["typeof", ["get", "irrigation_signal"]], "number"],
-          ["interpolate-lab", ["linear"], ["get", "irrigation_signal"],
-            -SIGNAL_MAX, "#e34948", 0, "#f0efec", SIGNAL_MAX, "#1c5cab"],
+          "case", ["==", ["typeof", ["get", "gap_base"]], "number"],
+          ["interpolate-lab", ["linear"], ["get", "gap_base"],
+            -GAP_MAX, "#e34948", 0, "#f0efec", GAP_MAX, "#1c5cab"],
           "#e1e0d9"],
         "circle-stroke-color": "#4c4b48",
         "circle-stroke-width": 0.7,

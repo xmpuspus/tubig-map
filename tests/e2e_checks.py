@@ -68,10 +68,17 @@ def main():
 
     mor = json.loads((DATA / "moratorium_areas.geojson").read_text())
     names = {f["properties"]["name"] for f in mor["features"]}
+    named = {f["properties"]["name"] for f in mor["features"] if f["properties"]["status"] == "named"}
+    # Exactly the areas the Supreme Court quotes NWRB Res. 001-0904 as covering.
+    # Laguna must NOT reappear: it had no primary source and was dropped in the
+    # 2026-07-20 doubt round. Whole provinces must not reappear either.
     check(
         8,
-        "moratorium layer has the 5 NWRB areas",
-        names == {"Metro Manila", "Bulacan", "Cavite", "Rizal", "Laguna"},
+        "restriction layer carries only the areas a primary source names",
+        named == {"Metro Manila", "Guiguinto", "Bocaue", "Marilao", "Meycauayan", "Dasmariñas"}
+        and "Laguna" not in names
+        and "Bulacan" not in names
+        and "Cavite" not in names,
         ", ".join(sorted(names)),
     )
 
@@ -190,14 +197,17 @@ def main():
     )
 
     # ---- moratorium rollup -------------------------------------------------
-    tagged = [p for p in props if p.get("moratorium_area")]
+    nested = {p["osm_id"] for p in props if p.get("contained_in")}
+    tagged = [p for p in props if p.get("moratorium_area") and p["osm_id"] not in nested]
+    in_named = [p for p in tagged if p.get("moratorium_status") == "named"]
     check(
         23,
-        "province rollup covers the 5 areas and course counts reconcile",
-        {p["area"] for p in summary["provinces"]} == names
+        "area rollup reconciles and named-area counts match the layer",
+        {p["area"] for p in summary["provinces"]} <= names
         and sum(p["courses"] for p in summary["provinces"]) == len(tagged)
-        and summary["golf_inside_moratorium"] == len(tagged),
-        f"{len(tagged)} tagged courses across {len(summary['provinces'])} areas",
+        and summary["golf_inside_any"] == len(tagged)
+        and summary["golf_inside_named"] == len(in_named),
+        f"{len(in_named)} in named areas, {len(tagged)} including reported",
     )
 
     # ---- leaderboard hygiene ----------------------------------------------
@@ -271,6 +281,152 @@ def main():
         "page makes no volume claim from the greenness signal",
         not hits,
         ", ".join(hits) if hits else "clean",
+    )
+
+    # ---- oracles for the 2026-07-20 doubt round ---------------------------
+    # Each of these locks a finding that cost a critic round to establish.
+    check(
+        32,
+        "the matched empirical null is computed and still fails",
+        summary["null_strong"] > summary["strong_signal"]
+        and summary["null_hit_rate"] > summary["drought_hit_rate"],
+        f"{summary['null_strong']} fire with no drought vs {summary['strong_signal']} with one",
+    )
+    flat33 = " ".join(html.split())
+    # The retired claim may appear ONLY inside the sentence that withdraws it.
+    quoted_once = flat33.count("28 courses stayed green") == flat33.count(
+        'led with "28 courses stayed green"'
+    )
+    check(
+        33,
+        "the page publishes the failed control and never restates the retired claim",
+        "detector failed its control" in flat33
+        and 'data-n="null_hit_rate"' in html
+        and "summary.null_strong" in html  # the null is in the hero, beside the drought count
+        and quoted_once,
+        "retired claim appears only in its withdrawal" if quoted_once else "RESTATED",
+    )
+    dc_building = [p for p in dcp if "building" in str(p.get("precision", "")).lower()]
+    check(
+        34,
+        "building-precision count matches the layer (substring, not exact match)",
+        summary["dc_building_precision"] == len(dc_building) == 3,
+        f"{len(dc_building)} building-precision pins",
+    )
+    check(
+        35,
+        "nested polygons are flagged and excluded from totals",
+        summary["golf_nested"] == len(nested)
+        and summary["golf_standalone"] == len(props) - len(nested)
+        and len(nested) > 0,
+        f"{len(nested)} nested, {summary['golf_standalone']} standalone",
+    )
+    lb = summary["top_signals"]
+    check(
+        36,
+        "leaderboard excludes nested, unnamed and inverted-baseline courses",
+        all(t["name"] and t["osm_id"] not in nested for t in lb)
+        and all(t.get("ci_lo") is not None for t in lb),
+        f"{len(lb)} rows, all named with intervals",
+    )
+    gap_base_by_id = {p["osm_id"]: p.get("gap_base") for p in props}
+    check(
+        37,
+        "no leaderboard course is barer than its surroundings in normal years",
+        all((gap_base_by_id.get(t["osm_id"]) or 0) > 0 for t in lb),
+        f"{summary['inverted_baseline']} inverted courses excluded",
+    )
+    check(
+        38,
+        "observation counts exist for every measured course and are plausible",
+        (DATA / "ndvi_quality.csv").exists()
+        and summary["obs_elnino_median"] > 5
+        and summary["obs_base_median"] > summary["obs_elnino_median"],
+        f"drought median {summary['obs_elnino_median']}, base {summary['obs_base_median']}",
+    )
+    check(
+        39,
+        "map colours by the pooled baseline contrast, not the failed single-season signal",
+        "GAP_MAX" in html and '["get", "gap_base"]' in html and '-SIGNAL_MAX, "#e34948"' not in html,
+    )
+
+    check(
+        40,
+        "a named party has a stated correction route and the raw data to check",
+        "mailto:xpuspus@gmail.com" in html
+        and "github.com/xmpuspus/tubig-map/issues" in html
+        and 'href="data/golf_ndvi.geojson"' in html,
+    )
+    confounds = ["canopy", "pond", "water table", "rainfall", "relaid", "rice paddy"]
+    present = [c for c in confounds if c in flat33.lower()]
+    check(
+        41,
+        "the page names what else moves the signal, not just irrigation",
+        len(present) >= 5,
+        f"{len(present)}/6 confounds named",
+    )
+    check(
+        42,
+        "no course is published under a bare OSM id, and borrowed names show their basis",
+        "(unnamed, OSM" not in html
+        and all(t["name"] for t in summary["top_signals"])
+        and "name_source" in html,
+    )
+    named_from_override = [p for p in props if p.get("name_source")]
+    check(
+        43,
+        "identifications outside OSM carry their evidence in the data",
+        all(len(str(p["name_source"])) > 40 for p in named_from_override),
+        f"{len(named_from_override)} identified by geocoding",
+    )
+    check(
+        44,
+        "the leaderboard shows which rows fall outside a restricted area",
+        "outside" in html and "${row.moratorium_area" in html,
+    )
+
+    check(
+        45,
+        "the moisture index was tried and its result is published",
+        (DATA / "ndmi_anomaly.csv").exists()
+        and summary.get("ndmi_excess") is not None
+        and summary["ndmi_excess"] < 0
+        and 'data-n="ndmi_excess"' in html,
+        f"NDMI excess {summary.get('ndmi_excess')} pts vs NDVI {summary.get('ndvi_excess')} pts",
+    )
+    check(
+        46,
+        "edge-only polygons are flagged in the measurement table",
+        "edge_only" in open(DATA / "ndvi_anomaly.csv").readline(),
+    )
+    check(
+        47,
+        "pipeline provenance is recorded",
+        (DATA / "PROVENANCE.json").exists()
+        and "ee_collections" in json.loads((DATA / "PROVENANCE.json").read_text()),
+    )
+
+    # The OG card bakes its numbers into a PNG, so it goes stale silently and
+    # ships a retracted claim to every social preview. It nearly did.
+    og_m = og.stat().st_mtime if og.exists() else 0
+    sum_m = (SITE / "data" / "summary.json").stat().st_mtime
+    check(
+        48,
+        "the social card is not older than the numbers it displays",
+        og_m >= sum_m - 120,
+        f"card {'newer' if og_m >= sum_m else 'STALE by ' + str(int(sum_m - og_m)) + 's'}",
+    )
+    check(
+        49,
+        "no social or meta text promises the retracted per-course measurement",
+        "stay-green measurement of golf irrigation" not in html
+        and "courses stayed green through" not in html,
+    )
+
+    check(
+        50,
+        "no published copy still claims the restriction covers five provinces",
+        "same five provinces" not in flat33 and "five NWRB deep-well" not in flat33,
     )
 
     print(f"\n{sum(results)}/{len(results)} checks pass")

@@ -73,16 +73,24 @@ def build_geometries():
     all_golf = unary_union(gdf.geometry.values)
     rows = []
     for _, r in gdf.iterrows():
+        # A 20 m inward buffer removes the boundary pixels. On polygons under
+        # about 0.2 ha it removes everything, and the fallback measures the raw
+        # polygon, which is entirely edge: mixed pixels of turf, path, car park
+        # and whatever adjoins. Those rows are flagged rather than silently
+        # treated as equivalent measurements.
         inner = r.geometry.buffer(-20)
-        if inner.is_empty:
+        edge_only = bool(inner.is_empty)
+        if edge_only:
             inner = r.geometry
         ring = r.geometry.buffer(300).difference(r.geometry.buffer(30)).difference(all_golf)
         if ring.is_empty:
             continue
-        rows.append((str(r.osm_id), r["name"], inner.simplify(5), ring.simplify(5)))
-    back = gpd.GeoSeries([g for _, _, i, ring in rows for g in (i, ring)], crs="EPSG:32651").to_crs(epsg=4326)
+        rows.append((str(r.osm_id), r["name"], inner.simplify(5), ring.simplify(5), edge_only))
+    back = gpd.GeoSeries([g for _, _, i, ring, _ in rows for g in (i, ring)], crs="EPSG:32651").to_crs(
+        epsg=4326
+    )
     feats = []
-    for idx, (osm_id, _name, _, _) in enumerate(rows):
+    for idx, (osm_id, _name, _, _, _) in enumerate(rows):
         feats.append(dict(osm_id=osm_id, kind="golf", geom=back.iloc[idx * 2]))
         feats.append(dict(osm_id=osm_id, kind="ring", geom=back.iloc[idx * 2 + 1]))
     return rows, feats
@@ -120,7 +128,7 @@ def main():
         print(f"batch {i // BATCH + 1}/{(len(feats) + BATCH - 1) // BATCH} done ({len(results)} rows)")
 
     table = []
-    for osm_id, name, _, _ in rows:
+    for osm_id, name, _, _, edge_only in rows:
         g = results.get((osm_id, "golf"), {})
         r = results.get((osm_id, "ring"), {})
         if not g or not r or g.get("elnino") is None or r.get("elnino") is None:
@@ -128,6 +136,7 @@ def main():
         rec = dict(
             osm_id=osm_id,
             name=name,
+            edge_only=int(edge_only),
             golf_base=g.get("base"),
             golf_elnino=g["elnino"],
             golf_latest=g.get("latest"),
@@ -144,6 +153,7 @@ def main():
     cols = [
         "osm_id",
         "name",
+        "edge_only",
         "golf_base",
         "golf_elnino",
         "golf_latest",

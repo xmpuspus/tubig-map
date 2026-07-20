@@ -1,0 +1,9 @@
+{
+  "_comment": "Golf polygons that OSM leaves unnamed but that are identifiable from public geocoding. Publishing a signal against a database key is worse than publishing it against the real name, and worse than not publishing it at all. Each entry records how the identification was made so it can be contested.",
+  "15979150": {
+    "name": "Pradera Verde Golf and Country Club",
+    "basis": "Nominatim forward geocode of the club name returns 14.88788N 120.49745E (OSM way 782426015, the clubhouse building), which falls inside this polygon's bounds 120.49041-120.50854 E, 14.87768-14.89497 N.",
+    "locality": "Lubao, Pampanga",
+    "identified": "2026-07-20"
+  }
+}
