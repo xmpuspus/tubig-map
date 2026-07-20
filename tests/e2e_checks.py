@@ -318,14 +318,14 @@ def main():
     check(
         33,
         "the failed control is the first finding shown, and every instrument is charted",
-        "No instrument detects drought irrigation per course" in flat33
+        "none detects drought irrigation per course" in flat33
         and "ch-instruments" in html
-        and len(summary["instrument_series"]) == 3
+        and len(summary["instrument_series"]) == 4
         and all(
             r["control"] >= r["drought"] for r in summary["instrument_series"]
         )  # every instrument fires at least as often with no drought
         and "summary.null_strong" in html,
-        "3 instruments charted, all fire >= as often in the control",
+        f"{len(summary['instrument_series'])} instruments, all fire >= as often in the control",
     )
     dc_building = [p for p in dcp if "building" in str(p.get("precision", "")).lower()]
     check(
@@ -502,6 +502,16 @@ def main():
         "summary.instrument_series" in html
         and "summary.season_series" in html
         and "summary.comparator_series" in html,
+    )
+
+    check(
+        57,
+        "the within-season trajectory was tested and is independent of the seasonal median",
+        (DATA / "ndvi_subseasonal.csv").exists()
+        and summary.get("sub_excess") is not None
+        and summary["sub_excess"] < 0
+        and any(r["name"] == "Within-season" for r in summary["instrument_series"]),
+        f"sub-seasonal excess {summary.get('sub_excess')} pts",
     )
 
     print(f"\n{sum(results)}/{len(results)} checks pass")

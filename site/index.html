@@ -258,16 +258,17 @@ a{color:var(--pos)}
 
 <section>
   <h2>What the measurement found</h2>
-  <p class="sub">Three findings, each shown against the control that tested it. Numbers come from
-  site/data/summary.json; the scripts behind each chart are named beneath it.</p>
+  <p class="sub">Each finding shown against the control that tested it. Every value read from
+  site/data/summary.json.</p>
 
   <div class="figs">
     <figure class="fig">
-      <figcaption><b>1. No instrument detects drought irrigation per course.</b>
+      <figcaption><b>1. Four instruments, none detects drought irrigation per course.</b>
       Each fires about as often in a season with no drought as in the drought.</figcaption>
       <div id="ch-instruments"></div>
-      <p class="src">Feb-Apr 2026 was ENSO-neutral, so it is a matched control.
-      analysis/index_shootout.py, pipeline/lst_anomaly.py</p>
+      <p class="src">Control season: ENSO-neutral Feb-Apr 2026. Four physical channels; the
+      trajectory correlates +0.03 with the seasonal median, so it fails independently.
+      analysis/index_shootout.py, analysis/subseasonal_test.py</p>
     </figure>
 
     <figure class="fig">
@@ -479,9 +480,9 @@ async function boot() {
       the land around it: ${Math.abs(summary.course_drop).toFixed(3)} against
       ${Math.abs(summary.ring_drop).toFixed(3)} NDVI. The viral version of this argument has it
       the other way round.</span></div>
-    <div class="stat"><b>3 of 3</b>
-      <span>instruments failed the no-drought control: greenness, canopy moisture, and surface
-      temperature</span></div>
+    <div class="stat"><b>4 of 4</b>
+      <span>instruments failed the no-drought control: greenness, canopy moisture, surface
+      temperature, and within-season shape</span></div>
     <div class="stat"><b>${summary.ci_positive} of ${summary.golf_measured}</b>
       <span>courses whose drought signal can be told apart from zero, so none is singled out
       here</span></div>

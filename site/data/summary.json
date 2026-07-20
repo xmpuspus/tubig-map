@@ -31,6 +31,10 @@
  "lst_gap_elnino": 0.068,
  "lst_shift": 0.343,
  "lst_excess": -2.2,
+ "sub_n": 136,
+ "sub_hit_rate": 30.1,
+ "sub_null_rate": 37.5,
+ "sub_excess": -7.4,
  "course_drop": -0.036,
  "ring_drop": -0.0212,
  "season_series": [
@@ -83,6 +87,12 @@
    "sub": "Landsat ST_B10",
    "drought": 29.9,
    "control": 32.1
+  },
+  {
+   "name": "Within-season",
+   "sub": "Feb-Apr trajectory",
+   "drought": 30.1,
+   "control": 37.5
   }
  ],
  "comparator_series": [

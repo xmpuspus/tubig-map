@@ -197,6 +197,35 @@ which is the sign the physics requires if both track moisture. So the
 instruments agree with each other and agree about the population; they simply
 cannot resolve individuals.
 
+---
+
+## Round 6 (2026-07-20)
+
+### The last named candidate, tested
+
+docs/DOUBT-LOOP.md had listed sub-seasonal time series as the missing input for
+the per-course boundary. That was wrong: Sentinel-2 revisits every five days and
+the collection was already being queried, so it was available all along.
+
+`pipeline/ndvi_subseasonal.py` builds three within-season composites (Feb, Mar,
+Apr) and takes the slope of the course-minus-ring gap, which is what should
+separate a watered surface holding through the dry season from an unwatered one
+tracking the rain. Judged by the same control, sweeping the threshold rather than
+assuming one:
+
+| threshold | drought | control | excess |
+|---|---|---|---|
+| 0.005 | 39.7% | 44.1% | -4.4 pts |
+| 0.010 | 30.1% | 37.5% | -7.4 pts |
+| 0.020 | 20.6% | 27.2% | -6.6 pts |
+| 0.030 | 10.3% | 16.9% | -6.6 pts |
+| 0.050 | 2.9% | 7.4% | -4.4 pts |
+
+Negative everywhere. And it is not a restatement: the slope signal correlates
++0.031 with the seasonal-median signal, so the trajectory carries genuinely
+different information and still cannot resolve a course. That is four
+instruments on four channels, each failing on its own evidence.
+
 ### Boundaries, with their exact missing input
 
 - **Water volume per facility.** Cannot be derived from any optical index.
@@ -213,12 +242,13 @@ cannot resolve individuals.
 - **Per-course irrigation response.** A measured boundary, established three
   ways: NDVI, NDMI and Landsat surface temperature all fail the same matched
   control, on three different physical channels. Not a band-choice problem and
-  not a physics-choice problem. Missing input: either sub-seasonal time series
-  rather than one seasonal median (Sentinel-2 revisit gives roughly 15 usable
-  scenes per season, so this is testable but is a different study), or
-  metre-scale imagery that resolves fairway from rough and tree from turf, or
-  ground truth on which courses irrigated and from what source. The honest
-  statement is that a seasonal median against a 300 m ring is the wrong study
-  design for a per-course question, not that the wrong band was picked.
+  not a physics-choice problem, and as of round 6 not a seasonal-median problem
+  either: the within-season trajectory was the missing input this project named,
+  and running it gives a negative excess at every threshold. Four instruments on
+  four channels. Missing input now: metre-scale imagery that resolves fairway
+  from rough and tree from turf, or ground truth on which courses irrigated and
+  from what source. Neither is free. The honest statement is that a 300 m ring
+  around a heterogeneous 50 ha parcel is the wrong control for a per-course
+  question, whatever is measured inside it.
 - **Whether the DENR directive is still in force.** No rescission or compliance
   report found. Missing input: a DENR statement or the directive's own terms.

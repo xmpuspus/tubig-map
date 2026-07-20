@@ -340,6 +340,30 @@ def main():
     course_drop = round(mean([a for a, _ in drops]), 4)
     ring_drop = round(mean([b for _, b in drops]), 4)
 
+    # ---- fourth instrument: within-season trajectory -----------------------
+    # The last candidate docs/DOUBT-LOOP.md named as the missing input. It is not
+    # missing: Sentinel-2 revisits every five days. Slope of the course-minus-ring
+    # gap across Feb, Mar, Apr, judged by the same control. Reported at the 0.01
+    # threshold; the full sweep is in analysis/subseasonal_test.py and every step
+    # of it is negative.
+    sub = {}
+    sub_path = DATA / "ndvi_subseasonal.csv"
+    if sub_path.exists():
+        srows = list(csv.DictReader(open(sub_path)))
+        pr = [
+            (num(r, "slope_signal"), num(r, "slope_signal_2026"))
+            for r in srows
+            if num(r, "slope_signal") is not None and num(r, "slope_signal_2026") is not None
+        ]
+        if pr:
+            thr = 0.01
+            sub = dict(
+                sub_n=len(pr),
+                sub_hit_rate=round(100 * sum(1 for a, _ in pr if a >= thr) / len(pr), 1),
+                sub_null_rate=round(100 * sum(1 for _, b in pr if b >= thr) / len(pr), 1),
+            )
+            sub["sub_excess"] = round(sub["sub_hit_rate"] - sub["sub_null_rate"], 1)
+
     # ---- chart series, so the page draws from computed values only ---------
     seasons = [
         ("2019", "El Nino", peryear.get("gap_2019")),
@@ -438,6 +462,7 @@ def main():
         **ndmi,
         **peryear,
         **lst,
+        **sub,
         course_drop=course_drop,
         ring_drop=ring_drop,
         season_series=season_series,
@@ -459,6 +484,12 @@ def main():
                 sub="Landsat ST_B10",
                 drought=lst.get("lst_hit_rate"),
                 control=lst.get("lst_null_rate"),
+            ),
+            dict(
+                name="Within-season",
+                sub="Feb-Apr trajectory",
+                drought=sub.get("sub_hit_rate"),
+                control=sub.get("sub_null_rate"),
             ),
         ],
         comparator_series=[
