@@ -33,6 +33,10 @@ await sleep(2500);
 
 await page.evaluate(async () => {
   const s = await fetch("data/summary.json").then((r) => r.json());
+  const need = ["denr_named_golf", "denr_named_dc", "golf_inside_designated",
+                "golf_standalone", "dc_in_designated", "dc_sites"];
+  const missing = need.filter(k => s[k] === undefined || s[k] === null);
+  if (missing.length) throw new Error("summary.json missing keys for the card: " + missing.join(", "));
   const el = document.createElement("div");
   el.innerHTML = `
     <div style="position:fixed;inset:0;pointer-events:none;
@@ -52,10 +56,10 @@ await page.evaluate(async () => {
         golf courses versus data centers ever named in a Philippine regulator's
         water directive, though both sit on the same restricted groundwater</div>
       <div style="font-size:15px;color:#4c4b48;line-height:1.55">
-        ${s.golf_inside_named} of ${s.golf_standalone} mapped courses and
-        ${s.dc_in_named} of ${s.dc_sites} data center sites sit inside an area NWRB named.<br>
-        The per-course satellite signal fires on ${s.null_hit_rate}% of courses with no drought
-        and ${s.drought_hit_rate}% with one, so it is reported as a failed instrument.</div>
+        ${s.golf_inside_designated} of ${s.golf_standalone} mapped courses and
+        ${s.dc_in_designated} of ${s.dc_sites} data center sites sit inside a designated critical area.<br>
+        Five satellite designs were tested against a no-drought control season. All five failed,
+        and two population findings were withdrawn.</div>
       <div style="margin-top:26px;font-size:15px;color:#6b6a64">tubig-map.vercel.app</div>
     </div>`;
   document.body.appendChild(el);

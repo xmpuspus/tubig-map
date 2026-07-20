@@ -90,7 +90,7 @@
  "matched_gap": 0.0801,
  "matched_pop_shift": -0.0005,
  "matched_pop_p": 0.952,
- "matched_excess": -5.3,
+ "matched_excess": -5.2,
  "matched_sweep": [
   {
    "thr": 0,
@@ -127,40 +127,34 @@
  "matched_gap_hi": 0.0886,
  "matched_dropped_built": 47.8,
  "matched_kept_built": 18.8,
- "course_drop": -0.036,
- "ring_drop": -0.0212,
- "season_series": [
+ "parcel_n": 57,
+ "parcel_gap": 0.1219,
+ "parcel_nc_n": 46,
+ "parcel_nc_gap": 0.0729,
+ "parcel_p": 0.0,
+ "parcel_nc_p": 0.22,
+ "frame_series": [
   {
-   "year": "2019",
-   "enso": "El Nino",
-   "gap": 0.0653
+   "name": "Grass pixels, 1 km ring",
+   "n": 115,
+   "gap": 0.0801,
+   "p": 0.0
   },
   {
-   "year": "2020",
-   "enso": "neutral",
-   "gap": 0.0794
+   "name": "Green-space parcels, 5 km",
+   "n": 57,
+   "gap": 0.1219,
+   "p": 0.0
   },
   {
-   "year": "2021",
-   "enso": "La Nina",
-   "gap": 0.0927
-  },
-  {
-   "year": "2022",
-   "enso": "La Nina",
-   "gap": 0.0932
-  },
-  {
-   "year": "2023",
-   "enso": "neutral",
-   "gap": 0.0828
-  },
-  {
-   "year": "2024",
-   "enso": "El Nino",
-   "gap": 0.0657
+   "name": "Parcels excluding cemeteries",
+   "n": 46,
+   "gap": 0.0729,
+   "p": 0.22
   }
  ],
+ "course_drop": -0.036,
+ "ring_drop": -0.0212,
  "instrument_series": [
   {
    "name": "NDVI",
@@ -191,44 +185,6 @@
    "sub": "turf vs turf control",
    "drought": 33.0,
    "control": 38.3
-  }
- ],
- "comparator_series": [
-  {
-   "year": "2026",
-   "enso": "neutral",
-   "shift": -0.0194,
-   "p": 0.024
-  },
-  {
-   "year": "2023",
-   "enso": "neutral",
-   "shift": -0.017,
-   "p": 0.087
-  },
-  {
-   "year": "2020",
-   "enso": "neutral",
-   "shift": -0.0137,
-   "p": 0.107
-  },
-  {
-   "year": "2021",
-   "enso": "La Nina",
-   "shift": -0.027,
-   "p": 0.014
-  },
-  {
-   "year": "2022",
-   "enso": "La Nina",
-   "shift": -0.0275,
-   "p": 0.0002
-  },
-  {
-   "year": "2019",
-   "enso": "El Nino",
-   "shift": 0.0004,
-   "p": 0.955
   }
  ],
  "null_strong": 40,
@@ -344,187 +300,5 @@
   121.4511,
   14.8674
  ],
- "min_leaderboard_ha": 20,
- "top_signals": [
-  {
-   "osm_id": "31712056",
-   "name": "Eastridge Golf & Country Club",
-   "hectares": 85,
-   "irrigation_signal": 0.0873,
-   "signal_2026": 0.008,
-   "ci_lo": 0.0162,
-   "ci_hi": 0.1584,
-   "n_elnino": 16.5,
-   "denr_2024": "eastridge",
-   "moratorium_area": "Rizal"
-  },
-  {
-   "osm_id": "138947548",
-   "name": "Summit Point Golf & Residential Estates",
-   "hectares": 74,
-   "irrigation_signal": 0.0831,
-   "signal_2026": 0.1361,
-   "ci_lo": -0.0063,
-   "ci_hi": 0.1725,
-   "n_elnino": 13.7,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "987623407",
-   "name": "Sherwood Hills Golf Club",
-   "hectares": 160,
-   "irrigation_signal": 0.0803,
-   "signal_2026": 0.1169,
-   "ci_lo": -0.0077,
-   "ci_hi": 0.1683,
-   "n_elnino": 11.0,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "1259077065",
-   "name": "New Asia Golf & Spa Resort",
-   "hectares": 74,
-   "irrigation_signal": 0.0799,
-   "signal_2026": 0.0595,
-   "ci_lo": 0.0146,
-   "ci_hi": 0.1452,
-   "n_elnino": 22.2,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "99512563",
-   "name": "Royal Northwoods",
-   "hectares": 68,
-   "irrigation_signal": 0.0765,
-   "signal_2026": 0.0012,
-   "ci_lo": -0.0119,
-   "ci_hi": 0.1649,
-   "n_elnino": 8.4,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "16611953",
-   "name": "Manila Southwoods Golf and Country Club",
-   "hectares": 147,
-   "irrigation_signal": 0.0587,
-   "signal_2026": 0.033,
-   "ci_lo": -0.0136,
-   "ci_hi": 0.131,
-   "n_elnino": 12.7,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "5172611",
-   "name": "Malarayat Golf Course",
-   "hectares": 101,
-   "irrigation_signal": 0.0516,
-   "signal_2026": 0.0613,
-   "ci_lo": -0.0223,
-   "ci_hi": 0.1255,
-   "n_elnino": 16.9,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "4429331",
-   "name": "Mimosa Golf & Country Club",
-   "hectares": 116,
-   "irrigation_signal": 0.0476,
-   "signal_2026": 0.0653,
-   "ci_lo": -0.0243,
-   "ci_hi": 0.1195,
-   "n_elnino": 18.0,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "18207481",
-   "name": "Sun Valley Golf Club",
-   "hectares": 179,
-   "irrigation_signal": 0.0443,
-   "signal_2026": 0.0368,
-   "ci_lo": -0.0178,
-   "ci_hi": 0.1064,
-   "n_elnino": 21.0,
-   "denr_2024": "sun-valley",
-   "moratorium_area": "Rizal"
-  },
-  {
-   "osm_id": "1921827",
-   "name": "Pueblo de Oro Golf and Country Club",
-   "hectares": 72,
-   "irrigation_signal": 0.0435,
-   "signal_2026": 0.0495,
-   "ci_lo": -0.0553,
-   "ci_hi": 0.1423,
-   "n_elnino": 14.5,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "1078077919",
-   "name": "FA Korea Country Club",
-   "hectares": 159,
-   "irrigation_signal": 0.0353,
-   "signal_2026": -0.0152,
-   "ci_lo": -0.0341,
-   "ci_hi": 0.1047,
-   "n_elnino": 18.7,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "146701718",
-   "name": "Santa Elena Golf Course and Country Club",
-   "hectares": 154,
-   "irrigation_signal": 0.0352,
-   "signal_2026": 0.0272,
-   "ci_lo": -0.0493,
-   "ci_hi": 0.1197,
-   "n_elnino": 15.0,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "11907837",
-   "name": "Riviera Golf Course",
-   "hectares": 158,
-   "irrigation_signal": 0.0323,
-   "signal_2026": 0.0395,
-   "ci_lo": -0.0675,
-   "ci_hi": 0.1321,
-   "n_elnino": 8.1,
-   "denr_2024": null,
-   "moratorium_area": "Dasmari\u00f1as"
-  },
-  {
-   "osm_id": "10296616",
-   "name": "Eagle Ridge Golf Club",
-   "hectares": 180,
-   "irrigation_signal": 0.03,
-   "signal_2026": 0.0275,
-   "ci_lo": -0.0619,
-   "ci_hi": 0.1219,
-   "n_elnino": 9.3,
-   "denr_2024": null,
-   "moratorium_area": null
-  },
-  {
-   "osm_id": "8791554",
-   "name": "Orchard Residential Estate Golf and Country Club",
-   "hectares": 289,
-   "irrigation_signal": 0.027,
-   "signal_2026": 0.0233,
-   "ci_lo": -0.0508,
-   "ci_hi": 0.1048,
-   "n_elnino": 13.4,
-   "denr_2024": null,
-   "moratorium_area": "Dasmari\u00f1as"
-  }
- ]
+ "min_leaderboard_ha": 20
 }

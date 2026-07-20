@@ -4,24 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TUBIG-MAP: who competes for Metro Manila's groundwater</title>
-<meta name="description" content="Philippine golf courses and data centers mapped over the areas where NWRB restricts deep wells. The per-course satellite stay-green signal was tested against a no-drought control season and failed; what survives is a population-level result, reported with the failure.">
+<meta name="description" content="Philippine golf courses and data centers over the groundwater NWRB designated critical. Five satellite designs failed their control season and two population findings were withdrawn; what is left is the failure catalogue and one frame-dependent contrast.">
 <link rel="canonical" href="https://tubig-map.vercel.app/">
 <meta name="theme-color" content="#f9f9f7">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:site_name" content="TUBIG-MAP">
 <meta property="og:title" content="Who competes for Metro Manila's groundwater">
-<meta property="og:description" content="Regulators named 13 golf courses in a water directive and zero data centers. The satellite measurement meant to go with that failed its control season, and this map says so on its front page.">
+<meta property="og:description" content="Regulators named 13 golf courses in a water directive and zero data centers. The satellite measurement built to go with that failed five ways, and this map publishes the failures.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://tubig-map.vercel.app/">
-<meta property="og:image" content="https://tubig-map.vercel.app/og-card.png?v=20260720b">
+<meta property="og:image" content="https://tubig-map.vercel.app/og-card.png?v=20260720c">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Map of Philippine golf courses and data centers over the areas where NWRB restricts deep wells">
 <meta property="og:locale" content="en_PH">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Who competes for Metro Manila's groundwater">
-<meta name="twitter:description" content="Regulators named 13 golf courses in a water directive and zero data centers. The satellite measurement meant to go with that failed its control season.">
-<meta name="twitter:image" content="https://tubig-map.vercel.app/og-card.png?v=20260720b">
+<meta name="twitter:description" content="Regulators named 13 golf courses in a water directive and zero data centers. The satellite measurement built to go with that failed five ways.">
+<meta name="twitter:image" content="https://tubig-map.vercel.app/og-card.png?v=20260720c">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <style>
@@ -263,18 +263,16 @@ a{color:var(--pos)}
 
   <div class="figs">
     <figure class="fig">
-      <figcaption><b>1. Compared against grassland, golf courses are greener.</b>
-      The only positive result here with a control that holds land cover fixed.</figcaption>
-      <div id="ch-matched"></div>
-      <p class="src">Course NDVI minus grassland NDVI within 1 km, normal dry seasons.
-      Significant at every grass threshold swept, but it shrinks from
-      <span data-n="matched_gap_hi"></span> to <span data-n="matched_gap_lo"></span> as the control
-      is required to be grassier, so read the range. The courses excluded for having no grass
-      nearby are smaller and far more urban (<span data-n="matched_dropped_built"></span> percent
-      built rings against <span data-n="matched_kept_built"></span>), so this describes the
-      less-urban <span data-n="matched_n"></span>. It says managed turf is greener than unmanaged
-      grass; it cannot say how much water that took, and mowing, fertiliser and species choice
-      would all produce it too. pipeline/matched_control.py, analysis/matched_robustness.py</p>
+      <figcaption><b>1. Greener than comparable grass, by an amount the frame decides.</b>
+      Three ways of drawing a grass control, same question.</figcaption>
+      <div id="ch-frames"></div>
+      <p class="src">Positive in every frame, but the pixel frame and the parcel frame differ by
+      more than the pixel frame's own robustness sweep, and excluding cemeteries the parcel result
+      is not significant (p = 0.22, n = <span data-n="parcel_nc_n"></span>). The two frames
+      correlate +0.27 across the courses both cover. Cite the direction, not the number. It says
+      managed turf is greener than unmanaged grass, which mowing, fertiliser and species choice
+      would also produce; it cannot say how much water. pipeline/matched_control.py,
+      pipeline/parcel_control.py, analysis/frame_comparison.py</p>
     </figure>
 
     <figure class="fig" style="border-color:var(--flag);border-left:4px solid var(--flag)">
@@ -347,10 +345,11 @@ a{color:var(--pos)}
     </div>
     <div class="card">
       <h3>Where a real measurement would start</h3>
-      <p>A control matched on land cover instead of a fixed annulus: grass parks, cemeteries,
-      playing fields, the same soil and rainfall, no irrigation. That is buildable from the same
-      WorldCover layer plus OSM, and it is the obvious next study rather than a fifth index on the
-      same broken control.</p>
+      <p>Both grass controls here are still opportunistic: whatever grass happens to sit nearby,
+      not grass matched to a course on soil, slope, aspect and rainfall. The two frames correlate
+      only +0.27, which is how much that matters. A propensity-matched design, or metre-scale
+      imagery that separates fairway from rough and tree from turf, is what would settle the
+      magnitude. Neither is free.</p>
     </div>
   </div>
 </section>
@@ -378,25 +377,28 @@ a{color:var(--pos)}
 </section>
 
 <section>
-  <h2>The same courses in a drought season and a normal one</h2>
-  <p class="sub">This table is not a ranking of water use. It is the evidence for the first card
-  above. Each course carries its 2024 drought-season signal, a 95 percent interval, and the same
-  statistic for the ENSO-neutral 2026 season. If the measurement isolated drought irrigation the
-  two columns would agree and the intervals would clear zero. Mostly they do neither. Courses
-  under <span data-n="min_leaderboard_ha"></span> hectares, polygons nested inside another course,
-  unnamed parcels, and courses with a negative baseline gap are all excluded; every one of those
-  exclusions removes entries that would otherwise rank near the top.</p>
-  <details open>
-    <summary>Ordered by 2024 signal, shown against the no-drought control season</summary>
-    <div class="tablewrap">
-    <table id="signal-table" aria-label="Golf courses in the drought season and a normal season">
-      <thead><tr><th>Course</th><th class="num">Hectares</th><th class="num">2024 signal</th>
-        <th class="num">95% interval</th><th class="num">2026 control</th>
-        <th class="num">Obs</th><th>Area</th><th>DENR 2024</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    </div>
-  </details>
+  <h2>The per-course numbers, and why they are not listed</h2>
+  <p class="sub">Earlier versions of this page ranked the fifteen highest-scoring courses by
+  name. That table is gone. The per-course measurement failed its control in five separate
+  designs, so a ranking built from it carries no information about water use, and publishing only
+  the positive tail against named private clubs implied one anyway. The distribution is below;
+  every per-course value remains in
+  <a href="https://github.com/xmpuspus/tubig-map/blob/main/data/ndvi_anomaly.csv">the raw data</a>
+  for anyone who wants to check the work.</p>
+  <div class="cards">
+    <div class="card"><h3>Above the old threshold</h3><span class="big" data-n="strong_signal"></span>
+      <p>courses of <span data-n="golf_measured"></span>, against
+      <span data-n="null_strong"></span> that clear the same bar in a season with no drought.</p></div>
+    <div class="card"><h3>Below it, the other way</h3><span class="big" data-n="browned_more"></span>
+      <p>courses browned faster than their surroundings. The old table showed none of these.</p></div>
+    <div class="card"><h3>Distinguishable from zero</h3><span class="big" data-n="ci_positive"></span>
+      <p>courses have a 2024 signal whose interval excludes zero, out of
+      <span data-n="golf_measured"></span>. That was before the control was found to be
+      confounded.</p></div>
+    <div class="card"><h3>Barer than their surroundings</h3><span class="big" data-n="inverted_baseline"></span>
+      <p>courses are less green than their ring in normal years, which produces a large positive
+      score by simply returning to normal.</p></div>
+  </div>
 </section>
 
 <section>
@@ -523,12 +525,14 @@ async function boot() {
   }
 
   document.getElementById("hero").innerHTML = `
-    <div class="stat lead"><b>Greener than the grass next door, by ${signed(summary.matched_gap_lo, 3)} to ${signed(summary.matched_gap_hi, 3)} NDVI</b>
-      <span>Every earlier finding here compared golf courses against a 300 m ring that turns out
-      to be ${summary.lc_ring_tree}% tree cover and ${summary.lc_ring_built}% buildings. Comparing
-      turf against grassland instead, holding land cover fixed, golf courses are measurably greener
-      in normal dry seasons (cluster p below 0.001). That is the one result here that survives a
-      control worth the name.</span></div>
+    <div class="stat lead"><b>Greener than comparable grass. How much greener is not settled.</b>
+      <span>Every earlier finding compared golf courses against a 300 m ring that is
+      ${summary.lc_ring_tree}% tree cover and ${summary.lc_ring_built}% buildings, against a
+      ${summary.lc_golf_grass}%-grass interior, and all of them were withdrawn. Compare turf
+      against grass instead and courses are greener, in two independent ways of drawing the
+      control. But the two disagree on size, ${signed(summary.matched_gap, 3)} against
+      ${signed(summary.parcel_gap, 3)}, and one stops being significant once cemeteries come out.
+      The direction is the finding; the magnitude is not.</span></div>
     <div class="stat"><b>5 of 5</b>
       <span>instruments and designs that still cannot pick out an individual course in a
       drought</span></div>
@@ -594,51 +598,30 @@ async function boot() {
        <span><i style="background:#c9c7c0"></i>control season, no drought</span></div>`;
   }
 
-  // Season bars, coloured by ENSO phase.
-  function chartSeasons(el, rows) {
-    const W = 420, LEFT = 44, RIGHT = 52, ROW = 30, BH = 16;
-    const H = rows.length * ROW + 10;
-    const max = Math.max(...rows.map(r => r.gap)) * 1.18;
+
+
+  // Three ways of drawing a grass control, so the frame dependence is visible.
+  function chartFrames(el, rows) {
+    const W = 440, LEFT = 196, RIGHT = 86, BH = 17, ROW = 40;
+    const H = rows.length * ROW + 26;
+    const max = Math.max(...rows.map(r => r.gap || 0)) * 1.25 || 1;
     const sc = v => (W - LEFT - RIGHT) * (v / max);
     let b = "";
     rows.forEach((r, i) => {
-      const y = i * ROW + 4;
-      b += `<g class="row">
-        <text class="lab" x="0" y="${y + 12}">${esc(r.year)}</text>
-        <rect class="bar" x="${LEFT}" y="${y}" width="${sc(r.gap)}" height="${BH}" fill="${ENSO_FILL[r.enso] || "#6b6a64"}"></rect>
-        <text class="val" x="${LEFT + sc(r.gap) + 6}" y="${y + 12}">+${r.gap.toFixed(3)}</text>
-        <title>${esc(r.year)} (${esc(r.enso)}): course-minus-ring gap +${r.gap.toFixed(4)}</title>
-      </g>`;
-    });
-    b += `<line class="axis" x1="${LEFT}" y1="0" x2="${LEFT}" y2="${H - 8}"></line>`;
-    el.innerHTML = svg(W, H, b) +
-      `<div class="swatches">
-        <span><i style="background:#e34948"></i>El Nino</span>
-        <span><i style="background:#6b6a64"></i>neutral</span>
-        <span><i style="background:#1c5cab"></i>La Nina</span></div>`;
-  }
-
-  // Diverging bars around zero, with the p value direct-labelled.
-  function chartComparators(el, rows) {
-    const W = 440, LEFT = 118, RIGHT = 96, ROW = 30, BH = 16;
-    const H = rows.length * ROW + 22;
-    const max = Math.max(...rows.map(r => Math.abs(r.shift))) * 1.05 || 1;
-    const sc = v => (W - LEFT - RIGHT) * (Math.abs(v) / max);
-    let b = "";
-    rows.forEach((r, i) => {
-      const y = i * ROW + 4;
+      const y = i * ROW + 6;
       const sig = r.p < 0.05;
       b += `<g class="row">
-        <text class="lab" x="0" y="${y + 12}">${esc(r.year)} ${esc(r.enso)}</text>
-        <rect class="bar" x="${LEFT}" y="${y}" width="${Math.max(sc(r.shift), 1.5)}" height="${BH}"
-          fill="${ENSO_FILL[r.enso] || "#6b6a64"}" opacity="${sig ? 1 : 0.4}"></rect>
-        <text class="val" x="${LEFT + sc(r.shift) + 7}" y="${y + 12}"
-          style="fill:${sig ? "var(--ink)" : "var(--muted)"}">p ${r.p < 0.001 ? "&lt;0.001" : r.p.toFixed(3)}${sig ? "" : " n.s."}</text>
-        <title>${esc(r.year)} (${esc(r.enso)}): the drought sat ${Math.abs(r.shift).toFixed(3)} lower, cluster p ${r.p}</title>
+        <text class="lab" x="0" y="${y + 12}">${esc(r.name)}</text>
+        <text class="sub" x="0" y="${y + 25}">n = ${r.n}</text>
+        <rect class="bar" x="${LEFT}" y="${y}" width="${Math.max(sc(r.gap), 1.5)}" height="${BH}"
+          fill="${sig ? "#1c5cab" : "#c9c7c0"}"></rect>
+        <text class="val" x="${LEFT + sc(r.gap) + 7}" y="${y + 13}"
+          style="fill:${sig ? "var(--ink)" : "var(--muted)"}">+${r.gap.toFixed(3)}${sig ? "" : " n.s."}</text>
+        <title>${esc(r.name)}: +${r.gap.toFixed(4)} NDVI, n=${r.n}, cluster p ${r.p}</title>
       </g>`;
     });
-    b += `<line class="axis" x1="${LEFT}" y1="0" x2="${LEFT}" y2="${H - 16}"></line>
-      <text class="sub" x="${LEFT}" y="${H - 3}">how much browner the drought season was</text>`;
+    b += `<line class="axis" x1="${LEFT}" y1="0" x2="${LEFT}" y2="${H - 22}"></line>
+      <text class="sub" x="${LEFT}" y="${H - 6}">how much greener the course is than its grass control</text>`;
     el.innerHTML = svg(W, H, b);
   }
 
@@ -722,12 +705,11 @@ async function boot() {
     const el = document.getElementById(id);
     if (el && rows && rows.length) fn(el, rows);
   };
-  if (document.getElementById("ch-matched")) chartMatched(document.getElementById("ch-matched"), summary);
+  if (document.getElementById("ch-frames") && summary.frame_series)
+    chartFrames(document.getElementById("ch-frames"), summary.frame_series.filter(r => r.gap != null));
   mount("ch-landcover", chartLandcover, summary.landcover_series);
   mount("ch-confound", chartConfound, summary.confound_series);
   mount("ch-instruments", chartInstruments, summary.instrument_series);
-  mount("ch-seasons", chartSeasons, summary.season_series);
-  mount("ch-comparators", chartComparators, summary.comparator_series);
 
   const ptbody = document.querySelector("#prov-table tbody");
   summary.provinces.forEach(p => {
@@ -758,36 +740,6 @@ async function boot() {
     return [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
   };
 
-  const tbody = document.querySelector("#signal-table tbody");
-  summary.top_signals.forEach(row => {
-    const tr = document.createElement("tr");
-    tr.className = "clickable";
-    tr.tabIndex = 0;
-    const clears = row.ci_lo != null && row.ci_lo > 0;
-    tr.innerHTML = `<td>${row.name}</td>
-      <td class="num">${Math.round(row.hectares).toLocaleString()}</td>
-      <td class="num">${signed(row.irrigation_signal)}</td>
-      <td class="num" style="${clears ? "" : "color:var(--muted)"}">${
-        row.ci_lo == null ? "no data" :
-        signed(row.ci_lo) + " to " + signed(row.ci_hi) + (clears ? "" : " (spans 0)")}</td>
-      <td class="num">${signed(row.signal_2026)}</td>
-      <td class="num">${row.n_elnino == null ? "" : Math.round(row.n_elnino)}</td>
-      <td style="${row.moratorium_area ? "" : "color:var(--muted)"}">${row.moratorium_area || "outside"}</td>
-      <td>${row.denr_2024 ? "named" : ""}</td>`;
-    const go = () => {
-      const f = byId.get(String(row.osm_id));
-      if (!f) return;
-      document.getElementById("map-wrap").scrollIntoView({behavior: "smooth", block: "center"});
-      map.flyTo({center: centroid(f), zoom: 13.4});
-      showGolf(f.properties, centroid(f));
-      history.replaceState(null, "", "#course/" + row.osm_id);
-    };
-    tr.addEventListener("click", go);
-    tr.addEventListener("keydown", e => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
-    });
-    tbody.appendChild(tr);
-  });
 
   const popup = new maplibregl.Popup({closeButton: true, closeOnClick: true, maxWidth: "290px"});
   function showGolf(p, lngLat) {

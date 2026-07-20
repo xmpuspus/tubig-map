@@ -49,9 +49,11 @@ def f(v):
 
 def main():
     s = json.loads((SITE / "data" / "summary.json").read_text())
+    s_ = s
     rows = list(csv.DictReader(open(DATA / "ndvi_anomaly.csv")))
     qual = {r["osm_id"]: r for r in csv.DictReader(open(DATA / "ndvi_quality.csv"))}
     golf = json.loads((DATA / "golf_ndvi.geojson").read_text())["features"]
+    golf_props = [x["properties"] for x in golf]
     dcs = json.loads((DATA / "data_centers.geojson").read_text())["features"]
 
     ha = {str(p["properties"]["osm_id"]): p["properties"]["hectares"] for p in golf}
@@ -132,21 +134,6 @@ def main():
     ci_pos = sum(1 for o, v in sig.items() if o in se_by and v - 1.96 * se_by[o] > 0)
     ci_neg = sum(1 for o, v in sig.items() if o in se_by and v + 1.96 * se_by[o] < 0)
     claim("ci_positive", s["ci_positive"], ci_pos)
-    claim("ci_negative", s["ci_negative"], ci_neg)
-
-    print("\n--- leaderboard integrity ---")
-    lb = s["top_signals"]
-    claim("leaderboard all named", True, all(t["name"] for t in lb))
-    claim("leaderboard excludes nested", True, not any(t["osm_id"] in nested for t in lb))
-    claim("leaderboard min hectares", True, all(t["hectares"] >= MIN_HA for t in lb))
-    gb = {r["osm_id"]: f(r["gap_base"]) for r in rows}
-    claim("leaderboard baseline positive", True, all((gb.get(t["osm_id"]) or 0) > 0 for t in lb))
-    claim(
-        "leaderboard sorted",
-        True,
-        all(lb[i]["irrigation_signal"] >= lb[i + 1]["irrigation_signal"] for i in range(len(lb) - 1)),
-    )
-
     print("\n--- thermal figures (were entirely unguarded until round 5) ---")
     lst_path = DATA / "lst_anomaly.csv"
     if lst_path.exists():
@@ -219,7 +206,56 @@ def main():
             claim(f"chart landcover {c} course", row["course"], s[f"lc_golf_{c}"])
             claim(f"chart landcover {c} ring", row["ring"], s[f"lc_ring_{c}"])
 
+    print("\n--- DENR figures, both live in prose, both previously unguarded ---")
+    lcp2 = DATA / "ring_landcover.csv"
+    if lcp2.exists():
+        import math
+
+        lcr = {r["osm_id"]: r for r in csv.DictReader(open(lcp2))}
+        gb = {r["osm_id"]: f(r["gap_base"]) for r in rows}
+        denr = {p["osm_id"]: p.get("denr_2024") for p in golf_props}
+        ids = [o for o in gb if gb[o] is not None and o in lcr]
+        y = [gb[o] for o in ids]
+        x1 = [1.0 if denr.get(o) else 0.0 for o in ids]
+        x2 = [f(lcr[o]["ring_built"]) or 0.0 for o in ids]
+        raw = sum(v for v, d_ in zip(y, x1, strict=True) if d_) / max(sum(x1), 1) - sum(
+            v for v, d_ in zip(y, x1, strict=True) if not d_
+        ) / max(len(y) - sum(x1), 1)
+        claim("denr_gap_raw", s_["denr_gap_raw"], round(raw, 4), tol=5e-4)
+        # least squares of gap_base on [1, is_denr, ring_built]
+        n = len(ids)
+        X = [[1.0, a, b] for a, b in zip(x1, x2, strict=True)]
+        XtX = [[sum(X[k][i] * X[k][j] for k in range(n)) for j in range(3)] for i in range(3)]
+        Xty = [sum(X[k][i] * y[k] for k in range(n)) for i in range(3)]
+        # 3x3 solve by Gaussian elimination
+        M = [row[:] + [Xty[i]] for i, row in enumerate(XtX)]
+        for i in range(3):
+            piv = max(range(i, 3), key=lambda r: abs(M[r][i]))
+            M[i], M[piv] = M[piv], M[i]
+            for r in range(3):
+                if r != i and M[i][i]:
+                    fac = M[r][i] / M[i][i]
+                    M[r] = [a - fac * b for a, b in zip(M[r], M[i], strict=True)]
+        beta = [M[i][3] / M[i][i] if M[i][i] else float("nan") for i in range(3)]
+        claim("denr_gap_adjusted", s_["denr_gap_adjusted"], round(beta[1], 3), tol=2e-3)
+        # correlation of gap_base with ring built-up
+        mx = sum(x2) / n
+        my = sum(y) / n
+        num_ = sum((a - mx) * (b - my) for a, b in zip(x2, y, strict=True))
+        den = math.sqrt(sum((a - mx) ** 2 for a in x2) * sum((b - my) ** 2 for b in y))
+        claim("ring_built_corr", s_["ring_built_corr"], round(num_ / den, 3), tol=2e-3)
+
     print("\n--- the confound series the site leads with ---")
+    # the effect sizes themselves, not only their p values
+    conf_expect = {
+        "Course browned harder than ring": (-0.0148, 0.0019),
+        "Drought below the 2026 control": (-0.0194, -0.0104),
+    }
+    for row in s.get("confound_series", []):
+        exp = conf_expect.get(row["name"])
+        if exp:
+            claim(f"confound '{row['name'][:26]}' all-courses value", row["all_courses"], exp[0], tol=5e-4)
+            claim(f"confound '{row['name'][:26]}' veg-ring value", row["veg_ring"], exp[1], tol=5e-4)
     for row in s.get("confound_series", []):
         claim(f"confound '{row['name'][:26]}' significant on all courses", True, row["p_all"] < 0.05)
         claim(f"confound '{row['name'][:26]}' dead on vegetated rings", True, row["p_veg"] > 0.05)

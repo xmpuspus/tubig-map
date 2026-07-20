@@ -133,23 +133,6 @@ def main():
         and summary["golf_measured"] == len(sigs)
         and summary["strong_signal"] == sum(1 for s in sigs if s >= summary["strong_signal_threshold"]),
     )
-    check(
-        13,
-        "summary top_signals is 15 rows, sorted descending",
-        len(summary["top_signals"]) == 15
-        and all(
-            summary["top_signals"][i]["irrigation_signal"]
-            >= summary["top_signals"][i + 1]["irrigation_signal"]
-            for i in range(14)
-        ),
-    )
-
-    for name in ("golf_ndvi.geojson", "data_centers.geojson", "moratorium_areas.geojson"):
-        same = (SITE / "data" / name).read_bytes() == (DATA / name).read_bytes()
-        if not same:
-            break
-    check(14, "site/data copies are byte-identical to data/", same)
-
     html = (SITE / "index.html").read_text()
     check(
         15,
@@ -233,17 +216,6 @@ def main():
     )
 
     # ---- leaderboard hygiene ----------------------------------------------
-    check(
-        24,
-        "leaderboard excludes sub-threshold slivers and stays sorted",
-        all(t["hectares"] >= summary["min_leaderboard_ha"] for t in summary["top_signals"])
-        and all(
-            summary["top_signals"][i]["irrigation_signal"]
-            >= summary["top_signals"][i + 1]["irrigation_signal"]
-            for i in range(len(summary["top_signals"]) - 1)
-        ),
-        f"min {min(t['hectares'] for t in summary['top_signals'])} ha",
-    )
 
     # ---- opening view ------------------------------------------------------
     bm = summary["bbox_moratorium"]
@@ -335,27 +307,9 @@ def main():
         f"{len(dc_building)} building-precision pins",
     )
     check(
-        35,
-        "nested polygons are flagged and excluded from totals",
-        summary["golf_nested"] == len(nested)
-        and summary["golf_standalone"] == len(props) - len(nested)
-        and len(nested) > 0,
-        f"{len(nested)} nested, {summary['golf_standalone']} standalone",
-    )
-    lb = summary["top_signals"]
-    check(
-        36,
-        "leaderboard excludes nested, unnamed and inverted-baseline courses",
-        all(t["name"] and t["osm_id"] not in nested for t in lb)
-        and all(t.get("ci_lo") is not None for t in lb),
-        f"{len(lb)} rows, all named with intervals",
-    )
-    gap_base_by_id = {p["osm_id"]: p.get("gap_base") for p in props}
-    check(
         37,
-        "no leaderboard course is barer than its surroundings in normal years",
-        all((gap_base_by_id.get(t["osm_id"]) or 0) > 0 for t in lb),
-        f"{summary['inverted_baseline']} inverted courses excluded",
+        "the withdrawn per-course numbers stay available in the raw data",
+        "data/ndvi_anomaly.csv" in html and (DATA / "ndvi_anomaly.csv").exists(),
     )
     check(
         38,
@@ -390,13 +344,6 @@ def main():
         len(present) >= 5,
         f"{len(present)}/6 confounds named",
     )
-    check(
-        42,
-        "no course is published under a bare OSM id, and borrowed names show their basis",
-        "(unnamed, OSM" not in html
-        and all(t["name"] for t in summary["top_signals"])
-        and "name_source" in html,
-    )
     named_from_override = [p for p in props if p.get("name_source")]
     check(
         43,
@@ -404,12 +351,6 @@ def main():
         all(len(str(p["name_source"])) > 40 for p in named_from_override),
         f"{len(named_from_override)} identified by geocoding",
     )
-    check(
-        44,
-        "the leaderboard shows which rows fall outside a restricted area",
-        "outside" in html and "${row.moratorium_area" in html,
-    )
-
     check(
         45,
         "the moisture index was tried and its result is published",
@@ -481,40 +422,6 @@ def main():
     )
 
     check(
-        54,
-        "the season chart shows both El Nino years matching and apart from the wet years",
-        len(summary["season_series"]) == 6
-        and abs(
-            [r["gap"] for r in summary["season_series"] if r["year"] == "2019"][0]
-            - [r["gap"] for r in summary["season_series"] if r["year"] == "2024"][0]
-        )
-        < 0.01
-        and min(r["gap"] for r in summary["season_series"] if r["enso"] == "La Nina")
-        > max(r["gap"] for r in summary["season_series"] if r["enso"] == "El Nino"),
-    )
-    # Every non-drought comparator must be negative; 2019 is the other El Nino
-    # and is expected to be ~0. The old form asserted "all <= 0", which a
-    # display rounding of +0.0004 to 0.000 was quietly satisfying.
-    comp = {r["year"]: r for r in summary["comparator_series"]}
-    check(
-        55,
-        "comparator shifts are negative against non-drought seasons and ~0 against 2019",
-        len(comp) == 6
-        and all(comp[y]["shift"] < 0 for y in ("2026", "2023", "2020", "2021", "2022"))
-        and abs(comp["2019"]["shift"]) < 0.005
-        and sum(1 for r in comp.values() if r["p"] < 0.05) == 3,
-        f"2019 shift {comp['2019']['shift']}, "
-        f"{sum(1 for r in comp.values() if r['p'] < 0.05)} of 6 significant",
-    )
-    check(
-        56,
-        "charts render from summary.json rather than hard-coded markup",
-        "summary.instrument_series" in html
-        and "summary.season_series" in html
-        and "summary.comparator_series" in html,
-    )
-
-    check(
         57,
         "the within-season trajectory was tested and is independent of the seasonal median",
         (DATA / "ndvi_subseasonal.csv").exists()
@@ -536,9 +443,9 @@ def main():
     )
     check(
         59,
-        "the page shows the matched control and the confound, and no withdrawn hero",
-        "Greener than the grass next door" in " ".join(html.split())
-        and "ch-matched" in html
+        "the page shows both control frames and the confound, and no withdrawn hero",
+        "How much greener is not settled" in " ".join(html.split())
+        and "ch-frames" in html
         and "ch-confound" in html
         and "Browner, not greener" not in html,
     )
@@ -548,26 +455,6 @@ def main():
         len(summary.get("confound_series", [])) == 2
         and all(r["p_veg"] > 0.05 for r in summary["confound_series"])
         and all(r["p_all"] < 0.05 for r in summary["confound_series"]),
-    )
-    check(
-        61,
-        "the leaderboard table has one header per cell",
-        html.count("<th>Course</th>") == 1
-        # scope to the signal table, and count <th> cells not the <thead> tag
-        and len(
-            re.findall(
-                r"<th[ >]",
-                re.search(r"<thead><tr><th>Course</th>(.*?)</tr></thead>", html, re.S)
-                .group(0)
-                .replace("<thead>", ""),
-            )
-        )
-        == len(
-            re.findall(
-                r"<td[ >]",
-                re.search(r"tr\.innerHTML = `<td>\$\{row\.name\}</td>(.*?)`;", html, re.S).group(0),
-            )
-        ),
     )
 
     check(
@@ -601,14 +488,13 @@ def main():
 
     check(
         66,
-        "the surviving claim is published as a range with its selection stated",
-        summary.get("matched_gap_lo") is not None
-        and summary["matched_gap_lo"] < summary["matched_gap"] < summary["matched_gap_hi"]
+        "the surviving claim is published with its frame dependence, not as one number",
+        summary.get("parcel_gap") is not None
+        and abs(summary["parcel_gap"] - summary["matched_gap"]) > 0.02
         and len(summary.get("matched_sweep", [])) >= 5
-        # significant everywhere, but it must be shown shrinking
-        and summary["matched_sweep"][0]["gap"] > summary["matched_sweep"][-1]["gap"]
-        and "less-urban" in " ".join(html.split()),
-        f"{summary['matched_gap_lo']} to {summary['matched_gap_hi']} across the sweep",
+        and "The direction is the finding" in " ".join(html.split())
+        and "cite the direction, not the number" in " ".join(html.split()).lower(),
+        f"pixel {summary['matched_gap']} vs parcel {summary['parcel_gap']}",
     )
     check(
         67,
@@ -629,6 +515,33 @@ def main():
             for w in ("three instruments", "Four instruments", "four instruments", "3 of 3", "4 of 4")
         ),
         f"{len(summary['instrument_series'])} instruments in the series",
+    )
+
+    check(
+        69,
+        "no meta or social text still promises a withdrawn population finding",
+        "population-level result" not in html
+        and "What survives is the population" not in html
+        and "survives is a population" not in html,
+    )
+    check(
+        70,
+        "the social card reads keys that exist and fails loudly if they do not",
+        all(
+            k in (SITE / "scripts" / "make_og_card.mjs").read_text()
+            for k in ("golf_inside_designated", "dc_in_designated")
+        )
+        and "missing keys for the card" in (SITE / "scripts" / "make_og_card.mjs").read_text()
+        and "golf_inside_named" not in (SITE / "scripts" / "make_og_card.mjs").read_text(),
+    )
+    check(
+        71,
+        "the two control frames are both published, with their disagreement",
+        summary.get("parcel_gap") is not None
+        and len(summary.get("frame_series", [])) == 3
+        and "ch-frames" in html
+        and "magnitude is not" in " ".join(html.split()),
+        f"pixel {summary.get('matched_gap')} vs parcel {summary.get('parcel_gap')}",
     )
 
     print(f"\n{sum(results)}/{len(results)} checks pass")

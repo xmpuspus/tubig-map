@@ -498,10 +498,23 @@ def main():
                 matched_hit_rate=round(100 * hit / len(mrows), 1),
                 matched_null_rate=round(100 * null / len(mrows), 1),
                 matched_gap=round(mean([num(r, "matched_gap_base") for r in mrows]), 4),
-                matched_pop_shift=-0.0005,
+                matched_pop_shift=round(
+                    mean(
+                        [
+                            num(r, "matched_gap_elnino") - num(r, "matched_gap_latest")
+                            for r in mrows
+                            if num(r, "matched_gap_elnino") is not None
+                            and num(r, "matched_gap_latest") is not None
+                        ]
+                    ),
+                    4,
+                ),
+                # cluster permutation, analysis/matched_test.py; asserted against
+                # the computed shift in tests/claims_verify.py
                 matched_pop_p=0.952,
             )
-            matched["matched_excess"] = round(matched["matched_hit_rate"] - matched["matched_null_rate"], 1)
+            # subtract before rounding: rounding each rate first shifts this by 0.1pp
+            matched["matched_excess"] = round(100 * (hit - null) / len(mrows), 1)
             # The gap shrinks as the control is required to be grassier, so the sweep
             # is published rather than the single 2 percent figure. Values recomputed
             # in analysis/matched_robustness.py and asserted in claims_verify.
@@ -517,6 +530,43 @@ def main():
             matched["matched_gap_hi"] = 0.0886
             matched["matched_dropped_built"] = 47.8
             matched["matched_kept_built"] = 18.8
+
+    # ---- the same question in a second frame -------------------------------
+    # The published range swept one knob of ONE frame (grass pixels). A parcel
+    # frame (managed green space from OSM) gives a different magnitude, and
+    # excluding cemeteries it is not significant at all. So the direction is
+    # robust and the magnitude is not. Both are published.
+    frames = {}
+    pcp = DATA / "parcel_control.csv"
+    if pcp.exists():
+        prows = list(csv.DictReader(open(pcp)))
+        gaps = [num(r, "parcel_gap_base") for r in prows if num(r, "parcel_gap_base") is not None]
+        ncg = [num(r, "parcel_gap_base_nc") for r in prows if num(r, "parcel_gap_base_nc") is not None]
+        if gaps:
+            frames = dict(
+                parcel_n=len(gaps),
+                parcel_gap=round(mean(gaps), 4),
+                parcel_nc_n=len(ncg),
+                parcel_nc_gap=round(mean(ncg), 4) if ncg else None,
+                # cluster permutations, analysis/frame_comparison.py
+                parcel_p=0.0,
+                parcel_nc_p=0.22,
+            )
+            frames["frame_series"] = [
+                dict(
+                    name="Grass pixels, 1 km ring",
+                    n=matched.get("matched_n"),
+                    gap=matched.get("matched_gap"),
+                    p=0.0,
+                ),
+                dict(name="Green-space parcels, 5 km", n=len(gaps), gap=round(mean(gaps), 4), p=0.0),
+                dict(
+                    name="Parcels excluding cemeteries",
+                    n=len(ncg),
+                    gap=round(mean(ncg), 4) if ncg else None,
+                    p=0.22,
+                ),
+            ]
 
     # ---- chart series, so the page draws from computed values only ---------
     seasons = [
@@ -619,9 +669,9 @@ def main():
         **sub,
         **ring,
         **matched,
+        **frames,
         course_drop=course_drop,
         ring_drop=ring_drop,
-        season_series=season_series,
         instrument_series=[
             dict(
                 name="NDVI",
@@ -654,7 +704,6 @@ def main():
                 control=matched.get("matched_null_rate"),
             ),
         ],
-        comparator_series=comparator_series,
         null_strong=null_strong,
         null_browned=null_browned,
         null_n=len(sig26_all),
@@ -695,7 +744,6 @@ def main():
         bbox=bbox,
         bbox_moratorium=bbox_moratorium,
         min_leaderboard_ha=MIN_LEADERBOARD_HA,
-        top_signals=top,
     )
 
     SITE_DATA.mkdir(parents=True, exist_ok=True)
