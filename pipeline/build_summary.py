@@ -282,6 +282,29 @@ def main():
             )
             ndmi["ndmi_excess"] = round(ndmi["ndmi_hit_rate"] - ndmi["ndmi_null_rate"], 1)
 
+    # ---- does the population effect replicate in a second drought season? --
+    # The pooled baseline mixes one El Nino tail (2019) with two La Nina seasons
+    # (2021, 2022). Measuring each year separately tests whether the course-minus
+    # -ring gap tracks ENSO, and gives an independent drought season to check the
+    # surviving population finding against.
+    peryear = {}
+    py_path = DATA / "ndvi_peryear.csv"
+    if py_path.exists():
+        pyrows = list(csv.DictReader(open(py_path)))
+        for y in (2019, 2020, 2021, 2022, 2023):
+            gaps = [
+                num(r, f"golf_y{y}") - num(r, f"ring_y{y}")
+                for r in pyrows
+                if num(r, f"golf_y{y}") is not None and num(r, f"ring_y{y}") is not None
+            ]
+            if gaps:
+                peryear[f"gap_{y}"] = round(sum(gaps) / len(gaps), 4)
+        el = [num(r, "gap_elnino") for r in rows if num(r, "gap_elnino") is not None]
+        peryear["gap_2024"] = round(sum(el) / len(el), 4)
+        lanina = [peryear[k] for k in ("gap_2021", "gap_2022") if k in peryear]
+        if lanina:
+            peryear["gap_lanina_mean"] = round(sum(lanina) / len(lanina), 4)
+
     # ---- the visibility finding: DENR-named baseline gap vs everyone else --
     gap_base_denr = mean([num(r, "gap_base") for r in rows if denr_by_id.get(r["osm_id"])])
     gap_base_rest = mean([num(r, "gap_base") for r in rows if not denr_by_id.get(r["osm_id"])])
@@ -368,6 +391,7 @@ def main():
         if sig26_all
         else None,
         **ndmi,
+        **peryear,
         null_strong=null_strong,
         null_browned=null_browned,
         null_n=len(sig26_all),

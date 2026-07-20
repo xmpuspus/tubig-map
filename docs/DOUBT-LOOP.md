@@ -113,6 +113,53 @@ ring, whatever band combination is used.
 That closes the objection rather than dodging it, and it is published on the
 site next to the original failure. `analysis/index_shootout.py`.
 
+---
+
+## Round 3 (2026-07-20)
+
+### Auditing the baseline, and an unasked-for replication
+
+The pooled Feb-Apr 2019-2023 baseline was called "normal" without checking
+whether those five dry seasons were climatologically alike. They are not: 2019
+carried El Nino conditions, 2021 and 2022 were La Nina. A La Nina-weighted
+baseline is greener than a true normal and would push every drought signal
+negative for reasons unrelated to irrigation. `pipeline/ndvi_peryear.py`
+measures each year separately so the composition can be seen.
+
+Mean course-minus-ring gap by season:
+
+| season | ENSO | mean gap |
+|---|---|---|
+| 2019 | El Nino tail | +0.0653 |
+| 2020 | neutral to La Nina | +0.0794 |
+| 2021 | La Nina | +0.0927 |
+| 2022 | La Nina | +0.0932 |
+| 2023 | neutral | +0.0828 |
+| 2024 | El Nino drought | +0.0657 |
+
+Two independent El Nino dry seasons land within 0.0004 of each other, and both
+La Nina seasons sit clearly above them. Nothing selected 2019; it was inside the
+baseline all along. The population-level finding replicates in a drought season
+it was never fitted to, which is the strongest evidence in this project that the
+surviving claim is real.
+
+### And the conclusions do not depend on the baseline
+
+Rebuilding the signal under five baseline choices:
+
+| baseline | mean signal | detector excess |
+|---|---|---|
+| published, 2019-2023 pooled | -0.0148 | -8.7 pts |
+| drop 2019 (El Nino tail) | -0.0213 | -5.8 pts |
+| drop La Nina 2021-2022 | -0.0101 | -14.5 pts |
+| neutral years only (2020, 2023) | -0.0154 | -14.5 pts |
+| 2023 alone | -0.0171 | -8.7 pts |
+
+The detector fails its control under every one. The drought-minus-control shift
+is identical across all five by construction, since the baseline cancels from
+that difference, which means the surviving conclusion cannot be baseline
+dependent at all. `analysis/base_sensitivity.py`.
+
 ### Boundaries, with their exact missing input
 
 - **Water volume per facility.** Cannot be derived from any optical index.

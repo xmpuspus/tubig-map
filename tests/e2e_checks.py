@@ -429,6 +429,16 @@ def main():
         "same five provinces" not in flat33 and "five NWRB deep-well" not in flat33,
     )
 
+    check(
+        51,
+        "the population effect replicates in the independent 2019 El Nino season",
+        summary.get("gap_2019") is not None
+        and abs(summary["gap_2019"] - summary["gap_2024"]) < 0.01
+        and summary["gap_lanina_mean"] > summary["gap_2024"] + 0.015,
+        f"2019 {summary.get('gap_2019')} vs 2024 {summary.get('gap_2024')} vs "
+        f"La Nina {summary.get('gap_lanina_mean')}",
+    )
+
     print(f"\n{sum(results)}/{len(results)} checks pass")
     sys.exit(0 if all(results) else 1)
 
