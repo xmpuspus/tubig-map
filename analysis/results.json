@@ -1,0 +1,148 @@
+{
+  "strong_2024": 28,
+  "strong_2024_reverted_2026": 13,
+  "strong_2024_persisted_2026": 15,
+  "strong_2026_total": 40,
+  "cut1_paired_diff": 0.0236,
+  "cut1_paired_p": 0.0044,
+  "ring_shift_2026_vs_base": -0.0007,
+  "golf_shift_2026_vs_base": 0.0039,
+  "ring_shift_p": 0.85205,
+  "all_mean_signal_2024": -0.0148,
+  "all_mean_signal_2026": 0.0046,
+  "golf_inside_moratorium": 45,
+  "golf_outside_moratorium": 93,
+  "ha_inside_moratorium": 2940,
+  "ha_outside_moratorium": 3765,
+  "mor_signal_inside": -0.0123,
+  "mor_signal_outside": -0.016,
+  "mor_signal_p": 0.759,
+  "provinces": [
+    {
+      "province": "Cavite",
+      "courses": 10,
+      "hectares": 1014,
+      "mean_signal": -0.0189,
+      "strong": 3
+    },
+    {
+      "province": "Laguna",
+      "courses": 11,
+      "hectares": 907,
+      "mean_signal": -0.0247,
+      "strong": 2
+    },
+    {
+      "province": "Rizal",
+      "courses": 6,
+      "hectares": 491,
+      "mean_signal": 0.0643,
+      "strong": 5
+    },
+    {
+      "province": "Metro Manila",
+      "courses": 16,
+      "hectares": 439,
+      "mean_signal": -0.0362,
+      "strong": 1
+    },
+    {
+      "province": "Bulacan",
+      "courses": 2,
+      "hectares": 89,
+      "mean_signal": 0.0493,
+      "strong": 1
+    }
+  ],
+  "denr_mean_sig24": -0.0085,
+  "denr_mean_sig26": -0.0092,
+  "denr_vs_rest_p24": 0.702,
+  "denr_gap_base": 0.2797,
+  "rest_gap_base": 0.0581,
+  "denr_gap_base_p": 0.0,
+  "denr_distinct_names": 12,
+  "held_while_ring_browned": 7,
+  "conserved_count": 46,
+  "size_spearman_r": 0.246,
+  "size_spearman_p": 0.003,
+  "dc_inside_moratorium": 11,
+  "dc_total": 14,
+  "dc_mw_total": 285.2,
+  "dc_nearest_golf_km": [
+    [
+      "Equinix MN3",
+      "Club Intramuros Golf Course",
+      0.0
+    ],
+    [
+      "EdgeConneX Manila",
+      "Club Intramuros Golf Course",
+      0.67
+    ],
+    [
+      "Equinix MN1",
+      "Manila Southwoods Golf and Country Club",
+      0.93
+    ],
+    [
+      "Reliance IT Center",
+      "City Golf",
+      1.09
+    ],
+    [
+      "STT GDC Makati",
+      "Manila Golf and Country Club",
+      2.04
+    ],
+    [
+      "DITO edge Mandaue",
+      "Cebu Country Club",
+      2.26
+    ],
+    [
+      "VITRO Trece Martires",
+      "Sherwood Hills Golf Club",
+      2.49
+    ],
+    [
+      "NARRA1",
+      "Laguna Bel Air Mini Golf Course",
+      2.5
+    ],
+    [
+      "DITO CO64",
+      "West Highlands Golf Course",
+      4.02
+    ],
+    [
+      "YCO Cloud Centers Malvar",
+      "Summit Point Golf & Residential Estates",
+      4.19
+    ],
+    [
+      "DH-MNL1",
+      "City Golf",
+      5.3
+    ],
+    [
+      "VITRO Paranaque",
+      "Las Pi\u00f1as Driving Range",
+      5.51
+    ],
+    [
+      "VITRO Sta. Rosa",
+      "Manila Southwoods Golf and Country Club",
+      6.14
+    ],
+    [
+      "STT GDC Fairview",
+      "Capitol Hills Golf and Country Club",
+      7.47
+    ]
+  ],
+  "dc_within_5km_of_golf": 10,
+  "signal_median": -0.0083,
+  "signal_pct_positive": 40.6,
+  "tiny_polygons": 27,
+  "missing_2026": 0
+}

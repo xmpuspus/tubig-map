@@ -64,9 +64,79 @@ not proof.
     Sherwood Hills (+0.080), Royal Northwoods (+0.077, in Bulacan, a
     moratorium province).
 
+## What the second pass added (2026-07-20)
+
+Computed from the same committed table, no new Earth Engine call: the
+Feb-Apr 2026 columns were already in `data/ndvi_anomaly.csv` and unused.
+Group differences are permutation-tested (20,000 resamples, seed 20260720)
+rather than assumed. Scripts: `analysis/ndvi_cuts.py`, `analysis/verify_confounders.py`.
+
+11. Most Philippine golf courses did not stay green. Across all 138 measured
+    courses the mean 2024 signal is -0.0148 and the median -0.0079, with only
+    40.6 percent positive. 46 courses browned at least 0.03 more than their
+    surroundings against 28 that stayed green by that margin. The stay-green
+    pattern is a minority behaviour, which is the opposite of the direction the
+    viral version of this argument runs.
+
+12. The directive tracked visibility, not measured behaviour. In normal years
+    the DENR-named courses stand out against their surroundings by an NDVI gap
+    of +0.2797, against +0.0581 for every other mapped course (permutation
+    p < 0.0001). That is not only because they sit in Metro Manila: within
+    Metro Manila alone the named courses still stand out more than the unnamed
+    ones (+0.3436 vs +0.2306, p = 0.023, n = 11 vs 5). Their drought response
+    was statistically indistinguishable from everyone else's (p = 0.70). The 13
+    named courses are the most conspicuous green, not the measurably thirstiest.
+
+13. When the drought lifted, roughly half went back. Of the 28 courses with a
+    clear 2024 stay-green signal, 13 fell below the threshold in the normal
+    Feb-Apr 2026 season and 15 stayed elevated. The group mean fell from +0.0675
+    to +0.0439 (paired permutation p = 0.0044). Control rings did not shift
+    between the base period and 2026 (-0.0007, p = 0.85), so this is not
+    land-use change around the courses manufacturing the signal.
+
+14. Rizal is the outlier and Metro Manila the opposite. Mean 2024 signal by
+    moratorium area: Rizal +0.0643 (5 of 6 courses above threshold), Bulacan
+    +0.0493, Cavite -0.0189, Laguna -0.0247, Metro Manila -0.0362. Published
+    with its null: being inside a moratorium area does not predict the signal
+    at all (inside -0.0123 vs outside -0.0160, p = 0.76). The boundary marks
+    where wells are restricted, not where turf stayed green.
+
+15. Larger courses show a stronger signal, weakly. Spearman r = 0.246 between
+    hectares and 2024 signal (permutation p = 0.0030, n = 138).
+
+Not published, and why: a naive nearest-neighbour computation puts one data
+center 0.00 km from a golf course, inside the polygon. That site has a
+city-level geocode. 13 of 14 data center pins are city, district or campus
+centroids and exactly one is building-precision, so no claim about physical
+adjacency between the two industries is supportable from this data. Only
+co-location at the level of the restricted area is stated.
+
+## Why it is live now (2026-07-20)
+
+The satellite windows are 2024 and 2026. Neither shows the present crisis, and
+the site says so. What makes the measurement worth reading this month:
+
+16. Angat Dam, which supplies about 90 percent of Metro Manila's raw water, is
+    at its lowest recorded level: 152.85 m, which is 7.15 m below the 160 m
+    critical level and 27.15 m below the 180 m minimum operating level. The
+    NWRB cut the MWSS allocation from 48 to 46 cubic meters per second for
+    July 16 to 30, 2026.
+17. PAGASA has raised an El Nino Alert, with a 79 percent chance of El Nino
+    over June to August 2026 persisting into early 2027. La Nina ended on
+    9 March 2026 and ENSO-neutral conditions held through the first half of the
+    year, which is what makes Feb-Apr 2026 a valid normal-season comparison.
+    The Feb-Apr 2027 dry season is the one at risk.
+18. NWRB Resolution 05-0925 required telemetered meters on industrial and
+    municipal permits at or above 10 L/s by 2025-12-31. No compliance data,
+    audit or dataset has been published as of July 2026. The measurement on
+    this map exists because that one does not.
+
 ## Perspective
 
-11. Agriculture dwarfs both industries: US irrigation runs about 73 billion
+19. Agriculture dwarfs both industries: US irrigation runs about 73 billion
     gallons per day, orders of magnitude beyond either. Any golf-vs-data-center
     argument is a fight over rounding errors in the water budget, which is
     itself the finding: the debate is about visibility and consent, not volume.
+    Finding 12 is the sharpest evidence for that reading: the regulator acted
+    on what was most visible from the road, and the satellite cannot find a
+    behavioural difference to justify the selection.

@@ -5,16 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TUBIG-MAP: who competes for Metro Manila's groundwater</title>
 <meta name="description" content="Philippine golf courses and data centers over the NWRB deep-well moratorium areas, with a Sentinel-2 stay-green measurement of golf irrigation during the 2024 El Nino.">
+<link rel="canonical" href="https://tubig-map.vercel.app/">
+<meta name="theme-color" content="#f9f9f7">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:site_name" content="TUBIG-MAP">
+<meta property="og:title" content="Who competes for Metro Manila's groundwater">
+<meta property="og:description" content="Regulators named 13 golf courses in a water directive and zero data centers. Both sit on the same restricted groundwater. Measured from Sentinel-2, not asserted.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tubig-map.vercel.app/">
+<meta property="og:image" content="https://tubig-map.vercel.app/og-card.png?v=20260720">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Map of Philippine golf courses and data centers over the NWRB deep-well moratorium areas">
+<meta property="og:locale" content="en_PH">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Who competes for Metro Manila's groundwater">
+<meta name="twitter:description" content="Regulators named 13 golf courses in a water directive and zero data centers. Both sit on the same restricted groundwater.">
+<meta name="twitter:image" content="https://tubig-map.vercel.app/og-card.png?v=20260720">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <style>
 :root{
   color-scheme: light;
   --page:#f9f9f7; --surface:#fcfcfb;
-  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --ink:#0b0b0b; --ink-2:#4c4b48; --muted:#6b6a64;
   --hairline:#e1e0d9; --border:rgba(11,11,11,0.10);
   --pos:#1c5cab; --neg:#e34948; --mid:#f0efec;
-  --dc:#4a3aa7;
+  --dc:#4a3aa7; --flag:#a8451f;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--ink);
@@ -23,34 +40,66 @@ header{max-width:1080px;margin:0 auto;padding:36px 20px 12px}
 .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
 h1{font-size:clamp(24px,4vw,38px);line-height:1.15;margin:0 0 10px}
 .lede{color:var(--ink-2);max-width:70ch;margin:0}
-.hero-stat{display:flex;gap:28px;flex-wrap:wrap;margin:22px 0 4px}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;flex:1 1 200px}
-.stat b{display:block;font-size:26px}
+.hero-stat{display:flex;gap:14px;flex-wrap:wrap;margin:22px 0 4px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;flex:1 1 190px}
+.stat b{display:block;font-size:24px;line-height:1.1}
 .stat span{font-size:13px;color:var(--ink-2)}
+.stat.lead{flex:1 1 100%;border-color:var(--flag);border-left:4px solid var(--flag);background:#fdfaf8}
+.stat.lead b{font-size:34px}
+.stat.lead span{font-size:14px;color:var(--ink)}
 #map-wrap{max-width:1080px;margin:18px auto;padding:0 20px}
 #map{height:72vh;min-height:480px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
 .panel{position:absolute;z-index:5;background:var(--surface);border:1px solid var(--border);
   border-radius:10px;padding:10px 12px;font-size:13px;box-shadow:0 1px 4px rgba(11,11,11,.06)}
-#controls{top:12px;left:12px}
+#controls{top:24px;left:32px}
 #controls label{display:flex;gap:7px;align-items:center;margin:3px 0;cursor:pointer;color:var(--ink-2)}
-#legend{bottom:26px;left:12px;max-width:250px}
+#legend{bottom:38px;left:32px;max-width:250px}
 .ramp{height:10px;border-radius:5px;margin:6px 0 2px;
   background:linear-gradient(90deg,#e34948,#f0efec 50%,#1c5cab)}
-.ramp-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.ramp-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);
+  font-variant-numeric:tabular-nums}
 .key{display:flex;align-items:center;gap:7px;margin-top:6px;font-size:12px;color:var(--ink-2)}
 .key .sw{width:14px;height:14px;border-radius:3px;flex:none}
 .key .dot{width:12px;height:12px;border-radius:50%;flex:none}
+#controls summary,#legend-keys summary{cursor:pointer;font-weight:600;font-size:12px;
+  color:var(--ink-2);list-style:none}
+#controls summary::-webkit-details-marker,#legend-keys summary::-webkit-details-marker{display:none}
+#controls summary::before,#legend-keys summary::before{content:"";display:inline-block;
+  border:4px solid transparent;border-left-color:var(--ink-2);margin-right:6px;
+  transform:translateY(-1px)}
+#controls[open] summary::before,#legend-keys[open] summary::before{
+  border-left-color:transparent;border-top-color:var(--ink-2);margin-right:4px}
+#controls summary:focus-visible,#legend-keys summary:focus-visible{outline:2px solid var(--pos)}
+#legend-keys{border:0;background:none;padding:0;margin-top:4px}
+#map-status{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:24px;color:var(--ink-2);font-size:14px;z-index:6;pointer-events:none}
 section{max-width:1080px;margin:36px auto;padding:0 20px}
 h2{font-size:22px;margin:0 0 10px}
+.sub{color:var(--ink-2);font-size:14px;margin:0 0 14px;max-width:78ch}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:14px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
 .card h3{margin:0 0 8px;font-size:16px}
 .card p{margin:0 0 8px;font-size:14px;color:var(--ink-2)}
 .card .src{font-size:12px;color:var(--muted)}
+.card .big{font-size:28px;font-weight:700;color:var(--ink);display:block;line-height:1.15;
+  font-variant-numeric:tabular-nums}
+.now{background:#fdfaf8;border:1px solid var(--flag);border-left:4px solid var(--flag);
+  border-radius:10px;padding:16px 18px}
+.now h2{font-size:18px;margin:0 0 8px}
+.now p{margin:0 0 8px;font-size:14px;color:var(--ink-2)}
+.now .src{font-size:12px;color:var(--muted)}
+/* Tables have a hard minimum content width. Without this wrapper a 5-column
+   table pushes the document past a 375px phone, and the browser shrink-to-fit
+   zooms the whole page out rather than just scrolling the table. */
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{border-collapse:collapse;width:100%;font-size:14px;background:var(--surface)}
 th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--hairline)}
 th{color:var(--ink-2);font-weight:600}
 td.num{font-variant-numeric:tabular-nums;text-align:right}
+tr.clickable{cursor:pointer}
+tr.clickable:hover,tr.clickable:focus-within{background:#f2f1ec}
+.rowbtn{all:unset;cursor:pointer;display:block;width:100%}
+.rowbtn:focus-visible{outline:2px solid var(--pos);outline-offset:-2px}
 details{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px}
 summary{cursor:pointer;font-weight:600}
 .disclaimer{border-left:3px solid var(--hairline);padding:10px 16px;color:var(--ink-2);font-size:14px;background:var(--surface)}
@@ -59,11 +108,29 @@ a{color:var(--pos)}
 .maplibregl-popup-content{font:13px/1.45 system-ui,sans-serif;color:var(--ink);border-radius:8px;padding:12px 14px;max-width:280px}
 .pop-name{font-weight:700;margin-bottom:3px}
 .pop-row{color:var(--ink-2)}
-@media (max-width:640px){
-  #controls,#legend{position:static !important;margin:8px 0 0;width:100%;max-width:none}
-  #map{height:52vh;min-height:340px}
-}
 .badge{display:inline-block;font-size:11px;border:1px solid var(--ink);border-radius:4px;padding:0 5px;margin-top:4px}
+@media (max-width:640px){
+  header{padding:20px 16px 8px}
+  .lede{font-size:14px}
+  #map-wrap{padding:0 12px}
+  #map{height:62vh;min-height:400px}
+  h1{font-size:22px}
+  .hero-stat{gap:7px;margin:12px 0 4px}
+  .stat{flex:1 1 44%;padding:7px 9px}
+  .stat b{font-size:17px}
+  .stat span{font-size:11px;line-height:1.35;display:block}
+  .stat.lead{padding:9px 11px}
+  .stat.lead b{font-size:25px}
+  .stat.lead span{font-size:12.5px}
+  th,td{padding:6px 8px;font-size:12.5px}
+  /* keep the key on the map: pushing it below leaves a phone user with a
+     coloured map and no way to read it */
+  #controls{top:8px;left:8px;right:8px;padding:8px 10px;font-size:12px}
+  #legend{bottom:8px;left:8px;right:8px;max-width:none;padding:8px 10px}
+  #legend .key{font-size:11px;margin-top:4px}
+  section{margin:26px auto}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -80,23 +147,47 @@ a{color:var(--pos)}
 
 <div id="map-wrap" style="position:relative">
   <div id="map"></div>
-  <div class="panel" id="controls" style="position:absolute;top:24px;left:32px">
+  <div id="map-status">Loading map data</div>
+  <details class="panel" id="controls" open>
+    <summary>Layers</summary>
     <label><input type="checkbox" id="tg-golf" checked> Golf courses (stay-green signal)</label>
     <label><input type="checkbox" id="tg-denr" checked> DENR 2024 directive courses</label>
     <label><input type="checkbox" id="tg-dc" checked> Data centers</label>
     <label><input type="checkbox" id="tg-mor" checked> Deep-well moratorium areas</label>
-  </div>
-  <div class="panel" id="legend" style="position:absolute;bottom:38px;left:32px">
+  </details>
+  <div class="panel" id="legend">
     <b style="font-size:12px">Stay-green signal, El Nino 2024</b>
     <div class="ramp"></div>
-    <div class="ramp-labels"><span>browned</span><span>normal</span><span>stayed green</span></div>
+    <div class="ramp-labels"><span id="ramp-lo"></span><span>0</span><span id="ramp-hi"></span></div>
+    <details id="legend-keys" open>
+    <summary>What the marks mean</summary>
     <div class="key"><span class="sw" style="background:#e1e0d9"></span> no measurement</div>
     <div class="key"><span class="sw" style="border:2px solid var(--ink);background:transparent"></span> named in DENR directive</div>
     <div class="key"><span class="dot" style="background:var(--dc)"></span> data center (size = disclosed MW)</div>
     <div class="key"><span class="dot" style="border:2px solid var(--dc);background:transparent"></span> building or planned</div>
-    <div class="key"><span class="sw" style="background:rgba(137,135,129,.18);border:1px solid var(--muted)"></span> moratorium area</div>
+    <div class="key"><span class="sw" style="background:rgba(107,106,100,.18);border:1px solid var(--muted)"></span> moratorium area</div>
+    </details>
   </div>
 </div>
+
+<section>
+  <div class="now">
+    <h2>Why this is live right now</h2>
+    <p><b>Angat Dam, which supplies about 90 percent of Metro Manila's raw water, is at its
+    lowest recorded level.</b> It fell to 152.85 m, which is 7.15 m below the 160 m critical
+    level and 27.15 m below the 180 m minimum operating level. The NWRB cut the MWSS water
+    allocation from 48 to 46 cubic meters per second for July 16 to 30, 2026. PAGASA has raised
+    an El Nino Alert, with a 79 percent chance of El Nino developing over June to August 2026 and
+    persisting into early 2027, which puts the Feb-Apr 2027 dry season at risk.</p>
+    <p><b>The satellite measurement on this page is not a picture of that crisis.</b> The imagery
+    windows are Feb-Apr 2024 (the last El Nino) and Feb-Apr 2026 (a normal season, after La Nina
+    ended on 9 March 2026). They show how this competition behaved the last time water got
+    scarce, which is why they matter as the next dry season approaches. They do not show July
+    2026.</p>
+    <p class="src">Angat level and allocation cut: Philstar and BusinessWorld, July 2026. ENSO
+    status: PAGASA advisories and NOAA CPC, July 2026. Full links in docs/SOURCES.md.</p>
+  </div>
+</section>
 
 <section>
   <h2>What the map shows</h2>
@@ -112,9 +203,11 @@ a{color:var(--pos)}
     <div class="card">
       <h3>Same restricted ground</h3>
       <p>The NWRB restricts new deep wells in Metro Manila, Bulacan, Cavite, Rizal and Laguna,
-      the areas it considers critical or over-extracted. The golf clusters and nearly the entire
-      data center buildout sit inside these same areas, drawing on the same stressed groundwater
-      and the same Angat-dependent piped system.</p>
+      the areas it considers critical or over-extracted. <span data-n="golf_inside_moratorium"></span>
+      golf courses covering <span data-n="ha_inside_moratorium"></span> hectares sit inside those
+      areas, alongside <span data-n="dc_in_moratorium"></span> of the
+      <span data-n="dc_sites"></span> tracked data center sites, drawing on the same stressed
+      groundwater and the same Angat-dependent piped system.</p>
       <p class="src">Moratorium coverage per legal commentary on NWRB issuances; boundaries from OSM.</p>
     </div>
     <div class="card">
@@ -140,13 +233,77 @@ a{color:var(--pos)}
 </section>
 
 <section>
+  <h2>What the measurement found</h2>
+  <p class="sub">Four results computed from the same table that drives the map. Group differences
+  are tested by permutation (20,000 resamples), not assumed.</p>
+  <div class="cards">
+    <div class="card">
+      <h3>Most courses browned, they did not stay green</h3>
+      <span class="big" id="i-browned"></span>
+      <p>Across all <span data-n="golf_measured"></span> measured courses the median signal is
+      <span data-n="median_signal"></span> and only <span data-n="pct_positive"></span> percent are
+      positive at all. More courses browned faster than their surroundings during the drought than
+      stayed green. The stay-green pattern is a minority, which is the opposite of how the viral
+      version of this argument runs.</p>
+    </div>
+    <div class="card">
+      <h3>The directive named the most visible courses</h3>
+      <span class="big" id="i-visible"></span>
+      <p>In normal years the DENR-named courses stand out against their surroundings by an NDVI gap
+      of <span data-n="denr_gap_base"></span>, against <span data-n="rest_gap_base"></span> for every
+      other mapped course (permutation p below 0.0001). Within Metro Manila alone they still stand
+      out more than unnamed Metro Manila courses (+0.344 vs +0.231, p = 0.023, n = 11 vs 5). Their
+      drought response, though, was statistically indistinguishable from everyone else's (p = 0.70).
+      The directive tracked visibility, not measured behaviour.</p>
+    </div>
+    <div class="card">
+      <h3>When the drought lifted, half went back</h3>
+      <span class="big" id="i-revert"></span>
+      <p>Of the <span data-n="strong_signal"></span> courses with a clear stay-green signal in the
+      2024 drought, <span data-n="reverted_2026"></span> fell back below the threshold in the normal
+      Feb-Apr 2026 season and <span data-n="persisted_2026"></span> stayed elevated. The group mean
+      dropped from +0.068 to +0.044 (paired permutation p = 0.004). The control rings did not shift
+      between periods (p = 0.85), so this is not the neighbourhoods changing around them.</p>
+    </div>
+    <div class="card">
+      <h3>Rizal stands out, Metro Manila least</h3>
+      <span class="big" id="i-rizal"></span>
+      <p>Rizal has the highest mean signal of the five restricted areas and Metro Manila the lowest,
+      even though Metro Manila is where the named courses are. Across the whole set, being inside a
+      moratorium area does not predict the signal at all (inside -0.012 vs outside -0.016, p = 0.76).
+      That null is worth stating: the boundary marks where wells are restricted, not where turf
+      stayed green.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>The five restricted areas</h2>
+  <p class="sub">Golf land and stay-green counts inside each NWRB deep-well moratorium area.</p>
+  <div class="tablewrap">
+  <table id="prov-table" aria-label="Golf courses by moratorium area">
+    <thead><tr><th>Moratorium area</th><th class="num">Courses</th><th class="num">Hectares</th>
+      <th class="num">Mean signal</th><th class="num">Stayed green</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  </div>
+</section>
+
+<section>
   <h2>Courses with the strongest stay-green signal</h2>
+  <p class="sub">El Nino 2024 signal, with the same course measured again in the normal Feb-Apr 2026
+  season. Select a row to find it on the map. Courses under
+  <span data-n="min_leaderboard_ha"></span> hectares are excluded from this ranking because driving
+  ranges and OSM slivers are mostly edge pixels; they remain on the map and in every total.</p>
   <details open>
     <summary>Top courses by El Nino 2024 irrigation signal</summary>
+    <div class="tablewrap">
     <table id="signal-table" aria-label="Golf courses ranked by stay-green signal">
-      <thead><tr><th>Course</th><th class="num">Hectares</th><th class="num">Signal</th><th>DENR 2024</th></tr></thead>
+      <thead><tr><th>Course</th><th class="num">Hectares</th><th class="num">2024 signal</th>
+        <th class="num">2026 signal</th><th>DENR 2024</th></tr></thead>
       <tbody></tbody>
     </table>
+    </div>
   </details>
 </section>
 
@@ -160,9 +317,15 @@ a{color:var(--pos)}
     consistent with irrigation, including irrigation from recycled or harvested water, which is
     exactly what the DENR directive asks for. The signal cannot say where the water came from.</p></div>
     <div class="card"><h3>Data center pins vary in precision</h3><p>Each site carries a
-    precision label from building-level down to city-level, and its source. Capacity claims for
-    the national buildout disagree by an order of magnitude across 2025-2026 sources; megawatt
-    figures shown carry their source.</p></div>
+    precision label from building-level down to city-level, and its source. Only one of the
+    tracked sites has a building-precision pin, so this map does not make claims about how
+    physically close any data center is to any golf course. Co-location is stated at the level of
+    the restricted area only. Capacity claims for the national buildout disagree by an order of
+    magnitude across 2025-2026 sources; megawatt figures shown carry their source.</p></div>
+    <div class="card"><h3>One threshold, chosen not discovered</h3><p>The
+    <span data-n="strong_signal_threshold"></span> cutoff for a clear stay-green signal sits about
+    0.7 standard deviations above the mean. There is no natural break in the distribution, so the
+    counts move if the threshold moves. Every underlying value is in the repo.</p></div>
   </div>
   <p class="disclaimer" style="margin-top:16px">All data sourced from public records and public
   satellite imagery (OpenStreetMap, DENR and MWSS statements as reported, operator disclosures,
@@ -178,56 +341,157 @@ a{color:var(--pos)}
 </footer>
 
 <script>
+// Ramp clamp. The signal spans about -0.22 to +0.22 but the bulk sits inside
+// +/-0.05, so a full-range ramp would wash everything out. Values beyond the
+// clamp saturate, and the legend says so in numbers rather than words.
 const SIGNAL_MAX = 0.12;
 const fmt = (x, d=3) => x == null ? "no data" : (+x).toFixed(d);
+const signed = (x, d=3) => x == null ? "no data" : ((+x >= 0 ? "+" : "") + (+x).toFixed(d));
+const num = v => (v == null || v === "null" || v === "") ? null : +v;
+
+function fail(msg) {
+  const el = document.getElementById("map-status");
+  if (el) { el.textContent = msg; el.style.color = "#a8451f"; }
+}
 
 async function boot() {
-  const [golf, dcs, mor, summary] = await Promise.all([
-    fetch("data/golf_ndvi.geojson").then(r => r.json()),
-    fetch("data/data_centers.geojson").then(r => r.json()),
-    fetch("data/moratorium_areas.geojson").then(r => r.json()),
-    fetch("data/summary.json").then(r => r.json()),
-  ]);
+  let golf, dcs, mor, summary;
+  try {
+    const grab = async u => {
+      const r = await fetch(u);
+      if (!r.ok) throw new Error(u + " returned " + r.status);
+      return r.json();
+    };
+    [golf, dcs, mor, summary] = await Promise.all([
+      grab("data/golf_ndvi.geojson"), grab("data/data_centers.geojson"),
+      grab("data/moratorium_areas.geojson"), grab("data/summary.json"),
+    ]);
+  } catch (err) {
+    fail("Could not load the map data (" + err.message + "). The figures below are unavailable; the repository has the underlying files.");
+    return;
+  }
 
   document.getElementById("hero").innerHTML = `
-    <div class="stat"><b>${summary.denr_named_golf} vs ${summary.denr_named_dc}</b>
-      <span>golf courses vs data centers named in regulator water directives</span></div>
-    <div class="stat"><b>${summary.golf_features}</b>
-      <span>mapped golf courses, ${Math.round(summary.golf_hectares).toLocaleString()} hectares</span></div>
+    <div class="stat lead"><b>${summary.denr_named_golf} vs ${summary.denr_named_dc}</b>
+      <span>golf courses versus data centers ever named in a Philippine regulator's water
+      directive, though both sit on the same restricted groundwater</span></div>
+    <div class="stat"><b>${summary.golf_inside_moratorium} of ${summary.golf_features}</b>
+      <span>mapped golf courses sit inside the restricted areas
+      (${Math.round(summary.ha_inside_moratorium).toLocaleString()} of
+      ${Math.round(summary.golf_hectares).toLocaleString()} hectares); the rest are elsewhere in
+      the country</span></div>
     <div class="stat"><b>${summary.dc_sites}</b>
       <span>data center sites tracked, ${summary.dc_disclosures} with a published water metric</span></div>
     <div class="stat"><b>${summary.strong_signal}</b>
-      <span>courses with a clear stay-green signal in El Nino 2024</span></div>`;
-  document.querySelectorAll("[data-n]").forEach(el => {
-    el.textContent = summary[el.dataset.n] ?? "";
-  });
+      <span>courses that stayed green in El Nino 2024</span></div>
+    <div class="stat"><b>${summary.browned_more}</b>
+      <span>courses that browned faster than their surroundings instead</span></div>`;
 
-  const tbody = document.querySelector("#signal-table tbody");
-  summary.top_signals.forEach(row => {
+  document.querySelectorAll("[data-n]").forEach(el => {
+    const v = summary[el.dataset.n];
+    el.textContent = typeof v === "number"
+      ? (Math.abs(v) < 1 && !Number.isInteger(v) ? signed(v, 3) : v.toLocaleString())
+      : (v ?? "");
+  });
+  // On a phone the map is short, so the panels start collapsed and the user
+  // opens the one they want instead of losing the map behind them.
+  if (window.innerWidth <= 640) {
+    document.getElementById("controls").open = false;
+    document.getElementById("legend-keys").open = false;
+  }
+  const set = (id, txt) => { const e = document.getElementById(id); if (e) e.textContent = txt; };
+  set("i-browned", `${summary.browned_more} browned vs ${summary.strong_signal} stayed green`);
+  set("i-visible", `${signed(summary.denr_gap_base)} vs ${signed(summary.rest_gap_base)}`);
+  set("i-revert", `${summary.reverted_2026} of ${summary.measured_2026} went back`);
+  const top = summary.provinces[0], bottom = summary.provinces[summary.provinces.length - 1];
+  set("i-rizal", `${top.area} ${signed(top.mean_signal)} / ${bottom.area} ${signed(bottom.mean_signal)}`);
+  set("ramp-lo", "-" + SIGNAL_MAX.toFixed(2) + " or lower");
+  set("ramp-hi", "+" + SIGNAL_MAX.toFixed(2) + " or higher");
+
+  const ptbody = document.querySelector("#prov-table tbody");
+  summary.provinces.forEach(p => {
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${row.name || "(unnamed, OSM " + row.osm_id + ")"}</td>
-      <td class="num">${Math.round(row.hectares)}</td>
-      <td class="num">${row.irrigation_signal >= 0 ? "+" : ""}${fmt(row.irrigation_signal)}</td>
-      <td>${row.denr_2024 ? "named" : ""}</td>`;
-    tbody.appendChild(tr);
+    tr.innerHTML = `<td>${p.area}</td><td class="num">${p.courses}</td>
+      <td class="num">${p.hectares.toLocaleString()}</td>
+      <td class="num">${signed(p.mean_signal, 3)}</td>
+      <td class="num">${p.strong}</td>`;
+    ptbody.appendChild(tr);
   });
 
   const map = new maplibregl.Map({
     container: "map",
     style: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-    center: [121.03, 14.42],
-    zoom: 9.2,
+    bounds: summary.bbox_moratorium,
+    fitBoundsOptions: {padding: window.innerWidth <= 640 ? 16 : 48, maxZoom: 11},
     attributionControl: {compact: true},
   });
   map.addControl(new maplibregl.NavigationControl(), "top-right");
   window._map = map;
 
+  const byId = new Map(golf.features.map(f => [String(f.properties.osm_id), f]));
+  const centroid = f => {
+    let xs = [], ys = [];
+    const walk = c => Array.isArray(c[0]) ? c.forEach(walk) : (xs.push(c[0]), ys.push(c[1]));
+    walk(f.geometry.coordinates);
+    return [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+  };
+
+  const tbody = document.querySelector("#signal-table tbody");
+  summary.top_signals.forEach(row => {
+    const tr = document.createElement("tr");
+    tr.className = "clickable";
+    tr.tabIndex = 0;
+    tr.innerHTML = `<td>${row.name || "(unnamed, OSM " + row.osm_id + ")"}</td>
+      <td class="num">${Math.round(row.hectares).toLocaleString()}</td>
+      <td class="num">${signed(row.irrigation_signal)}</td>
+      <td class="num">${signed(row.signal_2026)}</td>
+      <td>${row.denr_2024 ? "named" : ""}</td>`;
+    const go = () => {
+      const f = byId.get(String(row.osm_id));
+      if (!f) return;
+      document.getElementById("map-wrap").scrollIntoView({behavior: "smooth", block: "center"});
+      map.flyTo({center: centroid(f), zoom: 13.4});
+      showGolf(f.properties, centroid(f));
+      history.replaceState(null, "", "#course/" + row.osm_id);
+    };
+    tr.addEventListener("click", go);
+    tr.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+    });
+    tbody.appendChild(tr);
+  });
+
+  const popup = new maplibregl.Popup({closeButton: true, closeOnClick: true, maxWidth: "290px"});
+  function showGolf(p, lngLat) {
+    const sig = num(p.irrigation_signal), sig26 = num(p.signal_2026);
+    popup.setLngLat(lngLat).setHTML(`
+      <div class="pop-name">${p.name || "Unnamed golf course"}</div>
+      <div class="pop-row">${Math.round(p.hectares).toLocaleString()} ha${p.moratorium_area && p.moratorium_area !== "null" ? " &middot; " + p.moratorium_area : ""}</div>
+      <div class="pop-row">2024 El Nino signal: ${sig == null ? "no measurement" : signed(sig)}</div>
+      <div class="pop-row">2026 normal season: ${sig26 == null ? "no measurement" : signed(sig26)}</div>
+      <div class="pop-row">gap vs ring: ${fmt(num(p.gap_elnino))} in 2024, ${fmt(num(p.gap_base))} in normal years</div>
+      ${p.denr_2024 && p.denr_2024 !== "null" ? '<span class="badge">DENR 2024 water directive</span>' : ""}`)
+      .addTo(map);
+  }
+  function showDC(p, lngLat) {
+    popup.setLngLat(lngLat).setHTML(`
+      <div class="pop-name">${p.name}</div>
+      <div class="pop-row">${p.operator} &middot; ${p.city}, ${p.province}</div>
+      <div class="pop-row">status: ${p.status}${num(p.mw) != null ? " &middot; " + p.mw + " MW (source-claimed)" : ""}</div>
+      <div class="pop-row">water disclosure: ${p.water_disclosure && p.water_disclosure !== "null" ? p.water_disclosure : "none published"}</div>
+      <div class="pop-row" style="font-size:11px;color:#6b6a64">pin precision: ${p.precision}</div>`)
+      .addTo(map);
+  }
+
   map.on("load", () => {
+    const status = document.getElementById("map-status");
+    if (status) status.remove();
+
     map.addSource("mor", {type: "geojson", data: mor});
     map.addLayer({id: "mor-fill", type: "fill", source: "mor",
-      paint: {"fill-color": "#898781", "fill-opacity": 0.16}});
+      paint: {"fill-color": "#6b6a64", "fill-opacity": 0.16}});
     map.addLayer({id: "mor-line", type: "line", source: "mor",
-      paint: {"line-color": "#898781", "line-width": 1, "line-dasharray": [3, 2]}});
+      paint: {"line-color": "#6b6a64", "line-width": 1, "line-dasharray": [3, 2]}});
 
     map.addSource("golf", {type: "geojson", data: golf});
     map.addLayer({id: "golf-fill", type: "fill", source: "golf",
@@ -238,7 +502,22 @@ async function boot() {
         "#e1e0d9"],
       "fill-opacity": 0.85}});
     map.addLayer({id: "golf-line", type: "line", source: "golf",
-      paint: {"line-color": "#52514e", "line-width": 0.6}});
+      paint: {"line-color": "#4c4b48", "line-width": 0.6}});
+    // Courses are a few pixels wide at the opening zoom, so carry a dot until
+    // the polygons are big enough to read. Without this the map opens on the
+    // moratorium fill with the entire measurement invisible.
+    map.addLayer({id: "golf-dot", type: "circle", source: "golf",
+      maxzoom: 11.5,
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 7, 2.4, 11.5, 6],
+        "circle-color": [
+          "case", ["==", ["typeof", ["get", "irrigation_signal"]], "number"],
+          ["interpolate-lab", ["linear"], ["get", "irrigation_signal"],
+            -SIGNAL_MAX, "#e34948", 0, "#f0efec", SIGNAL_MAX, "#1c5cab"],
+          "#e1e0d9"],
+        "circle-stroke-color": "#4c4b48",
+        "circle-stroke-width": 0.7,
+      }});
     map.addLayer({id: "denr-line", type: "line", source: "golf",
       filter: ["!=", ["get", "denr_2024"], null],
       paint: {"line-color": "#0b0b0b", "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1.1, 12, 2.5]}});
@@ -254,37 +533,39 @@ async function boot() {
         "circle-opacity": 0.92,
       }});
 
-    const popup = new maplibregl.Popup({closeButton: false, closeOnClick: false});
-    map.on("mousemove", "golf-fill", e => {
-      map.getCanvas().style.cursor = "pointer";
-      const p = e.features[0].properties;
-      popup.setLngLat(e.lngLat).setHTML(`
-        <div class="pop-name">${p.name || "Unnamed golf course"}</div>
-        <div class="pop-row">${Math.round(p.hectares)} ha</div>
-        <div class="pop-row">stay-green signal: ${p.irrigation_signal != null && p.irrigation_signal !== "null" ? (+p.irrigation_signal >= 0 ? "+" : "") + fmt(p.irrigation_signal) : "no measurement"}</div>
-        <div class="pop-row">El Nino gap vs ring: ${fmt(p.gap_elnino)} (normal years ${fmt(p.gap_base)})</div>
-        ${p.denr_2024 && p.denr_2024 !== "null" ? '<span class="badge">DENR 2024 water directive</span>' : ""}`).addTo(map);
+    // Click drives both mouse and touch. Hover is an enhancement on top, so a
+    // phone tap opens the same popup a desktop hover does.
+    const golfLayers = ["golf-fill", "golf-dot"];
+    golfLayers.forEach(layer => {
+      map.on("click", layer, e => showGolf(e.features[0].properties, e.lngLat));
+      map.on("mouseenter", layer, () => map.getCanvas().style.cursor = "pointer");
+      map.on("mouseleave", layer, () => map.getCanvas().style.cursor = "");
     });
-    map.on("mouseleave", "golf-fill", () => {map.getCanvas().style.cursor = ""; popup.remove();});
-
-    map.on("mousemove", "dc-pt", e => {
-      map.getCanvas().style.cursor = "pointer";
-      const p = e.features[0].properties;
-      popup.setLngLat(e.lngLat).setHTML(`
-        <div class="pop-name">${p.name}</div>
-        <div class="pop-row">${p.operator} &middot; ${p.city}, ${p.province}</div>
-        <div class="pop-row">status: ${p.status}${p.mw && p.mw !== "null" ? " &middot; " + p.mw + " MW (source-claimed)" : ""}</div>
-        <div class="pop-row">water disclosure: ${p.water_disclosure && p.water_disclosure !== "null" ? p.water_disclosure : "none published"}</div>
-        <div class="pop-row" style="font-size:11px;color:#898781">pin precision: ${p.precision}</div>`).addTo(map);
-    });
-    map.on("mouseleave", "dc-pt", () => {map.getCanvas().style.cursor = ""; popup.remove();});
+    map.on("click", "dc-pt", e => showDC(e.features[0].properties, e.lngLat));
+    map.on("mouseenter", "dc-pt", () => map.getCanvas().style.cursor = "pointer");
+    map.on("mouseleave", "dc-pt", () => map.getCanvas().style.cursor = "");
 
     const wire = (id, layers) => document.getElementById(id).addEventListener("change", e =>
       layers.forEach(l => map.setLayoutProperty(l, "visibility", e.target.checked ? "visible" : "none")));
-    wire("tg-golf", ["golf-fill", "golf-line"]);
+    wire("tg-golf", ["golf-fill", "golf-line", "golf-dot"]);
     wire("tg-denr", ["denr-line"]);
     wire("tg-dc", ["dc-pt"]);
     wire("tg-mor", ["mor-fill", "mor-line"]);
+
+    // Deep link: /#course/<osm_id> opens that course on load so a specific
+    // finding can be shared.
+    const m = location.hash.match(/^#course\/(\d+)/);
+    if (m && byId.has(m[1])) {
+      const f = byId.get(m[1]);
+      map.flyTo({center: centroid(f), zoom: 13.4, duration: 0});
+      showGolf(f.properties, centroid(f));
+    }
+  });
+
+  map.on("error", e => {
+    if (!document.getElementById("map-status")) return;
+    fail("The basemap failed to load. Check the network connection and reload.");
+    console.error(e && e.error);
   });
 }
 boot();

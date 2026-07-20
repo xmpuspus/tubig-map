@@ -7,113 +7,204 @@
  "denr_named_dc": 0,
  "dc_sites": 14,
  "dc_disclosures": 1,
+ "dc_in_moratorium": 11,
  "strong_signal": 28,
  "strong_signal_threshold": 0.03,
+ "browned_more": 46,
+ "pct_positive": 40.6,
+ "median_signal": -0.0079,
+ "reverted_2026": 13,
+ "persisted_2026": 15,
+ "measured_2026": 28,
+ "denr_gap_base": 0.2797,
+ "rest_gap_base": 0.0581,
+ "golf_inside_moratorium": 45,
+ "ha_inside_moratorium": 2940,
+ "provinces": [
+  {
+   "area": "Rizal",
+   "courses": 6,
+   "hectares": 491,
+   "mean_signal": 0.0643,
+   "strong": 5
+  },
+  {
+   "area": "Bulacan",
+   "courses": 2,
+   "hectares": 89,
+   "mean_signal": 0.0493,
+   "strong": 1
+  },
+  {
+   "area": "Cavite",
+   "courses": 10,
+   "hectares": 1014,
+   "mean_signal": -0.0189,
+   "strong": 3
+  },
+  {
+   "area": "Laguna",
+   "courses": 11,
+   "hectares": 907,
+   "mean_signal": -0.0247,
+   "strong": 2
+  },
+  {
+   "area": "Metro Manila",
+   "courses": 16,
+   "hectares": 439,
+   "mean_signal": -0.0362,
+   "strong": 1
+  }
+ ],
+ "bbox": [
+  117.4327,
+  6.2538,
+  126.2779,
+  18.138
+ ],
+ "bbox_moratorium": [
+  120.4161,
+  13.9668,
+  121.6207,
+  15.272
+ ],
+ "min_leaderboard_ha": 20,
  "top_signals": [
   {
    "osm_id": "1347745645",
    "name": "Tandatangan Golf Course",
-   "hectares": 37.05203435804418,
+   "hectares": 37,
    "irrigation_signal": 0.2244,
-   "denr_2024": null
-  },
-  {
-   "osm_id": "1455691384",
-   "name": "",
-   "hectares": 0.1752263211834921,
-   "irrigation_signal": 0.1664,
-   "denr_2024": null
-  },
-  {
-   "osm_id": "703800717",
-   "name": "",
-   "hectares": 1.9365106694455811,
-   "irrigation_signal": 0.1011,
-   "denr_2024": null
+   "signal_2026": 0.193,
+   "denr_2024": null,
+   "moratorium_area": null
   },
   {
    "osm_id": "144672538",
    "name": "Tagaytay Midlands Golf Club",
-   "hectares": 80.17505548025325,
+   "hectares": 80,
    "irrigation_signal": 0.0922,
-   "denr_2024": null
-  },
-  {
-   "osm_id": "703800716",
-   "name": "",
-   "hectares": 2.584089913420003,
-   "irrigation_signal": 0.0899,
-   "denr_2024": null
+   "signal_2026": 0.0978,
+   "denr_2024": null,
+   "moratorium_area": null
   },
   {
    "osm_id": "31712056",
    "name": "Eastridge Golf & Country Club",
-   "hectares": 84.50852078405796,
+   "hectares": 85,
    "irrigation_signal": 0.0873,
-   "denr_2024": "eastridge"
+   "signal_2026": 0.008,
+   "denr_2024": "eastridge",
+   "moratorium_area": "Rizal"
   },
   {
    "osm_id": "138947548",
    "name": "Summit Point Golf & Residential Estates",
-   "hectares": 74.34520639481308,
+   "hectares": 74,
    "irrigation_signal": 0.0831,
-   "denr_2024": null
+   "signal_2026": 0.1361,
+   "denr_2024": null,
+   "moratorium_area": null
   },
   {
    "osm_id": "987623407",
    "name": "Sherwood Hills Golf Club",
-   "hectares": 160.37551325418346,
+   "hectares": 160,
    "irrigation_signal": 0.0803,
-   "denr_2024": null
+   "signal_2026": 0.1169,
+   "denr_2024": null,
+   "moratorium_area": "Cavite"
   },
   {
    "osm_id": "1259077065",
    "name": "New Asia Golf & Spa Resort",
-   "hectares": 73.89872543800139,
+   "hectares": 74,
    "irrigation_signal": 0.0799,
-   "denr_2024": null
+   "signal_2026": 0.0595,
+   "denr_2024": null,
+   "moratorium_area": null
   },
   {
    "osm_id": "99512563",
    "name": "Royal Northwoods",
-   "hectares": 67.74076937007251,
+   "hectares": 68,
    "irrigation_signal": 0.0765,
-   "denr_2024": null
-  },
-  {
-   "osm_id": "246644550",
-   "name": "",
-   "hectares": 8.314626041692343,
-   "irrigation_signal": 0.0753,
-   "denr_2024": null
-  },
-  {
-   "osm_id": "702047132",
-   "name": "",
-   "hectares": 0.7328971138131224,
-   "irrigation_signal": 0.0719,
-   "denr_2024": null
+   "signal_2026": 0.0012,
+   "denr_2024": null,
+   "moratorium_area": "Bulacan"
   },
   {
    "osm_id": "16611953",
    "name": "Manila Southwoods Golf and Country Club",
-   "hectares": 147.2764824108853,
+   "hectares": 147,
    "irrigation_signal": 0.0587,
-   "denr_2024": null
+   "signal_2026": 0.033,
+   "denr_2024": null,
+   "moratorium_area": "Laguna"
   },
   {
    "osm_id": "5172611",
    "name": "Malarayat Golf Course",
-   "hectares": 101.30135487916465,
+   "hectares": 101,
    "irrigation_signal": 0.0516,
-   "denr_2024": null
+   "signal_2026": 0.0613,
+   "denr_2024": null,
+   "moratorium_area": null
   },
   {
    "osm_id": "4429331",
    "name": "Mimosa Golf & Country Club",
-   "hectares": 116.31616489057811,
+   "hectares": 116,
    "irrigation_signal": 0.0476,
-   "denr_2024": null
+   "signal_2026": 0.0653,
+   "denr_2024": null,
+   "moratorium_area": null
+  },
+  {
+   "osm_id": "18207481",
+   "name": "Sun Valley Golf Club",
+   "hectares": 179,
+   "irrigation_signal": 0.0443,
+   "signal_2026": 0.0368,
+   "denr_2024": "sun-valley",
+   "moratorium_area": "Rizal"
+  },
+  {
+   "osm_id": "1921827",
+   "name": "Pueblo de Oro Golf and Country Club",
+   "hectares": 72,
+   "irrigation_signal": 0.0435,
+   "signal_2026": 0.0495,
+   "denr_2024": null,
+   "moratorium_area": null
+  },
+  {
+   "osm_id": "15979150",
+   "name": "",
+   "hectares": 119,
+   "irrigation_signal": 0.0392,
+   "signal_2026": 0.0328,
+   "denr_2024": null,
+   "moratorium_area": null
+  },
+  {
+   "osm_id": "148049007",
+   "name": "Subic Golf Club",
+   "hectares": 88,
+   "irrigation_signal": 0.038,
+   "signal_2026": -0.003,
+   "denr_2024": null,
+   "moratorium_area": null
+  },
+  {
+   "osm_id": "153513039",
+   "name": "Splendido Golf Course",
+   "hectares": 56,
+   "irrigation_signal": 0.0359,
+   "signal_2026": 0.0389,
+   "denr_2024": null,
+   "moratorium_area": null
   }
  ]
 }

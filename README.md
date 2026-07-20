@@ -28,19 +28,35 @@ measures the part that can be measured from orbit.
 
 The full set with sources is in [docs/FINDINGS.md](docs/FINDINGS.md). The short version:
 
-- Golf courses and the data center buildout cluster inside the same five
-  provinces where the NWRB restricts new deep wells.
-- During the peak of the 2024 El Nino, Metro Manila's marquee courses were
-  greener than their surroundings by NDVI gaps of up to +0.41.
-- The 13 DENR-named courses split: Club Intramuros, Villamor and Wack Wack
-  browned relative to their normal advantage during the directive season,
-  consistent with cutting back; Eastridge, Philippine Army and Sun Valley
-  stayed green or got greener.
-- 28 of 138 mapped courses nationwide show a strong stay-green signal; the
-  strongest are outside Metro Manila (Tandatangan +0.224, Tagaytay Midlands
-  +0.092, Royal Northwoods +0.077 in moratorium-province Bulacan).
+- 45 of the 138 mapped courses, and 11 of 14 tracked data center sites, sit
+  inside the five provinces where the NWRB restricts new deep wells.
+- **Most courses did not stay green.** 46 browned faster than their
+  surroundings during the 2024 drought against 28 that stayed green, and the
+  median course signal is negative. The stay-green pattern is a minority, which
+  is the opposite of how the viral version of this argument runs.
+- **The DENR named the most visible courses, not the measurably thirstiest.**
+  In normal years the named courses stand out against their surroundings by an
+  NDVI gap of +0.280 versus +0.058 for every other course (permutation
+  p < 0.0001), and that holds even against other Metro Manila courses. Their
+  drought response was statistically indistinguishable from everyone else's
+  (p = 0.70).
+- **Half went back when the drought lifted.** Of the 28 courses with a clear
+  2024 signal, 13 fell below the threshold in the normal Feb-Apr 2026 season
+  and 15 stayed elevated (paired permutation p = 0.004). The control rings did
+  not shift, so this is not the neighbourhoods changing.
+- Rizal has the highest mean signal of the five restricted areas and Metro
+  Manila the lowest. Being inside a moratorium area does not predict the signal
+  at all (p = 0.76), a null worth stating.
 - 1 of 14 tracked data center sites publishes any water metric. The DENR has
   named golf courses in water directives; it has named zero data centers.
+
+Why it matters this month: Angat Dam, which supplies about 90 percent of Metro
+Manila's raw water, is at its lowest recorded level (152.85 m, 7.15 m below the
+critical level), the NWRB cut the MWSS allocation from 48 to 46 cubic meters per
+second for 16 to 30 July 2026, and PAGASA has raised an El Nino Alert running
+into early 2027. The satellite windows on the map are 2024 and 2026 and show
+none of that; they show how this competition behaved the last two times the
+season turned, which is the point as the next dry season approaches.
 
 ## What the measurement is (and is not)
 

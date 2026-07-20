@@ -78,6 +78,61 @@ subset is restated here with links.
   signal is consistent with irrigation; it is not a meter reading and carries
   no accusation. Method and thresholds: `pipeline/ndvi_anomaly.py`.
 
+## Current water and ENSO conditions (verified 2026-07-20)
+
+Used only in the "Why this is live right now" block. The satellite windows are
+Feb-Apr 2024 and Feb-Apr 2026; neither shows July 2026, and the page says so.
+
+- Angat Dam at 152.85 m, its lowest recorded level, 7.15 m below the 160 m
+  critical level and 27.15 m below the 180 m minimum operating level. The
+  record fell repeatedly through July 2026 (156.68 m on 9 July, 155.91 m on
+  12 July), so any figure needs its date attached.
+  https://bworldonline.com/the-nation/2026/07/09/762296/angat-dam-dips-to-another-record-low-water-level-despite-inclement-weather-says-pagasa/
+- NWRB cut the MWSS allocation from 48 to 46 cubic meters per second for
+  July 16 to 30, 2026. Philstar, 2026-07-20:
+  https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew
+- ENSO: La Nina ended 2026-03-09; ENSO-neutral held through the first half of
+  2026; PAGASA raised an El Nino Alert on a 79 percent chance of El Nino over
+  June to August 2026, persisting into early 2027.
+  https://www.pagasa.dost.gov.ph/climate/el-nino-la-nina/advisories
+  This is what licenses reading Feb-Apr 2026 as a normal-season comparison
+  rather than a second drought. State it as "El Nino Alert, forecast to
+  strengthen", never as "strong El Nino now".
+- NWRB Resolution 05-0925 telemetry deadline was 2025-12-31. No compliance
+  data, audit or dataset published as of 2026-07-20. Confirmed by search, a
+  negative result rather than a citation.
+
+## Statistical method for the group comparisons
+
+Findings 11 to 15 in docs/FINDINGS.md use permutation tests, not parametric
+t-tests, because the signal distribution is skewed and several groups are
+small (n = 2 for Bulacan, n = 6 for Rizal, n = 11 vs 5 for the within-Metro
+Manila comparison). 20,000 resamples, seed 20260720. Paired comparisons use
+sign-flip permutation on the differences; two-group comparisons shuffle the
+labels. Scripts committed as `analysis/ndvi_cuts.py` and `analysis/verify_confounders.py`.
+No scipy dependency was added.
+
+The Feb-Apr 2026 columns were already produced by `pipeline/ndvi_anomaly.py`
+and sat unused. `pipeline/build_summary.py` derives `gap_latest` and
+`signal_2026` from them arithmetically, so the 2026 comparison required no new
+Earth Engine call.
+
+Confounder checked and cleared: if the control rings had browned or urbanised
+between the 2019-2023 base and 2026, the 2026 signal would rise with no change
+in irrigation. Rings moved -0.0007 (p = 0.85) and courses +0.0039 (p = 0.47),
+so neither shifted materially.
+
+## Data center pin precision, and what it forbids
+
+13 of the 14 tracked sites are geocoded to city, district or campus level;
+exactly one (Reliance IT Center) is building-precision. A nearest-neighbour
+computation therefore returns physically meaningless results, including 0.00 km
+between Equinix MN3 and Club Intramuros because a city centroid happens to fall
+inside that polygon. No claim about physical adjacency between data centers and
+golf courses appears on the site. Co-location is asserted only at the level of
+the five moratorium areas, which are large enough that centroid error cannot
+flip the answer.
+
 ## Disclaimer
 
 All data sourced from public records and public satellite imagery (OSM, DENR
