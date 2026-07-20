@@ -1,8 +1,8 @@
 # TUBIG-MAP
 
 Who competes for Metro Manila's groundwater: Philippine golf courses and data
-centers mapped over the NWRB deep-well moratorium areas, with a Sentinel-2
-measurement of which golf courses stayed green through the 2024 El Nino.
+centers mapped over the areas NWRB designated critical for groundwater, with a
+Sentinel-2 measurement that failed its control season and is reported as such.
 
 ![tubig-map flythrough](docs/hero.gif)
 
@@ -36,23 +36,24 @@ adversarial review that produced most of them is in
   threshold fires on 29.0 percent of courses there against 20.3 percent in the
   2024 drought. A detector that fires more often with no drought does not
   measure drought response, so no individual course is ranked by water use here.
-- **What survives is the population.** Across all 138 courses the mean signal
-  was -0.0148 in the drought season against +0.0046 in the control, a paired
-  shift of -0.0194 (cluster-robust p = 0.024 against the 2026 comparator; the
-  direction holds against every season measured, significance does not, see
-  docs/FINDINGS.md). Philippine golf courses as a class browned
-  relative to their surroundings during the drought and returned to parity
-  afterwards, which is the opposite direction from the viral claim.
-- **The named courses are the most conspicuously green**, by a normal-season
-  NDVI gap of +0.280 against +0.058 for every other course. That holds because
-  it is pooled over five seasons rather than one. It does not say they use more
-  water: a persistent contrast fits heavier irrigation and fits being green land
-  in a dense city equally well.
-- **The restricted geography was wrong and is corrected.** NWRB Resolution
-  001-0904, as quoted by the Supreme Court, names Metro Manila plus five
-  municipalities in Bulacan and Cavite, not five whole provinces. 18 courses and
-  6 of 14 data center sites sit inside the named areas, roughly half what this
-  map claimed before 2026-07-20.
+- **That population finding is withdrawn, and so is everything differenced
+  against the 300 m ring.** ESA WorldCover shows the ring is 52% tree cover and
+  23% buildings against a course interior that is 61% grass. Comparing turf to
+  rooftops measures land cover. Rebuild the control from grassland pixels only
+  and the drought-versus-control shift goes to -0.0005 (cluster p = 0.95).
+- **What replaces it, with a control that holds land cover fixed:** golf turf is
+  +0.080 NDVI greener than the grassland around it in normal dry seasons
+  (cluster p < 0.001, 115 courses). Managed turf beats unmanaged grass, which is
+  what management looks like. It is not a water volume.
+- **The DENR-named courses stand out mostly because of where they sit.** Their
+  normal-season contrast is +0.280 against +0.058 for other courses, but their
+  rings are 58% built-up against 19% for the rest, and controlling for that the
+  difference falls to +0.073.
+- **The restricted geography was wrong and is corrected, three times.** NWRB
+  Resolution 001-0904 designates eight critical areas across sixteen LGUs, not
+  five whole provinces and not Metro Manila entire. 14 courses and
+  4 of 14 data center sites sit inside them, against 45 and 11
+  when this map drew provinces.
 - 1 of 14 tracked data center sites publishes any water metric. The DENR has
   named golf courses in water directives; it has named zero data centers. That
   asymmetry is public record, not a satellite measurement, and it is the only
@@ -68,20 +69,21 @@ season turned, which is the point as the next dry season approaches.
 
 ## What the measurement is (and is not)
 
-For each OSM golf polygon, the pipeline compares NDVI inside the course
-against a 30-300 m control ring around it (other golf land excluded), in
-Feb-Apr windows: 2019-2023 pooled (normal), 2024 (El Nino), 2026 (latest).
-Cloud Score+ per-pixel masking, 10 m scale.
+The original design compared NDVI inside each course against a 30-300 m ring
+around it, in Feb-Apr windows, reading a widening greenness advantage during the
+drought as irrigation. Two things broke that.
 
-The intended reading was that a course whose greenness advantage over its
-surroundings grew during the drought was being watered. Tested against the
-ENSO-neutral 2026 season that inference does not hold per course: the threshold
-fires more often with no drought than with one. Tree canopy, ponds, a high
-water table, uneven rainfall across 300 metres, relaid turf, or a ring of
-irrigated rice paddy all move the same number, and no optical index separates
-them. The metric is greenness, not liters; staying green is in any case
-compatible with the DENR directive, which asks for recycled water rather than
-less water. No accusations are made or implied.
+Tested against ENSO-neutral Feb-Apr 2026, the per-course threshold fires more
+often with no drought than with one. Five designs were tried (NDVI, NDMI,
+Landsat surface temperature, within-season trajectory, and a grass-matched
+control) and all five fail the same test.
+
+And the ring was never a control: ESA WorldCover puts it at 52% tree and 23%
+built-up against a 61%-grass interior, so differencing against it measures land
+cover. Rebuilding the control from grassland pixels only leaves one result
+standing, a level rather than a drought response, stated above.
+
+The metric is greenness, never liters. No accusations are made or implied.
 
 ## Data
 
@@ -89,8 +91,11 @@ less water. No accusations are made or implied.
 |---|---|---|
 | Golf courses (138) | OSM `leisure=golf_course` via Overpass | ~6,700 ha; Valley Golf, one of the DENR-13, is missing from OSM |
 | Data centers (14) | Hand-curated from operator press | Per-site source URL and pin-precision label |
-| Restriction areas (7) | OSM admin boundaries | 6 named in NWRB Res. 001-0904 per SC G.R. 208383, plus Rizal as a reported extension |
+| Restriction areas (18) | OSM admin boundaries | 16 LGUs designated in NWRB Res. 001-0904, plus Metro Manila entire and Rizal as reported extents |
 | Stay-green signal | Sentinel-2 L2A + Cloud Score+ | `pipeline/ndvi_anomaly.py`; fails its control, see findings |
+| Moisture, thermal, trajectory | Sentinel-2 B8A/B11, Landsat ST_B10 | `ndmi_anomaly.py`, `lst_anomaly.py`, `ndvi_subseasonal.py`; all fail the same control |
+| Ring land cover | ESA WorldCover v200 | `pipeline/ring_landcover.py`; why the ring is not a control |
+| Grass-matched control | WorldCover grass + Sentinel-2 | `pipeline/matched_control.py`; the one surviving result |
 | Observation counts | Sentinel-2 scene counts per polygon | `pipeline/ndvi_quality.py` |
 
 Provenance for every number: [docs/SOURCES.md](docs/SOURCES.md).
@@ -99,10 +104,11 @@ Provenance for every number: [docs/SOURCES.md](docs/SOURCES.md).
 
 ```bash
 python3.12 -m venv .venv && .venv/bin/pip install -r requirements.txt
-make data      # OSM golf + curated data centers + moratorium boundaries
+make data      # OSM golf + curated data centers + restriction areas
 make ndvi      # Earth Engine measurement (needs an EE account or SA key)
+make quality   # per-course observation counts
 make summary   # site/data/summary.json + layer copies
-make e2e       # 39 offline checks against committed data
+make e2e       # offline checks plus a claims-verify pass, both must pass
 make serve     # local map at http://localhost:8737
 ```
 

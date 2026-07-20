@@ -199,6 +199,49 @@ def main():
                 claim(f"gap_{y}", s[f"gap_{y}"], round(sum(g) / len(g), 4), tol=1e-4)
 
     html = (SITE / "index.html").read_text()
+    print("\n--- land cover, which the site now leads with ---")
+    lcp = DATA / "ring_landcover.csv"
+    if lcp.exists():
+        lr = list(csv.DictReader(open(lcp)))
+
+        def pct(col):
+            v = [f(r[col]) for r in lr if f(r[col]) is not None]
+            return round(100 * sum(v) / len(v), 1)
+
+        for kind in ("golf", "ring"):
+            for cls in ("tree", "grass", "built", "crop"):
+                claim(f"lc_{kind}_{cls}", s[f"lc_{kind}_{cls}"], pct(f"{kind}_{cls}"), tol=0.05)
+        claim("ring is mostly not grass", True, s["lc_ring_grass"] < s["lc_golf_grass"])
+        claim("ring is substantially built", True, s["lc_ring_built"] > 15)
+        # the landcover chart must plot the same numbers, not its own copy
+        for row in s["landcover_series"]:
+            c = row["cls"].lower()
+            claim(f"chart landcover {c} course", row["course"], s[f"lc_golf_{c}"])
+            claim(f"chart landcover {c} ring", row["ring"], s[f"lc_ring_{c}"])
+
+    print("\n--- the confound series the site leads with ---")
+    for row in s.get("confound_series", []):
+        claim(f"confound '{row['name'][:26]}' significant on all courses", True, row["p_all"] < 0.05)
+        claim(f"confound '{row['name'][:26]}' dead on vegetated rings", True, row["p_veg"] > 0.05)
+        claim(
+            f"confound '{row['name'][:26]}' effect shrinks",
+            True,
+            abs(row["veg_ring"]) < abs(row["all_courses"]),
+        )
+
+    print("\n--- instrument chart rows must match their own summary fields ---")
+    by_name = {r["name"]: r for r in s["instrument_series"]}
+    for nm, hk, nk in [
+        ("NDMI", "ndmi_hit_rate", "ndmi_null_rate"),
+        ("Thermal", "lst_hit_rate", "lst_null_rate"),
+        ("Within-season", "sub_hit_rate", "sub_null_rate"),
+        ("Grass-matched", "matched_hit_rate", "matched_null_rate"),
+    ]:
+        if nm in by_name:
+            claim(f"chart {nm} drought", by_name[nm]["drought"], s[hk])
+            claim(f"chart {nm} control", by_name[nm]["control"], s[nk])
+            claim(f"{nm} fails its control", True, s[hk] <= s[nk])
+
     print("\n--- the matched control ---")
     mcp = DATA / "matched_control.csv"
     if mcp.exists():
@@ -245,6 +288,24 @@ def main():
         "no unsupported ban language": "bans deep-well drilling",
     }.items():
         claim(f"prose: {label}", True, needle not in flat)
+
+    print("\n--- README agrees with the pipeline ---")
+    readme = (ROOT / "README.md").read_text()
+    for label, needle in {
+        "designated course count": f"{s['golf_inside_designated']} courses and",
+        "designated site count": f"{s['dc_in_designated']} of {s['dc_sites']} data center sites",
+        "matched gap": "+0.080 NDVI greener",
+        "no withdrawn population claim": None,
+    }.items():
+        if needle is None:
+            claim(
+                f"README: {label}",
+                True,
+                "What survives is the population" not in readme
+                and "stayed green through the 2024 El Nino" not in readme,
+            )
+        else:
+            claim(f"README: {label}", True, needle in readme)
 
     print("\n--- every data-n token on the page resolves ---")
     import re
